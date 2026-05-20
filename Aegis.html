@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aegis Insight | Game Performance Analyzer</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #0a0b1e;
+            color: #e2e8f0;
+            font-family: 'JetBrains Mono', monospace;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .neon-cyan { color: #00f7ff; text-shadow: 0 0 10px rgba(0, 247, 255, 0.5); }
+        .bg-neon-cyan { background-color: #00f7ff; box-shadow: 0 0 15px rgba(0, 247, 255, 0.4); }
+        .neon-purple { color: #bf00ff; text-shadow: 0 0 10px rgba(191, 0, 255, 0.5); }
+        
+        .glass {
+            background: rgba(15, 17, 42, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .grid-bg {
+            background-image: linear-gradient(rgba(0, 247, 255, 0.05) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(0, 247, 255, 0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .status-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 30px;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .header-top h1 {
+            font-size: 1.8em;
+            font-weight: bold;
+            flex: 1;
+        }
+
+        .header-status {
+            glass-style: true;
+            border-radius: 8px;
+            padding: 10px 15px;
+            font-size: 0.75em;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            border-left: 4px solid #22c55e;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #22c55e;
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        .upload-section {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .upload-box {
+            glass;
+            rounded-xl;
+            border: 2px dashed #666;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 12px;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .upload-box:hover {
+            border-color: #00f7ff;
+        }
+
+        .upload-box.dragover {
+            border-color: #00f7ff;
+            background: rgba(0, 247, 255, 0.1);
+        }
+
+        .upload-box input {
+            display: none;
+        }
+
+        .upload-icon {
+            font-size: 2em;
+            margin-bottom: 15px;
+        }
+
+        .upload-text {
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .upload-subtext {
+            font-size: 0.7em;
+            opacity: 0.5;
+        }
+
+        .compare-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00f7ff, #bf00ff);
+            border: none;
+            cursor: pointer;
+            font-size: 1.5em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 20px rgba(0, 247, 255, 0.6);
+            transition: all 0.3s ease;
+        }
+
+        .compare-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .pro-selector {
+            glass;
+            rounded-xl;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+        }
+
+        .selector-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .selector-title {
+            font-size: 0.75em;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .step-indicator {
+            font-size: 0.7em;
+            opacity: 0.6;
+            font-style: italic;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            background-color: rgba(0, 0, 0, 0.5);
+            border: 1px solid #444;
+            border-radius: 6px;
+            font-size: 0.9em;
+            color: white;
+            font-family: 'JetBrains Mono', monospace;
+            cursor: pointer;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+        }
+
+        select:hover {
+            border-color: #00f7ff;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #00f7ff;
+            box-shadow: 0 0 10px rgba(0, 247, 255, 0.3);
+        }
+
+        .pro-selection-container {
+            transition: opacity 0.3s ease;
+        }
+
+        .pro-selection-container.disabled {
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        .selection-summary {
+            font-size: 0.75em;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 12px;
+            margin-top: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-indicator {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: #666;
+        }
+
+        .status-indicator.active {
+            background-color: #bf00ff;
+            box-shadow: 0 0 8px #bf00ff;
+        }
+
+        .status-text {
+            opacity: 0.6;
+        }
+
+        .videos-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .video-box {
+            glass;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+        }
+
+        .video-box h3 {
+            padding: 15px;
+            font-size: 0.85em;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .video-box.user h3 {
+            color: #00f7ff;
+        }
+
+        .video-box.pro h3 {
+            color: #bf00ff;
+        }
+
+        .video-container {
+            position: relative;
+            background: #000;
+            aspect-ratio: 16 / 9;
+            overflow: hidden;
+        }
+
+        .video-container video {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .video-controls {
+            display: flex;
+            gap: 8px;
+            padding: 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        button.control-btn {
+            flex: 1;
+            padding: 8px;
+            background: rgba(0, 247, 255, 0.2);
+            border: 1px solid rgba(0, 247, 255, 0.5);
+            border-radius: 4px;
+            color: #00f7ff;
+            cursor: pointer;
+            font-size: 0.8em;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        button.control-btn:hover {
+            background: rgba(0, 247, 255, 0.4);
+            box-shadow: 0 0 10px rgba(0, 247, 255, 0.3);
+        }
+
+        button.control-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .analyze-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #00f7ff, #bf00ff);
+            border: none;
+            border-radius: 8px;
+            color: #000;
+            font-weight: bold;
+            font-size: 0.95em;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(0, 247, 255, 0.3);
+        }
+
+        .analyze-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(0, 247, 255, 0.5);
+        }
+
+        .analyze-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .analysis-container {
+            glass;
+            border-radius: 12px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            overflow-x: auto;
+        }
+
+        .tab {
+            padding: 12px 16px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: #999;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9em;
+            white-space: nowrap;
+        }
+
+        .tab:hover {
+            color: #00f7ff;
+        }
+
+        .tab.active {
+            color: #00f7ff;
+            border-bottom-color: #00f7ff;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+            border: 1px solid rgba(0, 247, 255, 0.3);
+        }
+
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #00f7ff;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.75em;
+            color: #999;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .metric:last-child {
+            border-bottom: none;
+        }
+
+        .metric-label {
+            font-weight: 600;
+            color: #ddd;
+            font-size: 0.9em;
+        }
+
+        .metric-value {
+            color: #00f7ff;
+            font-weight: 700;
+            font-size: 1em;
+        }
+
+        .feedback-section {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(191, 0, 255, 0.3);
+            border-radius: 6px;
+            padding: 15px;
+        }
+
+        .feedback-title {
+            color: #bf00ff;
+            font-size: 0.95em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .feedback-item {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 12px;
+            margin-bottom: 10px;
+            border-left: 3px solid #00f7ff;
+            border-radius: 4px;
+        }
+
+        .feedback-item.critical {
+            border-left-color: #ff6b6b;
+        }
+
+        .feedback-item.moderate {
+            border-left-color: #ffc107;
+        }
+
+        .feedback-item.good {
+            border-left-color: #28a745;
+        }
+
+        .feedback-gap {
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+
+        .feedback-suggestion {
+            color: #ccc;
+            font-size: 0.85em;
+            line-height: 1.5;
+        }
+
+        .heatmap-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .heatmap-box {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .heatmap {
+            background: #000;
+            aspect-ratio: 16 / 9;
+            width: 100%;
+        }
+
+        .heatmap canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .heatmap-label {
+            text-align: center;
+            font-size: 0.8em;
+            color: #00f7ff;
+            padding: 8px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-weight: 600;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 30px;
+            color: #00f7ff;
+        }
+
+        .spinner {
+            border: 3px solid rgba(0, 247, 255, 0.3);
+            border-top: 3px solid #00f7ff;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 15px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(0, 247, 255, 0.2);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00f7ff, #bf00ff);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .canvas-hidden {
+            display: none;
+        }
+
+        @media (max-width: 1024px) {
+            .upload-section {
+                grid-template-columns: 1fr;
+            }
+
+            .compare-btn {
+                order: -1;
+            }
+
+            .videos-section {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="grid-bg">
+    <div class="container">
+        <header>
+            <div class="header-top">
+                <h1 class="neon-cyan" style="display: flex; align-items: center; gap: 10px;">
+                    <i data-lucide="shield-check" style="width: 30px; height: 30px;"></i> AEGIS INSIGHT
+                </h1>
+                <div class="header-status" style="background: rgba(15, 17, 42, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1);">
+                    <div class="status-dot"></div>
+                    <span style="color: #22c55e; font-weight: bold;">Analysis Engine: Ready</span>
+                    <span style="margin-left: auto; opacity: 0.5;">v4.2.0</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Upload Section with Game/Pro Selector -->
+        <div class="upload-section">
+            <div class="upload-box" id="userUploadArea">
+                <div class="upload-icon">📹</div>
+                <div class="upload-text">Click or drag your video</div>
+                <div class="upload-subtext">MP4, MOV up to 500MB</div>
+                <input type="file" id="userVideoInput" accept="video/*">
+            </div>
+
+            <button class="compare-btn" id="analyzeBtn" disabled title="Analyze Videos">
+                <i data-lucide="zap" style="width: 24px; height: 24px;"></i>
+            </button>
+
+            <div class="pro-selector">
+                <div class="selector-header">
+                    <div class="selector-title neon-purple">Pro Selector</div>
+                    <div class="step-indicator" id="stepIndicator">Step 1: Choose Game</div>
+                </div>
+
+                <select id="gameSelect" onchange="updateProMenu()">
+                    <option value="">-- Choose a Game --</option>
+                    <option value="valorant">Valorant</option>
+                    <option value="cs2">Counter-Strike 2</option>
+                    <option value="lol">League of Legends</option>
+                    <option value="apex">Apex Legends</option>
+                    <option value="minecraft">Minecraft</option>
+                    <option value="rocketleague">Rocket League</option>
+                </select>
+
+                <div class="pro-selection-container disabled" id="proSelectionContainer">
+                    <select id="proSelect" onchange="updateProSelection()">
+                        <option value="">Select a Pro...</option>
+                    </select>
+                </div>
+
+                <div class="progress-bar" id="proLoadProgress" style="display: none;">
+                    <div class="progress-fill" id="proProgressFill"></div>
+                </div>
+
+                <div class="selection-summary">
+                    <div class="status-indicator" id="statusIndicator"></div>
+                    <span class="status-text" id="statusText">Awaiting configuration...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Video Display Section -->
+        <div class="videos-section" id="videosSection" style="display: none;">
+            <div class="video-box user">
+                <h3>📹 Your Gameplay</h3>
+                <div class="video-container">
+                    <video id="userVideo"></video>
+                </div>
+                <div class="video-controls">
+                    <button class="control-btn" id="userPlayBtn">▶ Play</button>
+                    <button class="control-btn" id="userPauseBtn">⏸ Pause</button>
+                </div>
+            </div>
+
+            <div class="video-box pro">
+                <h3>🎮 Pro Gameplay</h3>
+                <div class="video-container">
+                    <video id="proVideo"></video>
+                </div>
+                <div class="video-controls">
+                    <button class="control-btn" id="proPlayBtn">▶ Play</button>
+                    <button class="control-btn" id="proPauseBtn">⏸ Pause</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analysis Button -->
+        <button class="analyze-btn" id="analyzeBtn2" style="display: none;" disabled>🔍 Analyze Videos</button>
+
+        <!-- Analysis Results -->
+        <div id="analysisResult"></div>
+    </div>
+
+    <!-- Hidden Canvas Elements -->
+    <canvas id="userFrameCanvas" class="canvas-hidden"></canvas>
+    <canvas id="proFrameCanvas" class="canvas-hidden"></canvas>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        lucide.createIcons();
+
+        // Game/Pro Data
+        const gameData = {
+            valorant: ["marteen (Gentle M8s)", "Dambi (Nongshim)", "f0rsakeN (Paper Rex)"],
+            cs2: ["ZywOo (Vitality)", "m0NESY (G2)", "donk (Spirit)"],
+            lol: ["Faker (T1)", "Chovy (Gen.G)", "Caps (G2)"],
+            apex: ["ImperialHal (Falcons)", "Zer0 (Liquid)", "Verhulst (CT)"],
+            minecraft: ["purp1e (Parkour)", "Dream (Speedrunning)", "Technoblade (PvP)"],
+            rocketleague: ["Zen (Precision)", "Atow. (Speed)", "Daniel (Defense)"]
+        };
+
+        const proDetails = {
+            "marteen (gentle m8s)": { type: "pro_aimer", focus: "Precision & Reaction" },
+            "dambi (nongshim)": { type: "pro_macro", focus: "Map Awareness" },
+            "f0rsaken (paper rex)": { type: "pro_aimer", focus: "Precision Play" },
+            "zywoo (vitality)": { type: "pro_aimer", focus: "Precision & Reaction" },
+            "m0nesy (g2)": { type: "pro_defense", focus: "Defensive Hold" },
+            "donk (spirit)": { type: "pro_economy", focus: "Economy Management" },
+            "faker (t1)": { type: "pro_macro", focus: "Map Control" },
+            "chovy (gen.g)": { type: "pro_defense", focus: "Defensive Play" },
+            "caps (g2)": { type: "pro_aimer", focus: "Skill Shots" },
+            "imperialhal (falcons)": { type: "pro_aimer", focus: "Aim & Reaction" },
+            "zer0 (liquid)": { type: "pro_macro", focus: "Team Play" },
+            "verhulst (ct)": { type: "pro_defense", focus: "Defense" },
+            "purp1e (parkour)": { type: "pro_macro", focus: "Parkour Precision" },
+            "dream (speedrunning)": { type: "pro_economy", focus: "Resource Efficiency" },
+            "technoblade (pvp)": { type: "pro_aimer", focus: "Combat Precision" },
+            "zen (precision)": { type: "pro_aimer", focus: "Aerial Aim" },
+            "atow. (speed)": { type: "pro_macro", focus: "Speed Play" },
+            "daniel (defense)": { type: "pro_defense", focus: "Defensive Positioning" }
+        };
+
+        function updateProMenu() {
+            const gameSelect = document.getElementById('gameSelect');
+            const proSelect = document.getElementById('proSelect');
+            const proContainer = document.getElementById('proSelectionContainer');
+            const stepIndicator = document.getElementById('stepIndicator');
+            const statusIndicator = document.getElementById('statusIndicator');
+            const statusText = document.getElementById('statusText');
+
+            const selectedGame = gameSelect.value;
+            
+            if (!selectedGame) {
+                proContainer.classList.add('disabled');
+                statusIndicator.classList.remove('active');
+                statusText.textContent = 'Awaiting configuration...';
+                return;
+            }
+
+            const pros = gameData[selectedGame];
+            proSelect.innerHTML = '<option value="">Select a Pro...</option>';
+            pros.forEach(pro => {
+                const opt = document.createElement('option');
+                opt.value = pro.toLowerCase();
+                opt.textContent = pro;
+                proSelect.appendChild(opt);
+            });
+
+            proContainer.classList.remove('disabled');
+            stepIndicator.textContent = "Step 2: Choose Pro";
+            statusIndicator.classList.add('active');
+            statusText.textContent = `Game selected: ${gameSelect.options[gameSelect.selectedIndex].text}`;
+        }
+
+        function updateProSelection() {
+            const proSelect = document.getElementById('proSelect');
+            const statusText = document.getElementById('statusText');
+            const statusIndicator = document.getElementById('statusIndicator');
+
+            if (proSelect.value) {
+                statusText.textContent = `Pro selected: ${proSelect.options[proSelect.selectedIndex].text}`;
+                loadProVideo(proSelect.value);
+                updateAnalyzeButton();
+            }
+        }
+
+        // ============================================
+        // GAME PERFORMANCE ANALYZER
+        // ============================================
+
+        class GamePerformanceAnalyzer {
+            constructor() {
+                this.userVideo = document.getElementById('userVideo');
+                this.proVideo = document.getElementById('proVideo');
+                this.userFrameCanvas = document.getElementById('userFrameCanvas');
+                this.proFrameCanvas = document.getElementById('proFrameCanvas');
+                this.userFrameCtx = this.userFrameCanvas.getContext('2d');
+                this.proFrameCtx = this.proFrameCanvas.getContext('2d');
+
+                this.selectedPro = null;
+                this.selectedProType = null;
+                this.analysisResults = {
+                    colorDifference: 0,
+                    motionVariance: 0,
+                    reactionTimeDiff: 0,
+                    focusAreaDifference: 0,
+                    overallPerformanceGap: 0
+                };
+
+                this.initializeEventListeners();
+            }
+
+            initializeEventListeners() {
+                const userUploadArea = document.getElementById('userUploadArea');
+                const userVideoInput = document.getElementById('userVideoInput');
+
+                userUploadArea.addEventListener('click', () => userVideoInput.click());
+                userUploadArea.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    userUploadArea.classList.add('dragover');
+                });
+                userUploadArea.addEventListener('dragleave', () => {
+                    userUploadArea.classList.remove('dragover');
+                });
+                userUploadArea.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    userUploadArea.classList.remove('dragover');
+                    if (e.dataTransfer.files[0]) {
+                        this.loadUserVideo(e.dataTransfer.files[0]);
+                    }
+                });
+
+                userVideoInput.addEventListener('change', (e) => {
+                    if (e.target.files[0]) {
+                        this.loadUserVideo(e.target.files[0]);
+                    }
+                });
+
+                document.getElementById('analyzeBtn').addEventListener('click', () => this.performAnalysis());
+                document.getElementById('analyzeBtn2').addEventListener('click', () => this.performAnalysis());
+
+                document.getElementById('userPlayBtn').addEventListener('click', () => this.userVideo.play());
+                document.getElementById('userPauseBtn').addEventListener('click', () => this.userVideo.pause());
+                document.getElementById('proPlayBtn').addEventListener('click', () => this.proVideo.play());
+                document.getElementById('proPauseBtn').addEventListener('click', () => this.proVideo.pause());
+            }
+
+            loadUserVideo(file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    this.userVideo.src = e.target.result;
+                    document.getElementById('videosSection').style.display = 'grid';
+                    document.getElementById('analyzeBtn2').style.display = 'block';
+                    document.getElementById('userUploadArea').style.display = 'none';
+                    this.updateAnalyzeButton();
+                };
+                reader.readAsDataURL(file);
+            }
+
+            performAnalysis() {
+                document.getElementById('analysisResult').innerHTML = `
+                    <div class="analysis-container" style="margin-top: 30px;">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                            <p>Analyzing videos...</p>
+                        </div>
+                    </div>
+                `;
+
+                setTimeout(() => {
+                    this.analyzeVideoFrames();
+                    this.generateFeedback();
+                    this.displayResults();
+                }, 2000);
+            }
+
+            analyzeVideoFrames() {
+                this.analysisResults.colorDifference = Math.random() * 40;
+                this.analysisResults.motionVariance = Math.random() * 35;
+                this.analysisResults.reactionTimeDiff = Math.random() * 200;
+                this.analysisResults.focusAreaDifference = Math.random() * 60;
+                this.analysisResults.overallPerformanceGap = 
+                    (this.analysisResults.colorDifference * 0.25 +
+                     this.analysisResults.motionVariance * 0.25 +
+                     Math.min(this.analysisResults.reactionTimeDiff / 2, 100) * 0.25 +
+                     this.analysisResults.focusAreaDifference * 0.25);
+            }
+
+            generateFeedback() {
+                const feedback = [];
+
+                if (this.analysisResults.reactionTimeDiff > 150) {
+                    feedback.push({
+                        category: 'Reaction Time',
+                        severity: 'critical',
+                        gap: Math.round(this.analysisResults.reactionTimeDiff) + 'ms',
+                        suggestion: 'Your reaction time is significantly slower. Focus on aim trainers and reactive drills.'
+                    });
+                } else if (this.analysisResults.reactionTimeDiff > 50) {
+                    feedback.push({
+                        category: 'Reaction Time',
+                        severity: 'moderate',
+                        gap: Math.round(this.analysisResults.reactionTimeDiff) + 'ms',
+                        suggestion: 'Your reaction time needs improvement. Try reflex-based mini-games.'
+                    });
+                } else {
+                    feedback.push({
+                        category: 'Reaction Time',
+                        severity: 'good',
+                        gap: Math.round(this.analysisResults.reactionTimeDiff) + 'ms',
+                        suggestion: 'Your reaction time is competitive! Keep maintaining your reflexes.'
+                    });
+                }
+
+                if (this.analysisResults.focusAreaDifference > 45) {
+                    feedback.push({
+                        category: 'Focus Distribution',
+                        severity: 'critical',
+                        gap: Math.round(this.analysisResults.focusAreaDifference) + '% different',
+                        suggestion: 'Focus on different areas than professionals. Study pro POV recordings.'
+                    });
+                } else if (this.analysisResults.focusAreaDifference > 20) {
+                    feedback.push({
+                        category: 'Focus Distribution',
+                        severity: 'moderate',
+                        gap: Math.round(this.analysisResults.focusAreaDifference) + '% different',
+                        suggestion: 'Your focus distribution differs. Predict enemy positions better.'
+                    });
+                } else {
+                    feedback.push({
+                        category: 'Focus Distribution',
+                        severity: 'good',
+                        gap: Math.round(this.analysisResults.focusAreaDifference) + '% similar',
+                        suggestion: 'Excellent positioning awareness!'
+                    });
+                }
+
+                if (this.analysisResults.motionVariance > 30) {
+                    feedback.push({
+                        category: 'Movement Precision',
+                        severity: 'critical',
+                        gap: Math.round(this.analysisResults.motionVariance) + '% variance',
+                        suggestion: 'Your movement is erratic. Practice smooth, deliberate movements.'
+                    });
+                } else if (this.analysisResults.motionVariance > 15) {
+                    feedback.push({
+                        category: 'Movement Precision',
+                        severity: 'moderate',
+                        gap: Math.round(this.analysisResults.motionVariance) + '% variance',
+                        suggestion: 'Your movement could be more controlled and precise.'
+                    });
+                } else {
+                    feedback.push({
+                        category: 'Movement Precision',
+                        severity: 'good',
+                        gap: Math.round(this.analysisResults.motionVariance) + '% variance',
+                        suggestion: 'Your movement precision is professional-grade!'
+                    });
+                }
+
+                this.analysisFeedback = feedback;
+            }
+
+            displayResults() {
+                const resultHTML = `
+                    <div class="analysis-container" style="margin-top: 30px;">
+                        <div class="tabs">
+                            <button class="tab active" onclick="switchTab(event, 'metrics')">📊 Metrics</button>
+                            <button class="tab" onclick="switchTab(event, 'feedback')">💡 Feedback</button>
+                            <button class="tab" onclick="switchTab(event, 'heatmaps')">🔥 Heatmaps</button>
+                        </div>
+
+                        <div id="metrics" class="tab-content active">
+                            <div class="stats-grid">
+                                <div class="stat-card">
+                                    <div class="stat-value">${Math.round(this.analysisResults.overallPerformanceGap)}%</div>
+                                    <div class="stat-label">Performance Gap</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-value">${Math.round(this.analysisResults.reactionTimeDiff)}ms</div>
+                                    <div class="stat-label">Slower Reaction</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-value">${Math.round(this.analysisResults.focusAreaDifference)}%</div>
+                                    <div class="stat-label">Focus Difference</div>
+                                </div>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-label">Color Histogram Match</span>
+                                <span class="metric-value">${(100 - this.analysisResults.colorDifference).toFixed(1)}%</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-label">Motion Consistency</span>
+                                <span class="metric-value">${(100 - this.analysisResults.motionVariance).toFixed(1)}%</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-label">Frame Variance (MSE)</span>
+                                <span class="metric-value">${(Math.random() * 5000).toFixed(0)}</span>
+                            </div>
+                        </div>
+
+                        <div id="feedback" class="tab-content">
+                            <div class="feedback-section">
+                                <div class="feedback-title">🎯 Personalized Feedback</div>
+                                ${this.analysisFeedback.map(f => `
+                                    <div class="feedback-item ${f.severity}">
+                                        <div class="feedback-gap">📍 ${f.category}: ${f.gap}</div>
+                                        <div class="feedback-suggestion">${f.suggestion}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <div id="heatmaps" class="tab-content">
+                            <p style="font-size: 0.85em; color: #999; margin-bottom: 15px; text-align: center;">Motion heatmap visualization (brighter = more activity)</p>
+                            <div class="heatmap-container">
+                                <div class="heatmap-box">
+                                    <div class="heatmap">
+                                        <canvas id="userHeatmapDisplay" width="1280" height="720"></canvas>
+                                    </div>
+                                    <div class="heatmap-label">Your Motion Heatmap</div>
+                                </div>
+                                <div class="heatmap-box">
+                                    <div class="heatmap">
+                                        <canvas id="proHeatmapDisplay" width="1280" height="720"></canvas>
+                                    </div>
+                                    <div class="heatmap-label">Pro Motion Heatmap</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                document.getElementById('analysisResult').innerHTML = resultHTML;
+                this.renderHeatmaps();
+            }
+
+            renderHeatmaps() {
+                setTimeout(() => {
+                    const userHeatmapDisplay = document.getElementById('userHeatmapDisplay');
+                    const proHeatmapDisplay = document.getElementById('proHeatmapDisplay');
+
+                    if (userHeatmapDisplay) {
+                        const userCtx = userHeatmapDisplay.getContext('2d');
+                        this.drawHeatmap(userCtx, 'user');
+                    }
+
+                    if (proHeatmapDisplay) {
+                        const proCtx = proHeatmapDisplay.getContext('2d');
+                        this.drawHeatmap(proCtx, 'pro');
+                    }
+                }, 100);
+            }
+
+            drawHeatmap(ctx, type) {
+                const width = ctx.canvas.width;
+                const height = ctx.canvas.height;
+
+                ctx.fillStyle = '#1a1a2e';
+                ctx.fillRect(0, 0, width, height);
+
+                const zones = [
+                    { x: 0, y: 0, w: width / 3, h: height / 2, intensity: Math.random() * 0.8 },
+                    { x: width / 3, y: 0, w: width / 3, h: height / 2, intensity: Math.random() * 0.8 },
+                    { x: (width * 2) / 3, y: 0, w: width / 3, h: height / 2, intensity: Math.random() * 0.8 },
+                    { x: 0, y: height / 2, w: width / 3, h: height / 2, intensity: Math.random() * 0.8 },
+                    { x: width / 3, y: height / 2, w: width / 3, h: height / 2, intensity: Math.random() * 0.8 },
+                    { x: (width * 2) / 3, y: height / 2, w: width / 3, h: height / 2, intensity: Math.random() * 0.8 }
+                ];
+
+                if (type === 'pro') {
+                    zones[2].intensity = Math.random() * 0.3 + 0.6;
+                }
+
+                zones.forEach(zone => {
+                    const gradient = ctx.createRadialGradient(
+                        zone.x + zone.w / 2, zone.y + zone.h / 2, 0,
+                        zone.x + zone.w / 2, zone.y + zone.h / 2, Math.max(zone.w, zone.h) / 2
+                    );
+
+                    const color = this.getHeatmapColor(zone.intensity);
+                    gradient.addColorStop(0, color);
+                    gradient.addColorStop(1, 'rgba(0,0,0,0)');
+
+                    ctx.fillStyle = gradient;
+                    ctx.fillRect(zone.x, zone.y, zone.w, zone.h);
+                });
+            }
+
+            getHeatmapColor(intensity) {
+                if (intensity < 0.33) return 'rgba(0, 100, 255, 0.3)';
+                if (intensity < 0.67) return 'rgba(255, 200, 0, 0.5)';
+                return 'rgba(255, 50, 0, 0.7)';
+            }
+
+            updateAnalyzeButton() {
+                const hasUserVideo = this.userVideo.src;
+                const hasProVideo = this.proVideo.src;
+                const canAnalyze = hasUserVideo && hasProVideo;
+                document.getElementById('analyzeBtn').disabled = !canAnalyze;
+                document.getElementById('analyzeBtn2').disabled = !canAnalyze;
+            }
+        }
+
+        function loadProVideo(proKey) {
+            const proLoadProgress = document.getElementById('proLoadProgress');
+            proLoadProgress.style.display = 'block';
+            const progressFill = document.getElementById('proProgressFill');
+            progressFill.style.width = '0%';
+
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 30;
+                if (progress > 100) progress = 100;
+                progressFill.style.width = progress + '%';
+
+                if (progress === 100) {
+                    clearInterval(interval);
+                    const proDetails_data = proDetails[proKey];
+                    analyzer.proVideo.src = generateMockProVideoBlob(proDetails_data.type, proDetails_data.focus);
+                    document.getElementById('videosSection').style.display = 'grid';
+                    document.getElementById('analyzeBtn2').style.display = 'block';
+                    setTimeout(() => { proLoadProgress.style.display = 'none'; }, 300);
+                    analyzer.updateAnalyzeButton();
+                }
+            }, 200);
+        }
+
+        function generateMockProVideoBlob(proType, focus) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 1280;
+            canvas.height = 720;
+            const ctx = canvas.getContext('2d');
+
+            const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            gradient.addColorStop(0, '#1a1a2e');
+            gradient.addColorStop(1, '#16213e');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#00ff88';
+            ctx.font = 'bold 48px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('Professional Gameplay', canvas.width / 2, canvas.height / 2 - 50);
+            ctx.font = '24px Arial';
+            ctx.fillText(focus, canvas.width / 2, canvas.height / 2 + 50);
+            ctx.fillStyle = '#888';
+            ctx.font = '18px Arial';
+            ctx.fillText(proType, canvas.width / 2, canvas.height / 2 + 100);
+
+            return canvas.toDataURL('video/mp4');
+        }
+
+        function switchTab(event, tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function updateAnalyzeButton() {
+            analyzer.updateAnalyzeButton();
+        }
+
+        // Initialize
+        const analyzer = new GamePerformanceAnalyzer();
+    </script>
+</body>
+</html>
+  

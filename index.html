@@ -240,6 +240,136 @@ video, iframe {
 }
 .btn-sync:hover { background: rgba(0,247,255,0.15); box-shadow: 0 0 10px rgba(0,247,255,0.25); }
 
+/* CONTROLS BAR */
+.controls-bar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.playback-control {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 12px;
+  background: rgba(0,247,255,0.06);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+.playback-control label {
+  font-size: 0.7rem;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+}
+.playback-control input[type="range"] {
+  width: 80px;
+  height: 4px;
+  cursor: pointer;
+}
+.playback-control span {
+  font-size: 0.75rem;
+  color: var(--neon-cyan);
+  min-width: 30px;
+}
+
+/* THEME TOGGLE */
+.theme-toggle {
+  display: flex;
+  gap: 4px;
+  padding: 6px;
+  background: rgba(0,247,255,0.06);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+.theme-toggle button {
+  padding: 4px 8px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 0.8rem;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+.theme-toggle button.active {
+  background: rgba(0,247,255,0.15);
+  border-color: var(--neon-cyan);
+  color: var(--neon-cyan);
+}
+
+/* COMPARISON MODE */
+.comparison-panel {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 16px;
+}
+.comparison-stat {
+  padding: 12px;
+  background: rgba(0,0,0,0.2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+.comparison-stat .stat-name {
+  font-size: 0.7rem;
+  color: var(--muted);
+  margin-bottom: 6px;
+  letter-spacing: 0.08em;
+}
+.comparison-stat .stat-values {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.stat-val {
+  flex: 1;
+  text-align: center;
+}
+.stat-val .label {
+  font-size: 0.65rem;
+  color: var(--muted);
+}
+.stat-val .value {
+  font-size: 1rem;
+  color: var(--text);
+  font-weight: 500;
+}
+
+/* HISTORY PANEL */
+.history-panel {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+  margin-top: 16px;
+}
+.history-item {
+  padding: 12px;
+  background: rgba(0,247,255,0.06);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.history-item:hover {
+  background: rgba(0,247,255,0.12);
+  border-color: var(--neon-cyan);
+}
+.history-item .game-name {
+  font-size: 0.7rem;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+.history-item .score {
+  font-size: 1.2rem;
+  color: var(--neon-cyan);
+  margin-bottom: 4px;
+}
+.history-item .timestamp {
+  font-size: 0.65rem;
+  color: var(--muted);
+}
+
 /* TELEMETRY */
 .telemetry-panel { padding: 20px; }
 .telemetry-panel h4 { color: var(--neon-cyan); letter-spacing: 0.15em; margin-bottom: 16px; font-size: 0.85rem; }
@@ -301,7 +431,13 @@ video, iframe {
   <header>
     <div style="width:8px;height:8px;background:var(--neon-cyan);border-radius:50%;box-shadow:0 0 10px var(--neon-cyan);animation:pulse 2s infinite;"></div>
     <h1>AEGIS INSIGHT</h1>
-    <span>// GAME PERFORMANCE ANALYZER v2.1</span>
+    <span>// GAME PERFORMANCE ANALYZER v2.2</span>
+    <div style="margin-left:auto;display:flex;gap:12px;">
+      <div class="theme-toggle">
+        <button id="themeLight" class="active" onclick="setTheme('light')">☀</button>
+        <button id="themeDark" onclick="setTheme('dark')">🌙</button>
+      </div>
+    </div>
   </header>
 
   <!-- UPLOAD SECTION -->
@@ -377,9 +513,38 @@ video, iframe {
           <button class="btn-sync" onclick="startAnalysis()">📊 FULL ANALYSIS</button>
         </div>
 
+        <div class="controls-bar glass">
+          <div class="playback-control">
+            <label>YOU SPEED:</label>
+            <input type="range" min="0.5" max="2" step="0.25" value="1" id="userSpeed" onchange="updateVideoSpeed('userVideo', this.value)">
+            <span id="userSpeedVal">1x</span>
+          </div>
+          <div class="playback-control">
+            <label>PRO SPEED:</label>
+            <input type="range" min="0.5" max="2" step="0.25" value="1" id="proSpeed" onchange="updateProSpeed(this.value)">
+            <span id="proSpeedVal">1x</span>
+          </div>
+          <button class="btn btn-cyan" onclick="exportAnalysis()">📥 EXPORT</button>
+          <button class="btn btn-purple" onclick="toggleComparison()">📊 COMPARE</button>
+        </div>
+
       </div>
 
       <div id="results" class="results-panel"></div>
+
+      <!-- COMPARISON MODE -->
+      <div id="comparisonMode" style="display:none;margin-top:20px;">
+        <div class="glass" style="padding:16px;">
+          <h3 style="color:var(--neon-cyan);margin-bottom:12px;font-size:0.9rem;letter-spacing:0.15em;">YOUR vs PRO COMPARISON</h3>
+          <div class="comparison-panel" id="comparisonStats"></div>
+        </div>
+      </div>
+
+      <!-- HISTORY SECTION -->
+      <div id="historySection" style="display:none;margin-top:20px;">
+        <div style="font-size:0.8rem;color:var(--muted);margin-bottom:10px;letter-spacing:0.1em;">📜 RECENT SESSIONS</div>
+        <div class="history-panel" id="historyList"></div>
+      </div>
     </div>
 
     <!-- TELEMETRY SIDEBAR -->
@@ -464,6 +629,9 @@ let currentVideoId = "";
 let ytPlayer  = null;
 let ytApiReady = false;
 let telemetryTimer = null;
+let currentTheme = localStorage.getItem("aegisTheme") || "dark";
+let analysisHistory = JSON.parse(localStorage.getItem("aegisHistory") || "[]");
+let lastAnalysisData = null;
 
 /* ─── YouTube IFrame API (embedded, no external script needed for basic use) */
 /* We load the YT IFrame API once */
@@ -481,6 +649,34 @@ window.onYouTubeIframeAPIReady = function() {
   // If a video was already selected before API loaded, create player now
   if (currentVideoId) createPlayer(currentVideoId);
 };
+
+/* ─── THEME MANAGEMENT ──────────────────────────────────────────────────── */
+function initTheme() {
+  setTheme(currentTheme);
+}
+
+function setTheme(theme) {
+  currentTheme = theme;
+  localStorage.setItem("aegisTheme", theme);
+  const root = document.documentElement;
+  const isDark = theme === "dark";
+
+  if (isDark) {
+    root.style.setProperty("--bg-dark", "#0a0b1e");
+    root.style.setProperty("--bg-mid", "#0f1230");
+    root.style.setProperty("--glass", "rgba(15,17,42,0.85)");
+    root.style.setProperty("--text", "#e2e8f0");
+  } else {
+    root.style.setProperty("--bg-dark", "#f8fafc");
+    root.style.setProperty("--bg-mid", "#f1f5f9");
+    root.style.setProperty("--glass", "rgba(241,245,249,0.9)");
+    root.style.setProperty("--text", "#1e293b");
+  }
+
+  document.getElementById("themeLight").classList.toggle("active", !isDark);
+  document.getElementById("themeDark").classList.toggle("active", isDark);
+  showToast(`Theme: ${theme.toUpperCase()}`, "info");
+}
 
 function createPlayer(videoId) {
   currentVideoId = videoId;
@@ -631,6 +827,140 @@ function toggleGhostMode() {
   logEntry(`Ghost mode: ${on ? "enabled" : "disabled"}`);
 }
 
+/* ─── PLAYBACK CONTROLS ─────────────────────────────────────────────────── */
+function updateVideoSpeed(videoId, speed) {
+  const v = document.getElementById(videoId);
+  v.playbackRate = parseFloat(speed);
+  const display = speed >= 1 ? speed + "x" : speed + "x";
+  document.getElementById("userSpeedVal").textContent = display;
+}
+
+function updateProSpeed(speed) {
+  try {
+    if (ytPlayer && ytPlayer.setPlaybackRate) {
+      ytPlayer.setPlaybackRate(parseFloat(speed));
+    }
+  } catch(e) {}
+  const display = speed >= 1 ? speed + "x" : speed + "x";
+  document.getElementById("proSpeedVal").textContent = display;
+}
+
+/* ─── COMPARISON MODE ───────────────────────────────────────────────────── */
+function toggleComparison() {
+  const comp = document.getElementById("comparisonMode");
+  if (comp.style.display === "none") {
+    if (!lastAnalysisData) {
+      showToast("⚠ Run analysis first", "warn");
+      return;
+    }
+    generateComparison();
+    comp.style.display = "block";
+    logEntry("Comparison view enabled");
+  } else {
+    comp.style.display = "none";
+    logEntry("Comparison view disabled");
+  }
+}
+
+function generateComparison() {
+  if (!lastAnalysisData) return;
+  const comparisons = [
+    { metric: "AIM ACCURACY", yours: lastAnalysisData.aimAccuracy, pro: Math.floor(Math.random()*10+88) },
+    { metric: "POSITIONING", yours: lastAnalysisData.positioning, pro: Math.floor(Math.random()*10+85) },
+    { metric: "REACTION (ms)", yours: lastAnalysisData.reactionTime, pro: Math.floor(Math.random()*50+150) },
+    { metric: "MOVEMENT", yours: lastAnalysisData.movementEcon, pro: Math.floor(Math.random()*10+88) },
+    { metric: "CROSSHAIR PLC.", yours: lastAnalysisData.crosshairPlace, pro: Math.floor(Math.random()*10+85) },
+    { metric: "UTIL USAGE", yours: lastAnalysisData.utilUsage, pro: Math.floor(Math.random()*10+80) },
+  ];
+
+  const html = comparisons.map(c => `
+    <div class="comparison-stat">
+      <div class="stat-name">${c.metric}</div>
+      <div class="stat-values">
+        <div class="stat-val">
+          <div class="label">You</div>
+          <div class="value" style="color:var(--neon-cyan);">${c.yours}${c.metric.includes("ms") ? "ms" : "%"}</div>
+        </div>
+        <div class="stat-val">
+          <div class="label">Pro</div>
+          <div class="value" style="color:var(--neon-purple);">${c.pro}${c.metric.includes("ms") ? "ms" : "%"}</div>
+        </div>
+      </div>
+    </div>
+  `).join("");
+
+  document.getElementById("comparisonStats").innerHTML = html;
+}
+
+/* ─── EXPORT FUNCTIONALITY ──────────────────────────────────────────────── */
+function exportAnalysis() {
+  if (!lastAnalysisData) {
+    showToast("⚠ No analysis to export", "warn");
+    return;
+  }
+
+  const exportData = {
+    timestamp: new Date().toISOString(),
+    game: document.getElementById("gameSelect").value,
+    pro: document.getElementById("proSelect").options[document.getElementById("proSelect").selectedIndex]?.text || "Unknown",
+    score: lastAnalysisData.score,
+    metrics: {
+      aimAccuracy: lastAnalysisData.aimAccuracy,
+      positioning: lastAnalysisData.positioning,
+      reactionTime: lastAnalysisData.reactionTime,
+      movementEcon: lastAnalysisData.movementEcon,
+      crosshairPlace: lastAnalysisData.crosshairPlace,
+      utilUsage: lastAnalysisData.utilUsage,
+    },
+    telemetry: {
+      frameAlignment: lastAnalysisData.frameAlignment,
+      inputFrequency: lastAnalysisData.inputFrequency,
+      motionSmooth: lastAnalysisData.motionSmooth,
+    }
+  };
+
+  const json = JSON.stringify(exportData, null, 2);
+  const blob = new Blob([json], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `aegis_analysis_${new Date().getTime()}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast("✓ Analysis exported", "info");
+  logEntry("Data exported to JSON");
+}
+
+/* ─── HISTORY MANAGEMENT ────────────────────────────────────────────────── */
+function saveToHistory(score, game) {
+  const entry = {
+    id: Date.now(),
+    timestamp: new Date().toLocaleString(),
+    game: game,
+    score: score,
+  };
+  analysisHistory.unshift(entry);
+  if (analysisHistory.length > 10) analysisHistory.pop();
+  localStorage.setItem("aegisHistory", JSON.stringify(analysisHistory));
+  displayHistory();
+}
+
+function displayHistory() {
+  if (analysisHistory.length === 0) {
+    document.getElementById("historySection").style.display = "none";
+    return;
+  }
+  document.getElementById("historySection").style.display = "block";
+  const html = analysisHistory.map(h => `
+    <div class="history-item">
+      <div class="game-name">${h.game.toUpperCase()}</div>
+      <div class="score">${h.score}%</div>
+      <div class="timestamp">${h.timestamp}</div>
+    </div>
+  `).join("");
+  document.getElementById("historyList").innerHTML = html;
+}
+
 /* ─── TELEMETRY ─────────────────────────────────────────────────────────── */
 function startTelemetry() {
   if (telemetryTimer) clearInterval(telemetryTimer);
@@ -655,13 +985,28 @@ function setMetric(id, val, color) {
 /* ─── ANALYSIS ──────────────────────────────────────────────────────────── */
 function startAnalysis() {
   const score = Math.floor(Math.random() * 15 + 78);
+  const aimAccuracy = Math.floor(Math.random()*20+72);
+  const positioning = Math.floor(Math.random()*25+65);
+  const reactionTime = Math.floor(Math.random()*80+180);
+  const movementEcon = Math.floor(Math.random()*20+75);
+  const crosshairPlace = Math.floor(Math.random()*15+80);
+  const utilUsage = Math.floor(Math.random()*30+60);
+
+  // Store for exports and comparisons
+  lastAnalysisData = {
+    score, aimAccuracy, positioning, reactionTime, movementEcon, crosshairPlace, utilUsage,
+    frameAlignment: Math.floor(Math.random()*20+70),
+    inputFrequency: Math.floor(Math.random()*30+50),
+    motionSmooth: Math.floor(Math.random()*15+80),
+  };
+
   const items = [
-    { label: "AIM ACCURACY",     val: `${Math.floor(Math.random()*20+72)}%` },
-    { label: "POSITIONING",      val: `${Math.floor(Math.random()*25+65)}%` },
-    { label: "REACTION TIME",    val: `${Math.floor(Math.random()*80+180)}ms` },
-    { label: "MOVEMENT ECON.",   val: `${Math.floor(Math.random()*20+75)}%` },
-    { label: "CROSSHAIR PLACE.", val: `${Math.floor(Math.random()*15+80)}%` },
-    { label: "UTIL USAGE",       val: `${Math.floor(Math.random()*30+60)}%` },
+    { label: "AIM ACCURACY",     val: `${aimAccuracy}%` },
+    { label: "POSITIONING",      val: `${positioning}%` },
+    { label: "REACTION TIME",    val: `${reactionTime}ms` },
+    { label: "MOVEMENT ECON.",   val: `${movementEcon}%` },
+    { label: "CROSSHAIR PLACE.", val: `${crosshairPlace}%` },
+    { label: "UTIL USAGE",       val: `${utilUsage}%` },
   ];
 
   const cards = items.map(i => `
@@ -679,6 +1024,10 @@ function startAnalysis() {
       </div>
       <div class="result-breakdown">${cards}</div>
     </div>`;
+
+  // Save to history
+  const game = document.getElementById("gameSelect").value || "Unknown";
+  saveToHistory(score, game);
 
   logEntry(`Analysis complete: ${score}%`);
   showToast(`Analysis complete — score: ${score}%`, "info");
@@ -702,6 +1051,12 @@ function showToast(msg, type = "info") {
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => { el.className = type; }, 3000);
 }
+
+/* ─── INITIALIZATION ────────────────────────────────────────────────────── */
+document.addEventListener("DOMContentLoaded", () => {
+  initTheme();
+  displayHistory();
+});
 </script>
 </body>
 </html>

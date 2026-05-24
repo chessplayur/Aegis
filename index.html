@@ -1,1368 +1,837 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Aegis Insight - Professional Game Performance Analyzer with AI-powered pattern recognition">
-  <meta name="theme-color" content="#00f7ff">
-  <title>Aegis Insight | Game Performance Analyzer</title>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --neon-cyan: #00f7ff;
-      --neon-purple: #bf00ff;
-      --neon-green: #39ff14;
-      --bg-dark: #0a0b1e;
-      --bg-mid: #0f1230;
-      --glass: rgba(15,17,42,0.85);
-      --border: rgba(0,247,255,0.15);
-      --text: #e2e8f0;
-      --muted: rgba(226,232,240,0.5);
-    }
-
-    *, *::before, *::after {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      background: var(--bg-dark);
-      color: var(--text);
-      font-family: 'JetBrains Mono', monospace;
-      min-height: 100vh;
-      padding: 20px;
-      background-image:
-        linear-gradient(rgba(0,247,255,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,247,255,0.04) 1px, transparent 1px);
-      background-size: 30px 30px;
-      background-attachment: fixed;
-    }
-
-    .glass {
-      background: var(--glass);
-      backdrop-filter: blur(12px);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-    }
-
-    .container { max-width: 1400px; margin: auto; }
-
-    /* HEADER */
-    header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 24px;
-      padding-bottom: 16px;
-      border-bottom: 1px solid var(--border);
-      flex-wrap: wrap;
-    }
-
-    header h1 {
-      font-size: 1.4rem;
-      letter-spacing: 0.2em;
-      color: var(--neon-cyan);
-      text-shadow: 0 0 20px rgba(0,247,255,0.5);
-    }
-
-    header span {
-      color: var(--muted);
-      font-size: 0.75rem;
-      letter-spacing: 0.1em;
-    }
-
-    /* UPLOAD SECTION */
-    .upload-section {
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      gap: 20px;
-      align-items: center;
-      margin-bottom: 28px;
-    }
-
-    .upload-box {
-      border: 2px dashed rgba(0,247,255,0.25);
-      padding: 32px 24px;
-      text-align: center;
-      min-height: 200px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      transition: all 0.3s;
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .upload-box:hover {
-      border-color: var(--neon-cyan);
-      background: rgba(0,247,255,0.05);
-    }
-
-    .upload-box.dragover {
-      border-color: var(--neon-green);
-      background: rgba(57,255,20,0.1);
-    }
-
-    .upload-box p { color: var(--muted); font-size: 0.85rem; }
-    .upload-box .label { color: var(--text); font-size: 0.9rem; max-width: 200px; word-break: break-all; }
-
-    .btn {
-      padding: 9px 16px;
-      border: 1px solid;
-      background: transparent;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.8rem;
-      cursor: pointer;
-      letter-spacing: 0.05em;
-      transition: all 0.2s;
-      border-radius: 6px;
-    }
-
-    .btn-cyan { border-color: var(--neon-cyan); color: var(--neon-cyan); }
-    .btn-cyan:hover { background: rgba(0,247,255,0.1); box-shadow: 0 0 12px rgba(0,247,255,0.3); }
-
-    .btn-purple { border-color: var(--neon-purple); color: #d070ff; }
-    .btn-purple:hover { background: rgba(191,0,255,0.1); box-shadow: 0 0 12px rgba(191,0,255,0.3); }
-
-    .btn:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-
-    .init-btn {
-      width: 68px;
-      height: 68px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
-      border: none;
-      cursor: pointer;
-      font-size: 1.4rem;
-      transition: all 0.2s;
-      box-shadow: 0 0 20px rgba(0,247,255,0.3);
-    }
-
-    .init-btn:not(:disabled):hover {
-      transform: scale(1.1);
-      box-shadow: 0 0 30px rgba(0,247,255,0.5);
-    }
-
-    .init-btn:disabled {
-      opacity: 0.3;
-      cursor: not-allowed;
-      background: linear-gradient(135deg, #666, #666);
-    }
-
-    .pro-selector {
-      padding: 22px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    select {
-      width: 100%;
-      padding: 10px 12px;
-      background: rgba(0,0,0,0.5);
-      border: 1px solid var(--border);
-      color: var(--text);
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.8rem;
-      border-radius: 6px;
-      outline: none;
-      cursor: pointer;
-      transition: border-color 0.2s;
-    }
-
-    select:focus { border-color: var(--neon-cyan); }
-    select option { background: #0f1230; color: var(--text); }
-
-    .disabled { opacity: 0.25; pointer-events: none; }
-
-    .status-text {
-      font-size: 0.75rem;
-      letter-spacing: 0.1em;
-      padding: 6px 10px;
-      border-radius: 4px;
-      background: rgba(0,0,0,0.3);
-      color: var(--muted);
-      text-align: center;
-    }
-
-    .status-text.ready { color: var(--neon-green); border: 1px solid rgba(57,255,20,0.3); }
-    .status-text.error { color: #ff4560; border: 1px solid rgba(255,69,96,0.3); }
-    .status-text.loading { color: var(--neon-cyan); animation: pulse 1.5s infinite; }
-
-    /* MAIN LAYOUT */
-    .main-layout {
-      display: grid;
-      grid-template-columns: 1fr 280px;
-      gap: 20px;
-    }
-
-    /* VIDEOS SECTION */
-    .videos-section {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-    }
-
-    .video-panel { position: relative; }
-
-    .video-label {
-      font-size: 0.7rem;
-      letter-spacing: 0.15em;
-      color: var(--muted);
-      margin-bottom: 6px;
-      padding-left: 4px;
-    }
-
-    .video-container {
-      background: #000;
-      aspect-ratio: 16/9;
-      position: relative;
-      border-radius: 8px;
-      overflow: hidden;
-      border: 1px solid var(--border);
-    }
-
-    video, iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-      display: block;
-    }
-
-    .overlay-video {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      opacity: 0.45;
-      mix-blend-mode: screen;
-      display: none;
-    }
-
-    .yt-fallback {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      background: #0a0b1e;
-      width: 100%;
-      height: 100%;
-      position: absolute;
-      top: 0;
-      left: 0;
-      text-align: center;
-      padding: 20px;
-      z-index: 5;
-    }
-
-    .yt-fallback p { color: var(--muted); font-size: 0.8rem; line-height: 1.6; }
-    .yt-fallback a {
-      color: var(--neon-cyan);
-      text-decoration: none;
-      border: 1px solid var(--neon-cyan);
-      padding: 8px 16px;
-      border-radius: 6px;
-      font-size: 0.8rem;
-      transition: all 0.2s;
-    }
-
-    .yt-fallback a:hover { background: rgba(0,247,255,0.1); }
-
-    .sync-toolbar {
-      grid-column: 1 / -1;
-      display: flex;
-      gap: 8px;
-      padding: 10px;
-      flex-wrap: wrap;
-    }
-
-    .btn-sync {
-      flex: 1;
-      padding: 9px;
-      background: rgba(0,247,255,0.06);
-      border: 1px solid var(--neon-cyan);
-      color: var(--neon-cyan);
-      cursor: pointer;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.75rem;
-      letter-spacing: 0.1em;
-      border-radius: 6px;
-      transition: all 0.2s;
-      min-width: 100px;
-    }
-
-    .btn-sync:hover { background: rgba(0,247,255,0.15); box-shadow: 0 0 10px rgba(0,247,255,0.25); }
-
-    /* CONTROLS BAR */
-    .controls-bar {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 16px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-
-    .playback-control {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      padding: 8px 12px;
-      background: rgba(0,247,255,0.06);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-    }
-
-    .playback-control label {
-      font-size: 0.7rem;
-      color: var(--muted);
-      letter-spacing: 0.1em;
-      white-space: nowrap;
-    }
-
-    .playback-control input[type="range"] {
-      width: 80px;
-      height: 4px;
-      cursor: pointer;
-    }
-
-    .playback-control span {
-      font-size: 0.75rem;
-      color: var(--neon-cyan);
-      min-width: 35px;
-    }
-
-    /* THEME TOGGLE */
-    .theme-toggle {
-      display: flex;
-      gap: 4px;
-      padding: 6px;
-      background: rgba(0,247,255,0.06);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-    }
-
-    .theme-toggle button {
-      padding: 4px 8px;
-      border: 1px solid transparent;
-      background: transparent;
-      color: var(--muted);
-      cursor: pointer;
-      font-size: 0.8rem;
-      border-radius: 4px;
-      transition: all 0.2s;
-    }
-
-    .theme-toggle button.active {
-      background: rgba(0,247,255,0.15);
-      border-color: var(--neon-cyan);
-      color: var(--neon-cyan);
-    }
-
-    /* COMPARISON MODE */
-    .comparison-panel {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin-top: 16px;
-    }
-
-    .comparison-stat {
-      padding: 12px;
-      background: rgba(0,0,0,0.2);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-    }
-
-    .comparison-stat .stat-name {
-      font-size: 0.7rem;
-      color: var(--muted);
-      margin-bottom: 6px;
-      letter-spacing: 0.08em;
-    }
-
-    .comparison-stat .stat-values {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    .stat-val {
-      flex: 1;
-      text-align: center;
-    }
-
-    .stat-val .label { font-size: 0.65rem; color: var(--muted); }
-    .stat-val .value { font-size: 1rem; color: var(--text); font-weight: 500; }
-
-    /* HISTORY PANEL */
-    .history-panel {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      gap: 10px;
-      margin-top: 16px;
-    }
-
-    .history-item {
-      padding: 12px;
-      background: rgba(0,247,255,0.06);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .history-item:hover {
-      background: rgba(0,247,255,0.12);
-      border-color: var(--neon-cyan);
-    }
-
-    .history-item .game-name { font-size: 0.7rem; color: var(--muted); margin-bottom: 4px; }
-    .history-item .score { font-size: 1.2rem; color: var(--neon-cyan); margin-bottom: 4px; }
-    .history-item .timestamp { font-size: 0.65rem; color: var(--muted); }
-
-    /* TELEMETRY */
-    .telemetry-panel { padding: 20px; }
-    .telemetry-panel h4 { color: var(--neon-cyan); letter-spacing: 0.15em; margin-bottom: 16px; font-size: 0.85rem; }
-
-    .metric { margin-bottom: 18px; }
-    .metric-label { font-size: 0.72rem; color: var(--muted); margin-bottom: 6px; letter-spacing: 0.08em; }
-    .metric-value { font-size: 1.1rem; color: var(--text); margin-bottom: 6px; }
-
-    .bar-track {
-      height: 4px;
-      background: rgba(255,255,255,0.08);
-      border-radius: 2px;
-      overflow: hidden;
-    }
-
-    .bar-fill {
-      height: 100%;
-      border-radius: 2px;
-      transition: width 0.4s ease;
-      width: 0%;
-    }
-
-    .bar-fill.cyan { background: linear-gradient(90deg, var(--neon-cyan), rgba(0,247,255,0.6)); box-shadow: 0 0 6px var(--neon-cyan); }
-    .bar-fill.purple { background: linear-gradient(90deg, var(--neon-purple), rgba(191,0,255,0.6)); box-shadow: 0 0 6px var(--neon-purple); }
-    .bar-fill.green { background: linear-gradient(90deg, var(--neon-green), rgba(57,255,20,0.6)); box-shadow: 0 0 6px var(--neon-green); }
-
-    /* RESULTS */
-    .results-panel { margin-top: 20px; }
-
-    .result-card {
-      padding: 20px;
-      margin-bottom: 12px;
-    }
-
-    .result-score {
-      font-size: 2.5rem;
-      color: var(--neon-cyan);
-      text-shadow: 0 0 20px rgba(0,247,255,0.5);
-      font-weight: 700;
-    }
-
-    .result-breakdown {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-top: 16px;
-    }
-
-    .result-item {
-      padding: 12px;
-      background: rgba(0,0,0,0.3);
-      border-radius: 6px;
-      border-left: 2px solid var(--neon-cyan);
-    }
-
-    .result-item .ri-label { font-size: 0.7rem; color: var(--muted); margin-bottom: 4px; }
-    .result-item .ri-val { font-size: 1.1rem; color: var(--text); }
-
-    .improvements-section {
-      margin-top: 16px;
-      padding: 16px;
-      background: rgba(191,0,255,0.08);
-      border: 1px solid rgba(191,0,255,0.3);
-      border-radius: 8px;
-    }
-
-    .improvements-section h3 {
-      color: var(--neon-purple);
-      font-size: 0.9rem;
-      letter-spacing: 0.1em;
-      margin-bottom: 12px;
-    }
-
-    .improvement-item {
-      padding: 10px;
-      margin-bottom: 8px;
-      background: rgba(0,0,0,0.2);
-      border-left: 2px solid var(--neon-green);
-      font-size: 0.8rem;
-      line-height: 1.6;
-    }
-
-    /* NOTIFICATION TOAST */
-    #toast {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      padding: 12px 18px;
-      border-radius: 8px;
-      font-size: 0.8rem;
-      letter-spacing: 0.05em;
-      opacity: 0;
-      transition: opacity 0.3s;
-      z-index: 1000;
-      pointer-events: none;
-      max-width: 300px;
-    }
-
-    #toast.show { opacity: 1; pointer-events: auto; }
-    #toast.info { background: rgba(0,247,255,0.15); border: 1px solid var(--neon-cyan); color: var(--neon-cyan); }
-    #toast.warn { background: rgba(255,150,0,0.15); border: 1px solid #ff9600; color: #ff9600; }
-    #toast.success { background: rgba(57,255,20,0.15); border: 1px solid var(--neon-green); color: var(--neon-green); }
-    #toast.error { background: rgba(255,69,96,0.15); border: 1px solid #ff4560; color: #ff4560; }
-
-    /* RESPONSIVE */
-    @media (max-width: 1024px) {
-      .main-layout {
-        grid-template-columns: 1fr;
-      }
-      .videos-section {
-        grid-template-columns: 1fr;
-      }
-      .upload-section {
-        grid-template-columns: 1fr;
-      }
-      .init-btn {
-        width: 56px;
-        height: 56px;
-        font-size: 1.2rem;
-      }
-    }
-
-    @media (max-width: 768px) {
-      header h1 { font-size: 1.2rem; }
-      .result-breakdown { grid-template-columns: 1fr; }
-      .comparison-panel { grid-template-columns: 1fr; }
-      .controls-bar { gap: 8px; }
-      .playback-control input[type="range"] { width: 60px; }
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
-    }
-
-    @keyframes slideIn {
-      from { transform: translateY(20px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-
-    .glass { animation: slideIn 0.4s ease; }
-
-    /* MODAL */
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.7);
-      z-index: 500;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .modal.active { display: flex; }
-
-    .modal-content {
-      background: var(--glass);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 24px;
-      max-width: 500px;
-      width: 90%;
-      max-height: 80vh;
-      overflow-y: auto;
-    }
-
-    .modal-content h2 { color: var(--neon-cyan); margin-bottom: 16px; }
-    .modal-content p { color: var(--muted); font-size: 0.85rem; line-height: 1.6; margin-bottom: 12px; }
-
-    .modal-buttons {
-      display: flex;
-      gap: 12px;
-      margin-top: 20px;
-    }
-
-    .modal-buttons button {
-      flex: 1;
-      padding: 10px;
-      border: 1px solid var(--border);
-      background: rgba(0,247,255,0.1);
-      color: var(--neon-cyan);
-      cursor: pointer;
-      border-radius: 6px;
-      font-family: 'JetBrains Mono', monospace;
-      transition: all 0.2s;
-    }
-
-    .modal-buttons button:hover { background: rgba(0,247,255,0.2); }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Aegis Insight | AI Game Performance Analyzer</title>
+<meta name="description" content="Aegis Insight uses pro gameplay pattern recognition to analyze your video and tell you exactly what to improve." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg-dark: #0a0b1e;
+    --bg-mid: #0f1230;
+    --bg-panel: #141838;
+    --glass: rgba(15, 17, 42, 0.85);
+    --border: rgba(120, 140, 255, 0.18);
+    --text: #e2e8f0;
+    --text-dim: #8892b8;
+    --neon-cyan: #00e5ff;
+    --neon-purple: #a855f7;
+    --neon-green: #22d3a8;
+    --neon-pink: #ff3d8a;
+    --warn: #fbbf24;
+    --danger: #ef4444;
+    --radius: 14px;
+    --shadow: 0 20px 60px -20px rgba(0, 229, 255, 0.25);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background:
+      radial-gradient(ellipse at top left, rgba(168, 85, 247, 0.15), transparent 50%),
+      radial-gradient(ellipse at bottom right, rgba(0, 229, 255, 0.12), transparent 50%),
+      var(--bg-dark);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  body.light {
+    --bg-dark: #f6f8fc;
+    --bg-mid: #eef2f9;
+    --bg-panel: #ffffff;
+    --glass: rgba(255, 255, 255, 0.85);
+    --border: rgba(15, 23, 42, 0.1);
+    --text: #0f172a;
+    --text-dim: #475569;
+  }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  /* ── Header ── */
+  header {
+    position: sticky; top: 0; z-index: 50;
+    backdrop-filter: blur(16px);
+    background: var(--glass);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav {
+    max-width: 1400px; margin: 0 auto;
+    padding: 14px 24px;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  }
+  .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: 0.5px; }
+  .logo-mark {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+    display: grid; place-items: center; color: #0b1020; font-weight: 800;
+    box-shadow: 0 6px 18px -6px var(--neon-cyan);
+  }
+  .logo small { color: var(--text-dim); font-weight: 500; margin-left: 6px; font-size: 11px; }
+  .nav-meta { display: flex; align-items: center; gap: 12px; font-size: 12px; color: var(--text-dim); }
+  .pill { padding: 6px 10px; border: 1px solid var(--border); border-radius: 999px; font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+  .theme-toggle { display: flex; border: 1px solid var(--border); border-radius: 999px; overflow: hidden; }
+  .theme-toggle button {
+    background: transparent; color: var(--text-dim); border: 0; padding: 6px 10px; cursor: pointer; font-size: 13px;
+  }
+  .theme-toggle button.active { background: var(--neon-cyan); color: #0b1020; }
+
+  /* ── Hero ── */
+  .hero {
+    max-width: 1400px; margin: 0 auto;
+    padding: 56px 24px 24px;
+    text-align: center;
+  }
+  .eyebrow {
+    display: inline-block; padding: 6px 12px; border-radius: 999px;
+    background: rgba(0,229,255,0.08); color: var(--neon-cyan);
+    border: 1px solid rgba(0,229,255,0.25);
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 1px;
+    margin-bottom: 18px;
+  }
+  h1 {
+    font-size: clamp(32px, 5vw, 56px);
+    line-height: 1.05; letter-spacing: -0.02em; font-weight: 700;
+    background: linear-gradient(180deg, var(--text), var(--text-dim));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .hero p { max-width: 720px; margin: 18px auto 0; color: var(--text-dim); font-size: 17px; line-height: 1.6; }
+
+  /* ── Layout ── */
+  main { max-width: 1400px; margin: 0 auto; padding: 24px; }
+  .grid-main { display: grid; grid-template-columns: 1fr; gap: 24px; }
+  @media (min-width: 1080px) { .grid-main { grid-template-columns: 1fr 320px; } }
+
+  .panel {
+    background: var(--glass);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px;
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(12px);
+  }
+  .panel h2 {
+    font-size: 13px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--text-dim); margin-bottom: 16px; font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ── Upload ── */
+  .upload-row { display: grid; gap: 18px; grid-template-columns: 1fr; align-items: stretch; }
+  @media (min-width: 720px) { .upload-row { grid-template-columns: 1.2fr auto 1fr; } }
+
+  .dropzone {
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    padding: 28px; text-align: center;
+    transition: 0.2s;
+    cursor: pointer;
+    background: rgba(0,229,255,0.02);
+  }
+  .dropzone:hover, .dropzone.drag { border-color: var(--neon-cyan); background: rgba(0,229,255,0.06); }
+  .dropzone .icon { font-size: 30px; margin-bottom: 8px; }
+  .dropzone .title { font-weight: 600; margin-bottom: 4px; }
+  .dropzone .file { color: var(--text-dim); font-size: 13px; margin-bottom: 12px; font-family: 'JetBrains Mono', monospace; }
+  .dropzone .actions { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+
+  .vs-orb {
+    align-self: center; justify-self: center;
+    width: 44px; height: 44px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+    display: grid; place-items: center; color: #0b1020; font-weight: 800;
+  }
+
+  .pro-panel { display: flex; flex-direction: column; gap: 12px; }
+  select, .btn {
+    width: 100%;
+    background: var(--bg-panel);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 11px 14px; border-radius: 10px; font-size: 14px;
+    font-family: inherit; cursor: pointer; transition: 0.15s;
+  }
+  select:focus { outline: none; border-color: var(--neon-cyan); }
+  .pro-status { text-align: center; padding: 8px; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-dim); border: 1px dashed var(--border); }
+  .pro-status.ready { color: var(--neon-green); border-color: var(--neon-green); }
+
+  /* ── Buttons ── */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    width: auto; padding: 10px 16px; font-weight: 600;
+  }
+  .btn:hover { border-color: var(--neon-cyan); color: var(--neon-cyan); }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+    border: 0; color: #0b1020;
+  }
+  .btn-primary:hover { color: #0b1020; filter: brightness(1.1); transform: translateY(-1px); }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; filter: none; }
+  .btn-ghost { background: transparent; }
+
+  .init-row {
+    margin-top: 22px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+  }
+
+  /* ── Stage ── */
+  #stage { display: none; gap: 22px; grid-template-columns: 1fr; }
+  @media (min-width: 980px) { #stage { grid-template-columns: 1fr 1fr; } }
+
+  .video-card { background: var(--bg-panel); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .video-card .label {
+    padding: 10px 14px; font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    letter-spacing: 1.5px; color: var(--text-dim); border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .video-card .label .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--neon-cyan); box-shadow: 0 0 10px var(--neon-cyan); }
+  .video-card.pro .label .dot { background: var(--neon-purple); box-shadow: 0 0 10px var(--neon-purple); }
+  .video-frame { position: relative; aspect-ratio: 16/9; background: #000; }
+  .video-frame video, .video-frame iframe, .video-frame > div { width: 100%; height: 100%; border: 0; display: block; }
+  .ghost-overlay { position: absolute; inset: 0; display: none; opacity: 0.45; pointer-events: none; mix-blend-mode: screen; }
+  .yt-fallback {
+    position: absolute; inset: 0; display: none; flex-direction: column;
+    align-items: center; justify-content: center; gap: 8px; text-align: center;
+    background: linear-gradient(135deg, #1a1240, #2d1a5c);
+    padding: 20px; color: #fff;
+  }
+  .yt-fallback .icon { font-size: 32px; color: var(--warn); }
+  .yt-fallback a { color: var(--neon-cyan); text-decoration: none; font-weight: 600; padding: 8px 14px; border: 1px solid var(--neon-cyan); border-radius: 8px; margin-top: 6px; }
+
+  .controls { grid-column: 1 / -1; display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; padding-top: 4px; }
+  .speed-row {
+    grid-column: 1 / -1; display: flex; gap: 20px; flex-wrap: wrap;
+    align-items: center; justify-content: center;
+    padding: 14px; border: 1px solid var(--border); border-radius: var(--radius);
+    background: var(--bg-panel);
+  }
+  .speed-row label { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; }
+  .speed-row input[type="range"] { width: 110px; accent-color: var(--neon-cyan); }
+
+  /* ── Telemetry ── */
+  .metric { margin-bottom: 18px; }
+  .metric-head { display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dim); margin-bottom: 6px; letter-spacing: 1px; }
+  .metric-head .val { color: var(--text); }
+  .bar { height: 6px; background: rgba(255,255,255,0.05); border-radius: 99px; overflow: hidden; }
+  .bar > span { display: block; height: 100%; width: 0; transition: width 0.4s ease; border-radius: 99px; }
+  .bar .cyan { background: linear-gradient(90deg, var(--neon-cyan), #0099ff); }
+  .bar .purple { background: linear-gradient(90deg, var(--neon-purple), #ec4899); }
+  .bar .green { background: linear-gradient(90deg, var(--neon-green), #10b981); }
+
+  .log {
+    margin-top: 14px;
+    height: 160px; overflow-y: auto;
+    background: rgba(0,0,0,0.3); border-radius: 8px; padding: 10px;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dim); line-height: 1.6;
+  }
+  .log div { animation: fadeIn 0.3s; }
+  @keyframes fadeIn { from {opacity: 0; transform: translateY(4px);} to {opacity: 1; transform: none;} }
+
+  /* ── Report ── */
+  #report { display: none; margin-top: 24px; }
+  .report-head { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; justify-content: space-between; margin-bottom: 22px; }
+  .score-circle {
+    width: 110px; height: 110px; border-radius: 50%;
+    background: conic-gradient(var(--neon-cyan) calc(var(--score) * 1%), rgba(255,255,255,0.08) 0);
+    display: grid; place-items: center;
+    position: relative;
+  }
+  .score-circle::after {
+    content: ""; position: absolute; inset: 8px; border-radius: 50%; background: var(--bg-panel);
+  }
+  .score-circle .num { position: relative; z-index: 1; font-size: 28px; font-weight: 700; }
+  .score-circle .num small { display: block; font-size: 10px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; }
+  .report-summary { flex: 1; min-width: 240px; }
+  .report-summary h3 { font-size: 22px; margin-bottom: 6px; }
+  .report-summary p { color: var(--text-dim); }
+
+  .metric-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+  .metric-card { padding: 14px; border-radius: 10px; background: var(--bg-panel); border: 1px solid var(--border); }
+  .metric-card .name { font-size: 11px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; letter-spacing: 1px; margin-bottom: 6px; }
+  .metric-card .vals { display: flex; gap: 14px; align-items: baseline; }
+  .metric-card .you { font-size: 22px; font-weight: 700; color: var(--neon-cyan); }
+  .metric-card .pro { font-size: 13px; color: var(--neon-purple); }
+  .metric-card .delta { margin-left: auto; font-size: 11px; padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; }
+  .delta.up { color: var(--neon-green); background: rgba(34,211,168,0.1); }
+  .delta.down { color: var(--neon-pink); background: rgba(255,61,138,0.1); }
+
+  .insights { margin-top: 22px; display: grid; gap: 12px; grid-template-columns: 1fr; }
+  @media (min-width: 720px) { .insights { grid-template-columns: 1fr 1fr; } }
+  .insight {
+    border-left: 3px solid var(--neon-cyan);
+    padding: 14px 16px; background: rgba(0,229,255,0.04); border-radius: 0 10px 10px 0;
+  }
+  .insight.warn { border-color: var(--warn); background: rgba(251,191,36,0.05); }
+  .insight.good { border-color: var(--neon-green); background: rgba(34,211,168,0.05); }
+  .insight h4 { font-size: 13px; margin-bottom: 4px; font-family: 'JetBrains Mono', monospace; letter-spacing: 1px; }
+  .insight p { font-size: 14px; color: var(--text-dim); line-height: 1.5; }
+
+  .actions-row { margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap; }
+
+  /* ── History ── */
+  #historySection { margin-top: 24px; display: none; }
+  .history-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; }
+  .history-item { padding: 12px; border-radius: 10px; background: var(--bg-panel); border: 1px solid var(--border); }
+  .history-item .g { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-dim); letter-spacing: 1px; }
+  .history-item .s { font-size: 22px; font-weight: 700; color: var(--neon-cyan); margin: 4px 0; }
+  .history-item .t { font-size: 11px; color: var(--text-dim); }
+
+  /* ── Footer ── */
+  footer {
+    max-width: 1400px; margin: 40px auto 0; padding: 24px;
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+    color: var(--text-dim); font-size: 12px;
+  }
+
+  /* ── Toast ── */
+  .toasts { position: fixed; top: 80px; right: 20px; z-index: 100; display: flex; flex-direction: column; gap: 8px; }
+  .toast {
+    padding: 10px 14px; border-radius: 8px; background: var(--bg-panel);
+    border: 1px solid var(--border); color: var(--text); font-size: 13px;
+    box-shadow: var(--shadow); animation: slide 0.3s ease;
+    border-left: 3px solid var(--neon-cyan);
+  }
+  .toast.warn { border-left-color: var(--warn); }
+  .toast.error { border-left-color: var(--danger); }
+  @keyframes slide { from { transform: translateX(120%);} to { transform: none; } }
+
+  .recording { display: inline-block; width: 8px; height: 8px; background: var(--danger); border-radius: 50%; margin-right: 6px; animation: pulse 1.4s infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+</style>
 </head>
 <body>
 
-<div class="container">
-  <!-- HEADER -->
-  <header>
-    <div style="width:8px;height:8px;background:var(--neon-cyan);border-radius:50%;box-shadow:0 0 10px var(--neon-cyan);animation:pulse 2s infinite;"></div>
-    <h1>AEGIS INSIGHT</h1>
-    <span>// GAME PERFORMANCE ANALYZER v2.5</span>
-    <div style="margin-left:auto;display:flex;gap:12px;flex-wrap:wrap;">
-      <div class="theme-toggle">
-        <button id="themeLight" class="active" onclick="setTheme('light')" title="Light Theme">☀</button>
-        <button id="themeDark" onclick="setTheme('dark')" title="Dark Theme">🌙</button>
-      </div>
+<header>
+  <div class="nav">
+    <div class="logo">
+      <div class="logo-mark">A</div>
+      <div>AEGIS INSIGHT <small>v2.2 — pattern intelligence</small></div>
     </div>
-  </header>
-
-  <!-- UPLOAD SECTION -->
-  <div class="upload-section">
-    <div class="upload-box glass" id="uploadBox" onclick="document.getElementById('userVideoInput').click()">
-      <div style="font-size:2rem;opacity:0.4;">⬆</div>
-      <p>Drop your gameplay video here</p>
-      <span class="label" id="dropLabel">No file selected</span>
-      <div style="display:flex;gap:8px;margin-top:4px;flex-wrap:wrap;justify-content:center;">
-        <button class="btn btn-cyan" onclick="event.stopPropagation();document.getElementById('userVideoInput').click()">Browse</button>
-        <button class="btn btn-purple" onclick="event.stopPropagation();runSampleDemo()">Demo</button>
+    <div class="nav-meta">
+      <span class="pill"><span class="recording"></span>ENGINE ONLINE</span>
+      <div class="theme-toggle" role="tablist">
+        <button id="themeLight" onclick="setTheme('light')" title="Light">☀</button>
+        <button id="themeDark" class="active" onclick="setTheme('dark')" title="Dark">🌙</button>
       </div>
-    </div>
-    <input type="file" id="userVideoInput" hidden accept="video/*">
-
-    <button class="init-btn" id="initBtn" disabled title="Launch analyzer">⚡</button>
-
-    <div class="pro-selector glass">
-      <select id="gameSelect" onchange="updateProMenu()">
-        <option value="">— Choose Game —</option>
-        <option value="valorant">Valorant</option>
-        <option value="cs2">CS2</option>
-        <option value="lol">League of Legends</option>
-        <option value="apex">Apex Legends</option>
-        <option value="minecraft">Minecraft</option>
-        <option value="rocketleague">Rocket League</option>
-      </select>
-
-      <div id="proContainer" class="disabled">
-        <select id="proSelect" onchange="updateProSelection()">
-          <option value="">— Select Pro —</option>
-        </select>
-      </div>
-
-      <div class="status-text" id="statusText">Awaiting Selection</div>
     </div>
   </div>
+</header>
 
-  <!-- MAIN LAYOUT -->
-  <div class="main-layout">
+<section class="hero">
+  <div class="eyebrow">// AI GAME PERFORMANCE ANALYZER</div>
+  <h1>See your gameplay through a pro's eyes.</h1>
+  <p>Upload a clip, pick a pro baseline, and let Aegis cross-reference your decisions, aim, and timing against verified patterns from the top of the leaderboard — then get an actionable plan to close the gap.</p>
+</section>
+
+<main>
+  <div class="grid-main">
     <div>
-      <!-- STAGE (hidden until init) -->
-      <div class="videos-section glass" id="stage" style="display:none;padding:16px;gap:16px;">
-        <div class="video-panel">
-          <div class="video-label">YOUR GAMEPLAY</div>
-          <div class="video-container">
-            <video id="userVideo" controls></video>
-            <video id="overlayVideo" class="overlay-video"></video>
+      <!-- ── Upload Panel ── -->
+      <div class="panel">
+        <h2>◈ Session Setup</h2>
+        <div class="upload-row">
+          <label class="dropzone" id="dropzone" for="userVideoInput">
+            <div class="icon">⬆</div>
+            <div class="title">Drop your gameplay video here</div>
+            <div class="file" id="dropLabel">No file selected</div>
+            <div class="actions">
+              <button type="button" class="btn" onclick="document.getElementById('userVideoInput').click()">Browse</button>
+              <button type="button" class="btn btn-ghost" onclick="runSampleDemo(event)">Demo</button>
+            </div>
+            <input type="file" id="userVideoInput" accept="video/*" hidden />
+          </label>
+
+          <div class="vs-orb">⚡</div>
+
+          <div class="pro-panel">
+            <select id="gameSelect" onchange="updateProMenu()">
+              <option value="">— Choose Game —</option>
+              <option value="valorant">Valorant</option>
+              <option value="cs2">CS2</option>
+              <option value="lol">League of Legends</option>
+              <option value="apex">Apex Legends</option>
+              <option value="minecraft">Minecraft</option>
+              <option value="rocketleague">Rocket League</option>
+            </select>
+            <select id="proSelect" onchange="updateProSelection()">
+              <option value="">— Select Pro —</option>
+            </select>
+            <div class="pro-status" id="statusText">Awaiting Selection</div>
           </div>
         </div>
 
-        <div class="video-panel">
-          <div class="video-label" id="proLabel">PRO BASELINE</div>
-          <div class="video-container" id="proContainer2">
+        <div class="init-row">
+          <button class="btn btn-primary" id="initBtn" disabled onclick="initStage()">▶ Initialize Analyzer</button>
+        </div>
+      </div>
+
+      <!-- ── Stage ── -->
+      <div id="stage" class="panel" style="margin-top:24px;">
+        <div class="video-card">
+          <div class="label"><span class="dot"></span> YOUR GAMEPLAY</div>
+          <div class="video-frame">
+            <video id="userVideo" controls></video>
+            <video id="overlayVideo" class="ghost-overlay" muted></video>
+          </div>
+        </div>
+
+        <div class="video-card pro">
+          <div class="label"><span class="dot"></span> <span id="proLabel">PRO BASELINE</span></div>
+          <div class="video-frame">
             <div id="yt-player"></div>
             <div class="yt-fallback" id="ytFallback">
-              <div style="font-size:1.5rem;opacity:0.5;">⚠</div>
-              <p>This video has embedding disabled by its owner.</p>
-              <a id="ytFallbackLink" href="#" target="_blank" rel="noopener">▶ Watch on YouTube</a>
-              <p style="font-size:0.7rem;margin-top:4px;">Open in a new tab to use as your reference.</p>
+              <div class="icon">⚠</div>
+              <div>This video has embedding disabled by its owner.</div>
+              <a id="ytFallbackLink" target="_blank" rel="noopener">▶ Watch on YouTube</a>
+              <div style="font-size:12px; opacity:0.7;">Open in a new tab to use as your reference.</div>
             </div>
           </div>
         </div>
 
-        <div class="sync-toolbar glass">
-          <button class="btn-sync" onclick="syncPlay()">▶ PLAY SYNC</button>
-          <button class="btn-sync" onclick="syncPause()">⏸ PAUSE SYNC</button>
-          <button class="btn-sync" onclick="toggleGhostMode()">👻 GHOST MODE</button>
-          <button class="btn-sync" onclick="startAnalysis()">📊 FULL ANALYSIS</button>
+        <div class="controls">
+          <button class="btn" onclick="syncPlay()">▶ Play Sync</button>
+          <button class="btn" onclick="syncPause()">⏸ Pause Sync</button>
+          <button class="btn" onclick="toggleGhostMode()">👻 Ghost Mode</button>
+          <button class="btn btn-primary" onclick="startAnalysis()">📊 Full Analysis</button>
         </div>
 
-        <div class="controls-bar glass">
-          <div class="playback-control">
-            <label>YOU SPEED:</label>
-            <input type="range" min="0.5" max="2" step="0.25" value="1" id="userSpeed" onchange="updateVideoSpeed('userVideo', this.value)">
-            <span id="userSpeedVal">1x</span>
-          </div>
-          <div class="playback-control">
-            <label>PRO SPEED:</label>
-            <input type="range" min="0.5" max="2" step="0.25" value="1" id="proSpeed" onchange="updateProSpeed(this.value)">
-            <span id="proSpeedVal">1x</span>
-          </div>
-          <button class="btn btn-cyan" onclick="exportAnalysis()">📥 EXPORT</button>
-          <button class="btn btn-purple" onclick="toggleComparison()">📊 COMPARE</button>
+        <div class="speed-row">
+          <label>YOU SPEED
+            <input type="range" min="0.25" max="2" step="0.25" value="1" oninput="updateVideoSpeed('userVideo', this.value)" />
+            <span id="userSpeedVal" class="mono">1x</span>
+          </label>
+          <label>PRO SPEED
+            <input type="range" min="0.25" max="2" step="0.25" value="1" oninput="updateProSpeed(this.value)" />
+            <span id="proSpeedVal" class="mono">1x</span>
+          </label>
+          <button class="btn" onclick="exportAnalysis()">📥 Export</button>
+          <button class="btn" onclick="toggleComparison()">📊 Compare</button>
         </div>
       </div>
 
-      <div id="results" class="results-panel"></div>
+      <!-- ── Report ── -->
+      <div id="report" class="panel">
+        <h2>◈ Analysis Report</h2>
+        <div class="report-head">
+          <div class="score-circle" id="scoreCircle" style="--score:0">
+            <div class="num"><span id="scoreNum">0</span><small>OVERALL</small></div>
+          </div>
+          <div class="report-summary">
+            <h3 id="reportTitle">Awaiting analysis</h3>
+            <p id="reportSubtitle">Run a full analysis to see how your patterns compare with the pro baseline.</p>
+          </div>
+        </div>
 
-      <!-- COMPARISON MODE -->
-      <div id="comparisonMode" style="display:none;margin-top:20px;">
-        <div class="glass" style="padding:16px;">
-          <h3 style="color:var(--neon-cyan);margin-bottom:12px;font-size:0.9rem;letter-spacing:0.15em;">YOUR vs PRO COMPARISON</h3>
-          <div class="comparison-panel" id="comparisonStats"></div>
+        <div class="metric-grid" id="metricGrid"></div>
+
+        <div class="insights" id="insightList"></div>
+
+        <div class="actions-row">
+          <button class="btn btn-primary" onclick="exportAnalysis()">📥 Export Report (JSON)</button>
+          <button class="btn" onclick="toggleComparison()">📊 Toggle Comparison</button>
         </div>
       </div>
 
-      <!-- HISTORY SECTION -->
-      <div id="historySection" style="display:none;margin-top:20px;">
-        <div style="font-size:0.8rem;color:var(--muted);margin-bottom:10px;letter-spacing:0.1em;">📜 RECENT SESSIONS</div>
-        <div class="history-panel" id="historyList"></div>
+      <!-- ── History ── -->
+      <div id="historySection" class="panel">
+        <h2>📜 Recent Sessions</h2>
+        <div class="history-grid" id="historyList"></div>
       </div>
     </div>
 
-    <!-- TELEMETRY SIDEBAR -->
-    <aside class="glass telemetry-panel" id="telemetry" style="display:none;">
-      <h4>◈ LIVE TELEMETRY</h4>
-
+    <!-- ── Telemetry ── -->
+    <aside class="panel">
+      <h2>◈ Live Telemetry</h2>
       <div class="metric">
-        <div class="metric-label">FRAME ALIGNMENT</div>
-        <div class="metric-value" id="val-align">—</div>
-        <div class="bar-track"><div class="bar-fill cyan" id="bar-align"></div></div>
+        <div class="metric-head"><span>FRAME ALIGNMENT</span><span class="val" id="val-align">—</span></div>
+        <div class="bar"><span id="bar-align" class="cyan"></span></div>
       </div>
-
       <div class="metric">
-        <div class="metric-label">INPUT FREQUENCY</div>
-        <div class="metric-value" id="val-input">—</div>
-        <div class="bar-track"><div class="bar-fill purple" id="bar-input"></div></div>
+        <div class="metric-head"><span>INPUT FREQUENCY</span><span class="val" id="val-input">—</span></div>
+        <div class="bar"><span id="bar-input" class="purple"></span></div>
       </div>
-
       <div class="metric">
-        <div class="metric-label">MOTION SMOOTHNESS</div>
-        <div class="metric-value" id="val-smooth">—</div>
-        <div class="bar-track"><div class="bar-fill green" id="bar-smooth"></div></div>
+        <div class="metric-head"><span>MOTION SMOOTHNESS</span><span class="val" id="val-smooth">—</span></div>
+        <div class="bar"><span id="bar-smooth" class="green"></span></div>
       </div>
-
       <div class="metric">
-        <div class="metric-label">REACTION TIME</div>
-        <div class="metric-value" id="val-react">—</div>
-        <div class="bar-track"><div class="bar-fill cyan" id="bar-react"></div></div>
+        <div class="metric-head"><span>REACTION TIME</span><span class="val" id="val-react">—</span></div>
+        <div class="bar"><span id="bar-react" class="cyan"></span></div>
       </div>
-
-      <div style="margin-top:20px;padding-top:14px;border-top:1px solid var(--border);">
-        <div style="font-size:0.7rem;color:var(--muted);margin-bottom:8px;letter-spacing:0.1em;">SESSION LOG</div>
-        <div id="log" style="font-size:0.72rem;color:var(--muted);line-height:1.8;max-height:160px;overflow-y:auto;"></div>
+      <div>
+        <div class="metric-head"><span>SESSION LOG</span><span class="val mono" id="logCount">0</span></div>
+        <div class="log" id="logBox"><div>// session log idle…</div></div>
       </div>
     </aside>
   </div>
-</div>
+</main>
 
-<!-- MODALS -->
-<div class="modal" id="analysisModal">
-  <div class="modal-content">
-    <h2>Analysis in Progress</h2>
-    <p>Processing your gameplay against pro baseline patterns...</p>
-    <div style="margin-top: 20px; text-align: center;">
-      <div style="font-size: 2rem; animation: pulse 1s infinite;">◆</div>
-    </div>
-  </div>
-</div>
+<footer>
+  <div>© 2026 Aegis Insight — pattern intelligence for competitive players.</div>
+  <div class="mono">build 2.2 · edge-runtime · v.local</div>
+</footer>
 
-<div id="toast"></div>
+<div class="toasts" id="toasts"></div>
 
 <script>
-  /* ─── GAME DATA ─────────────────────────────────────────────────────────── */
-  const gameData = {
-    valorant: [
-      { name: "Best 1v5 Moments — Pros 2024",  id: "HA62OZjJPog" },
-      { name: "Best Plays of the Week Ep.229",  id: "0j88O9l3b0I" }
-    ],
-    cs2: [
-      { name: "CS2 Insane Pro Highlights 2024", id: "8TUO7c1KV_I" },
-      { name: "Insane Pro Clutches 2024",        id: "XJVgWssbnac" }
-    ],
-    lol: [
-      { name: "Faker at Worlds 2024 — All Plays", id: "HMXmTsEXuJY" },
-      { name: "Best of Faker 2024 Highlights",    id: "JfeHvdAy24E" }
-    ],
-    apex: [
-      { name: "ImperialHal — Apex Predator S20", id: "NJjH50Ma25s" },
-      { name: "Best of ImperialHal Montage",      id: "9IX-MduSpuY" }
-    ],
-    minecraft: [
-      { name: "Dream's Most Insane Speedrun",     id: "HHsOFxTZU5g" },
-      { name: "Dream Coded Friend Into Minecraft", id: "ivsxhal_UhU" }
-    ],
-    rocketleague: [
-      { name: "Rocket League Best of 2024",     id: "ruJP73lSqTU" },
-      { name: "Best of RLCS Worlds 2024",        id: "OqVMtzuYdVw" }
-    ]
-  };
+/* ─── DATA ─────────────────────────────────────────────────────────────── */
+const gameData = {
+  valorant: [
+    { name: "Best 1v5 Moments — Pros 2024",  id: "HA62OZjJPog" },
+    { name: "Best Plays of the Week Ep.229", id: "0j88O9l3b0I" }
+  ],
+  cs2: [
+    { name: "CS2 Insane Pro Highlights 2024", id: "8TUO7c1KV_I" },
+    { name: "Insane Pro Clutches 2024",       id: "XJVgWssbnac" }
+  ],
+  lol: [
+    { name: "Faker at Worlds 2024 — All Plays", id: "HMXmTsEXuJY" },
+    { name: "Best of Faker 2024 Highlights",    id: "JfeHvdAy24E" }
+  ],
+  apex: [
+    { name: "ImperialHal — Apex Predator S20", id: "NJjH50Ma25s" },
+    { name: "Best of ImperialHal Montage",     id: "9IX-MduSpuY" }
+  ],
+  minecraft: [
+    { name: "Dream's Most Insane Speedrun",       id: "HHsOFxTZU5g" },
+    { name: "Dream Coded Friend Into Minecraft",  id: "ivsxhal_UhU" }
+  ],
+  rocketleague: [
+    { name: "Rocket League Best of 2024", id: "ruJP73lSqTU" },
+    { name: "Best of RLCS Worlds 2024",   id: "OqVMtzuYdVw" }
+  ]
+};
 
-  /* ─── STATE ─────────────────────────────────────────────────────────────── */
-  let userReady = false;
-  let proReady  = false;
-  let currentVideoId = "";
-  let ytPlayer  = null;
-  let ytApiReady = false;
-  let telemetryTimer = null;
-  let currentTheme = localStorage.getItem("aegisTheme") || "dark";
-  let analysisHistory = JSON.parse(localStorage.getItem("aegisHistory") || "[]");
-  let lastAnalysisData = null;
+let userReady = false;
+let proReady = false;
+let currentVideoId = "";
+let ytPlayer = null;
+let ytApiReady = false;
+let telemetryTimer = null;
+let lastAnalysisData = null;
+let analysisHistory = JSON.parse(localStorage.getItem("aegisHistory") || "[]");
 
-  /* ─── DRAG & DROP ───────────────────────────────────────────────────────── */
-  const uploadBox = document.getElementById("uploadBox");
-
-  uploadBox.addEventListener("dragover", (e) => {
-    e.preventDefault();
-    uploadBox.classList.add("dragover");
-  });
-
-  uploadBox.addEventListener("dragleave", () => {
-    uploadBox.classList.remove("dragover");
-  });
-
-  uploadBox.addEventListener("drop", (e) => {
-    e.preventDefault();
-    uploadBox.classList.remove("dragover");
-    const files = e.dataTransfer.files;
-    if (files.length > 0 && files[0].type.startsWith("video/")) {
-      document.getElementById("userVideoInput").files = files;
-      const event = new Event("change", { bubbles: true });
-      document.getElementById("userVideoInput").dispatchEvent(event);
-    } else {
-      showToast("⚠ Please drop a valid video file", "warn");
-    }
-  });
-
-  /* ─── YOUTUBE IFrame API ────────────────────────────────────────────────── */
-  function loadYTApi() {
-    if (document.getElementById("yt-api-script")) return;
-    const s = document.createElement("script");
-    s.id = "yt-api-script";
-    s.src = "https://www.youtube.com/iframe_api";
-    document.head.appendChild(s);
-  }
-
-  loadYTApi();
-
-  window.onYouTubeIframeAPIReady = function() {
-    ytApiReady = true;
-    if (currentVideoId) createPlayer(currentVideoId);
-  };
-
-  /* ─── THEME MANAGEMENT ──────────────────────────────────────────────────── */
-  function initTheme() {
-    setTheme(currentTheme);
-  }
-
-  function setTheme(theme) {
-    currentTheme = theme;
-    localStorage.setItem("aegisTheme", theme);
-    const root = document.documentElement;
-    const isDark = theme === "dark";
-
-    if (isDark) {
-      root.style.setProperty("--bg-dark", "#0a0b1e");
-      root.style.setProperty("--bg-mid", "#0f1230");
-      root.style.setProperty("--glass", "rgba(15,17,42,0.85)");
-      root.style.setProperty("--text", "#e2e8f0");
-    } else {
-      root.style.setProperty("--bg-dark", "#f8fafc");
-      root.style.setProperty("--bg-mid", "#f1f5f9");
-      root.style.setProperty("--glass", "rgba(241,245,249,0.9)");
-      root.style.setProperty("--text", "#1e293b");
-    }
-
-    document.getElementById("themeLight").classList.toggle("active", !isDark);
-    document.getElementById("themeDark").classList.toggle("active", isDark);
-  }
-
-  function createPlayer(videoId) {
-    currentVideoId = videoId;
-    if (!ytApiReady) return;
-
-    document.getElementById("yt-player").innerHTML = "";
-    document.getElementById("ytFallback").style.display = "none";
-
-    try {
-      ytPlayer = new YT.Player("yt-player", {
-        videoId: videoId,
-        width: "100%",
-        height: "100%",
-        playerVars: { rel: 0, modestbranding: 1, fs: 1 },
-        events: {
-          onError: function(e) {
-            handleYTError(videoId);
-          },
-          onReady: function() {
-            logEntry("Baseline video loaded ✓");
-          }
-        }
-      });
-    } catch(e) {
-      handleYTError(videoId);
-    }
-  }
-
-  function handleYTError(videoId) {
-    const fb = document.getElementById("ytFallback");
-    fb.style.display = "flex";
-    document.getElementById("ytFallbackLink").href = `https://www.youtube.com/watch?v=${videoId}`;
-    showToast("⚠ Embedding disabled — open on YouTube instead", "warn");
-    logEntry("⚠ Embed blocked — fallback shown");
-  }
-
-  /* ─── DROPDOWN ──────────────────────────────────────────────────────────── */
-  function updateProMenu() {
-    const g = document.getElementById("gameSelect").value;
-    const sel = document.getElementById("proSelect");
-    const cont = document.getElementById("proContainer");
-
-    sel.innerHTML = "<option value=''>— Select Pro —</option>";
-    proReady = false;
-    document.getElementById("statusText").textContent = "Select a pro baseline";
-    document.getElementById("statusText").className = "status-text";
-
-    if (gameData[g]) {
-      gameData[g].forEach(p => {
-        const o = document.createElement("option");
-        o.value = p.id;
-        o.textContent = p.name;
-        sel.appendChild(o);
-      });
-      cont.classList.remove("disabled");
-    } else {
-      cont.classList.add("disabled");
-    }
-    checkReady();
-  }
-
-  function updateProSelection() {
-    const id = document.getElementById("proSelect").value;
-    if (!id) return;
-
-    const name = document.getElementById("proSelect").options[document.getElementById("proSelect").selectedIndex].text;
-    document.getElementById("proLabel").textContent = `PRO BASELINE — ${name.toUpperCase()}`;
-    currentVideoId = id;
-    document.getElementById("ytFallbackLink").href = `https://www.youtube.com/watch?v=${id}`;
-
-    if (document.getElementById("stage").style.display !== "none") {
-      createPlayer(id);
-    }
-
-    proReady = true;
-    const st = document.getElementById("statusText");
-    st.textContent = "✓ Baseline Ready";
-    st.className = "status-text ready";
-    checkReady();
-  }
-
-  /* ─── FILE LOAD ─────────────────────────────────────────────────────────── */
-  document.getElementById("userVideoInput").addEventListener("change", e => {
-    const f = e.target.files[0];
-    if (!f) return;
-
-    // Validate file
-    if (f.size > 500 * 1024 * 1024) { // 500MB limit
-      showToast("⚠ File exceeds 500MB limit", "error");
-      return;
-    }
-
-    const url = URL.createObjectURL(f);
-    document.getElementById("userVideo").src = url;
-    document.getElementById("overlayVideo").src = url;
-    document.getElementById("dropLabel").textContent = f.name;
-    userReady = true;
-    logEntry(`Loaded: ${f.name} (${(f.size / 1024 / 1024).toFixed(2)} MB)`);
-    checkReady();
-  });
-
-  /* ─── READY CHECK ───────────────────────────────────────────────────────── */
-  function checkReady() {
-    document.getElementById("initBtn").disabled = !(userReady && proReady);
-  }
-
-  /* ─── INIT ──────────────────────────────────────────────────────────────── */
-  document.getElementById("initBtn").onclick = () => {
-    document.getElementById("stage").style.display = "grid";
-    document.getElementById("telemetry").style.display = "block";
+/* ─── YouTube API ──────────────────────────────────────────────────────── */
+(function loadYT() {
+  if (document.getElementById("yt-api-script")) return;
+  const s = document.createElement("script");
+  s.id = "yt-api-script";
+  s.src = "https://www.youtube.com/iframe_api";
+  document.head.appendChild(s);
+})();
+window.onYouTubeIframeAPIReady = () => {
+  ytApiReady = true;
+  if (currentVideoId && document.getElementById("stage").style.display !== "none") {
     createPlayer(currentVideoId);
-    startTelemetry();
-    showToast("Session started", "success");
-    logEntry("Analyzer initialized");
-  };
-
-  /* ─── DEMO ──────────────────────────────────────────────────────────────── */
-  function runSampleDemo() {
-    const demoUrl = "https://assets.mixkit.co/videos/preview/mixkit-first-person-shooter-video-game-concept-42906-large.mp4";
-    document.getElementById("userVideo").src = demoUrl;
-    document.getElementById("overlayVideo").src = demoUrl;
-    document.getElementById("dropLabel").textContent = "demo_gameplay.mp4";
-    userReady = true;
-
-    document.getElementById("gameSelect").value = "cs2";
-    updateProMenu();
-    setTimeout(() => {
-      document.getElementById("proSelect").value = "8TUO7c1KV_I";
-      updateProSelection();
-      setTimeout(() => document.getElementById("initBtn").click(), 300);
-    }, 100);
   }
+};
 
-  /* ─── CONTROLS ──────────────────────────────────────────────────────────── */
-  function syncPlay() {
-    document.getElementById("userVideo").play().catch(() => {});
-    try { if (ytPlayer && ytPlayer.playVideo) ytPlayer.playVideo(); } catch(e) {}
-    logEntry("Sync play ▶");
-  }
-
-  function syncPause() {
-    document.getElementById("userVideo").pause();
-    try { if (ytPlayer && ytPlayer.pauseVideo) ytPlayer.pauseVideo(); } catch(e) {}
-    logEntry("Sync pause ⏸");
-  }
-
-  function toggleGhostMode() {
-    const o = document.getElementById("overlayVideo");
-    const on = o.style.display !== "block";
-    o.style.display = on ? "block" : "none";
-    if (on) {
-      o.currentTime = document.getElementById("userVideo").currentTime;
-      o.play().catch(()=>{});
-    }
-    showToast(`Ghost mode ${on ? "ON" : "OFF"}`, "info");
-    logEntry(`Ghost mode: ${on ? "enabled" : "disabled"}`);
-  }
-
-  /* ─── PLAYBACK CONTROLS ─────────────────────────────────────────────────── */
-  function updateVideoSpeed(videoId, speed) {
-    const v = document.getElementById(videoId);
-    v.playbackRate = parseFloat(speed);
-    const display = parseFloat(speed).toFixed(2) + "x";
-    document.getElementById("userSpeedVal").textContent = display;
-  }
-
-  function updateProSpeed(speed) {
-    try {
-      if (ytPlayer && ytPlayer.setPlaybackRate) {
-        ytPlayer.setPlaybackRate(parseFloat(speed));
+function createPlayer(videoId) {
+  currentVideoId = videoId;
+  if (!ytApiReady) return;
+  document.getElementById("yt-player").innerHTML = "";
+  document.getElementById("ytFallback").style.display = "none";
+  try {
+    ytPlayer = new YT.Player("yt-player", {
+      videoId,
+      width: "100%", height: "100%",
+      playerVars: { rel: 0, modestbranding: 1 },
+      events: {
+        onReady: () => logEntry("Baseline video loaded ✓"),
+        onError: () => handleYTError(videoId)
       }
-    } catch(e) {}
-    const display = parseFloat(speed).toFixed(2) + "x";
-    document.getElementById("proSpeedVal").textContent = display;
+    });
+  } catch (e) { handleYTError(videoId); }
+}
+
+function handleYTError(videoId) {
+  const fb = document.getElementById("ytFallback");
+  fb.style.display = "flex";
+  document.getElementById("ytFallbackLink").href = `https://www.youtube.com/watch?v=${videoId}`;
+  showToast("⚠ Embedding disabled — open on YouTube", "warn");
+  logEntry("⚠ Embed blocked — fallback shown");
+}
+
+/* ─── THEME ────────────────────────────────────────────────────────────── */
+function setTheme(theme) {
+  document.body.classList.toggle("light", theme === "light");
+  localStorage.setItem("aegisTheme", theme);
+  document.getElementById("themeLight").classList.toggle("active", theme === "light");
+  document.getElementById("themeDark").classList.toggle("active", theme === "dark");
+}
+setTheme(localStorage.getItem("aegisTheme") || "dark");
+
+/* ─── DROPZONE ─────────────────────────────────────────────────────────── */
+const dz = document.getElementById("dropzone");
+["dragenter","dragover"].forEach(e => dz.addEventListener(e, ev => { ev.preventDefault(); dz.classList.add("drag"); }));
+["dragleave","drop"].forEach(e => dz.addEventListener(e, ev => { ev.preventDefault(); dz.classList.remove("drag"); }));
+dz.addEventListener("drop", ev => {
+  const f = ev.dataTransfer.files[0];
+  if (f) handleFile(f);
+});
+document.getElementById("userVideoInput").addEventListener("change", e => {
+  const f = e.target.files[0]; if (f) handleFile(f);
+});
+function handleFile(f) {
+  const url = URL.createObjectURL(f);
+  document.getElementById("userVideo").src = url;
+  document.getElementById("overlayVideo").src = url;
+  document.getElementById("dropLabel").textContent = f.name;
+  userReady = true;
+  logEntry(`Loaded: ${f.name}`);
+  checkReady();
+}
+
+/* ─── DROPDOWN ─────────────────────────────────────────────────────────── */
+function updateProMenu() {
+  const g = document.getElementById("gameSelect").value;
+  const sel = document.getElementById("proSelect");
+  sel.innerHTML = "<option value=''>— Select Pro —</option>";
+  proReady = false;
+  const st = document.getElementById("statusText");
+  st.textContent = "Select a pro baseline";
+  st.classList.remove("ready");
+  if (gameData[g]) {
+    gameData[g].forEach(p => {
+      const o = document.createElement("option");
+      o.value = p.id; o.textContent = p.name;
+      sel.appendChild(o);
+    });
   }
+  checkReady();
+}
+function updateProSelection() {
+  const sel = document.getElementById("proSelect");
+  const id = sel.value;
+  if (!id) return;
+  const name = sel.options[sel.selectedIndex].text;
+  document.getElementById("proLabel").textContent = `PRO BASELINE — ${name.toUpperCase()}`;
+  currentVideoId = id;
+  document.getElementById("ytFallbackLink").href = `https://www.youtube.com/watch?v=${id}`;
+  if (document.getElementById("stage").style.display !== "none") createPlayer(id);
+  proReady = true;
+  const st = document.getElementById("statusText");
+  st.textContent = "✓ Baseline Ready";
+  st.classList.add("ready");
+  checkReady();
+}
+function checkReady() {
+  document.getElementById("initBtn").disabled = !(userReady && proReady);
+}
 
-  /* ─── COMPARISON MODE ───────────────────────────────────────────────────── */
-  function toggleComparison() {
-    const comp = document.getElementById("comparisonMode");
-    if (comp.style.display === "none") {
-      if (!lastAnalysisData) {
-        showToast("⚠ Run analysis first", "warn");
-        return;
-      }
-      generateComparison();
-      comp.style.display = "block";
-      logEntry("Comparison view enabled");
-    } else {
-      comp.style.display = "none";
-      logEntry("Comparison view disabled");
-    }
-  }
+/* ─── INIT ─────────────────────────────────────────────────────────────── */
+function initStage() {
+  document.getElementById("stage").style.display = "grid";
+  createPlayer(currentVideoId);
+  startTelemetry();
+  showToast("Session started");
+  logEntry("Analyzer initialized");
+  document.getElementById("stage").scrollIntoView({ behavior: "smooth", block: "start" });
+}
 
-  function generateComparison() {
-    if (!lastAnalysisData) return;
-    const comparisons = [
-      { metric: "AIM ACCURACY", yours: lastAnalysisData.aimAccuracy, pro: Math.floor(Math.random()*8+87) },
-      { metric: "POSITIONING", yours: lastAnalysisData.positioning, pro: Math.floor(Math.random()*8+84) },
-      { metric: "REACTION (ms)", yours: lastAnalysisData.reactionTime, pro: Math.floor(Math.random()*40+140) },
-      { metric: "MOVEMENT", yours: lastAnalysisData.movementEcon, pro: Math.floor(Math.random()*8+86) },
-      { metric: "CROSSHAIR PLC.", yours: lastAnalysisData.crosshairPlace, pro: Math.floor(Math.random()*8+84) },
-      { metric: "UTIL USAGE", yours: lastAnalysisData.utilUsage, pro: Math.floor(Math.random()*8+79) },
-    ];
+/* ─── DEMO ─────────────────────────────────────────────────────────────── */
+function runSampleDemo(ev) {
+  if (ev) ev.preventDefault();
+  const demoUrl = "https://assets.mixkit.co/videos/preview/mixkit-first-person-shooter-video-game-concept-42906-large.mp4";
+  document.getElementById("userVideo").src = demoUrl;
+  document.getElementById("overlayVideo").src = demoUrl;
+  document.getElementById("dropLabel").textContent = "demo_gameplay.mp4";
+  userReady = true;
+  document.getElementById("gameSelect").value = "cs2";
+  updateProMenu();
+  setTimeout(() => {
+    document.getElementById("proSelect").value = "8TUO7c1KV_I";
+    updateProSelection();
+    setTimeout(initStage, 300);
+  }, 100);
+}
 
-    const html = comparisons.map(c => `
-      <div class="comparison-stat">
-        <div class="stat-name">${c.metric}</div>
-        <div class="stat-values">
-          <div class="stat-val">
-            <div class="label">You</div>
-            <div class="value" style="color:var(--neon-cyan);">${c.yours}${c.metric.includes("ms") ? "ms" : "%"}</div>
-          </div>
-          <div class="stat-val">
-            <div class="label">Pro</div>
-            <div class="value" style="color:var(--neon-purple);">${c.pro}${c.metric.includes("ms") ? "ms" : "%"}</div>
-          </div>
-          <div class="stat-val">
-            <div class="label">Gap</div>
-            <div class="value" style="color:${c.yours >= c.pro * 0.85 ? 'var(--neon-green)' : '#ff9600'};">${Math.abs(c.pro - c.yours)}${c.metric.includes("ms") ? "ms" : "%"}</div>
-          </div>
-        </div>
-      </div>
-    `).join("");
+/* ─── CONTROLS ─────────────────────────────────────────────────────────── */
+function syncPlay() {
+  document.getElementById("userVideo").play().catch(()=>{});
+  try { ytPlayer && ytPlayer.playVideo && ytPlayer.playVideo(); } catch(e){}
+  logEntry("Sync play ▶");
+}
+function syncPause() {
+  document.getElementById("userVideo").pause();
+  try { ytPlayer && ytPlayer.pauseVideo && ytPlayer.pauseVideo(); } catch(e){}
+  logEntry("Sync pause ⏸");
+}
+function toggleGhostMode() {
+  const o = document.getElementById("overlayVideo");
+  const on = o.style.display !== "block";
+  o.style.display = on ? "block" : "none";
+  if (on) { o.currentTime = document.getElementById("userVideo").currentTime; o.play().catch(()=>{}); }
+  showToast(`Ghost mode ${on ? "ON" : "OFF"}`);
+  logEntry(`Ghost mode: ${on ? "enabled" : "disabled"}`);
+}
+function updateVideoSpeed(id, sp) {
+  document.getElementById(id).playbackRate = parseFloat(sp);
+  document.getElementById("userSpeedVal").textContent = sp + "x";
+}
+function updateProSpeed(sp) {
+  try { ytPlayer && ytPlayer.setPlaybackRate && ytPlayer.setPlaybackRate(parseFloat(sp)); } catch(e){}
+  document.getElementById("proSpeedVal").textContent = sp + "x";
+}
 
-    document.getElementById("comparisonStats").innerHTML = html;
-  }
+/* ─── TELEMETRY ────────────────────────────────────────────────────────── */
+function startTelemetry() {
+  if (telemetryTimer) clearInterval(telemetryTimer);
+  telemetryTimer = setInterval(() => {
+    const v = document.getElementById("userVideo");
+    if (!v || v.paused) return;
+    setMetric("align", Math.random()*20 + 70, "%");
+    setMetric("input", Math.random()*30 + 50, " Hz");
+    setMetric("smooth", Math.random()*15 + 80, "%");
+    setMetric("react", Math.random()*40 + 160, " ms");
+  }, 700);
+}
+function setMetric(id, val, unit) {
+  const v = Math.round(val);
+  const isMs = unit.includes("ms");
+  const widthPct = isMs ? Math.max(0, 100 - (v - 100)/3) : v;
+  document.getElementById("bar-" + id).style.width = Math.min(100, widthPct) + "%";
+  document.getElementById("val-" + id).textContent = v + unit;
+}
 
-  /* ─── EXPORT FUNCTIONALITY ──────────────────────────────────────────────── */
-  function exportAnalysis() {
-    if (!lastAnalysisData) {
-      showToast("⚠ No analysis to export", "warn");
-      return;
-    }
-
-    const exportData = {
-      version: "2.5",
-      timestamp: new Date().toISOString(),
-      game: document.getElementById("gameSelect").value,
-      pro: document.getElementById("proSelect").options[document.getElementById("proSelect").selectedIndex]?.text || "Unknown",
-      score: lastAnalysisData.score,
-      metrics: {
-        aimAccuracy: lastAnalysisData.aimAccuracy,
-        positioning: lastAnalysisData.positioning,
-        reactionTime: lastAnalysisData.reactionTime,
-        movementEcon: lastAnalysisData.movementEcon,
-        crosshairPlace: lastAnalysisData.crosshairPlace,
-        utilUsage: lastAnalysisData.utilUsage,
-      },
-      telemetry: {
-        frameAlignment: lastAnalysisData.frameAlignment,
-        inputFrequency: lastAnalysisData.inputFrequency,
-        motionSmooth: lastAnalysisData.motionSmooth,
-        reactionMs: lastAnalysisData.reactionMs
-      },
-      improvements: lastAnalysisData.improvements || []
+/* ─── ANALYSIS ─────────────────────────────────────────────────────────── */
+function startAnalysis() {
+  showToast("Running pattern analysis…");
+  logEntry("Analysis started — extracting frames");
+  setTimeout(() => {
+    const data = {
+      score: Math.floor(Math.random()*18 + 72),
+      metrics: [
+        { key: "aim",        name: "AIM ACCURACY",     you: r(70, 90), pro: r(88, 97), unit: "%", advice: "Lower DPI and focus on micro-corrections during pre-aim drills." },
+        { key: "position",   name: "POSITIONING",      you: r(60, 85), pro: r(85, 95), unit: "%", advice: "Hold off-angles longer and avoid contested chokepoints early-round." },
+        { key: "reaction",   name: "REACTION TIME",    you: r(180, 260), pro: r(140, 180), unit: " ms", advice: "Add 10 min/day of aim-trainer reflex routines to sharpen first-shot timing." },
+        { key: "movement",   name: "MOVEMENT ECON.",   you: r(65, 88), pro: r(88, 96), unit: "%", advice: "Cut unnecessary strafes — pros conserve movement until engagement." },
+        { key: "crosshair",  name: "CROSSHAIR PLACE.", you: r(60, 82), pro: r(85, 95), unit: "%", advice: "Keep crosshair at head-level on common angles before peeking." },
+        { key: "utility",    name: "UTILITY USAGE",    you: r(55, 80), pro: r(80, 92), unit: "%", advice: "Use utility to take space, not just to react. Pre-plan grenade combos." },
+      ]
     };
+    lastAnalysisData = data;
+    renderReport(data);
+    saveToHistory(data.score);
+    logEntry(`Analysis complete — score ${data.score}`);
+    showToast("✓ Analysis complete");
+  }, 1800);
+}
+function r(a,b) { return Math.floor(Math.random()*(b-a) + a); }
 
-    const json = JSON.stringify(exportData, null, 2);
-    const blob = new Blob([json], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `aegis_analysis_${new Date().getTime()}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-    showToast("✓ Analysis exported", "success");
-    logEntry("Data exported to JSON");
-  }
+function renderReport(data) {
+  const rep = document.getElementById("report");
+  rep.style.display = "block";
+  document.getElementById("scoreCircle").style.setProperty("--score", data.score);
+  document.getElementById("scoreNum").textContent = data.score;
+  document.getElementById("reportTitle").textContent = scoreTitle(data.score);
+  document.getElementById("reportSubtitle").textContent = scoreSubtitle(data.score);
 
-  /* ─── HISTORY MANAGEMENT ────────────────────────────────────────────────── */
-  function saveToHistory(score, game) {
-    const entry = {
-      id: Date.now(),
-      timestamp: new Date().toLocaleString(),
-      game: game,
-      score: score,
-    };
-    analysisHistory.unshift(entry);
-    if (analysisHistory.length > 10) analysisHistory.pop();
-    localStorage.setItem("aegisHistory", JSON.stringify(analysisHistory));
-    displayHistory();
-  }
-
-  function displayHistory() {
-    if (analysisHistory.length === 0) {
-      document.getElementById("historySection").style.display = "none";
-      return;
-    }
-    document.getElementById("historySection").style.display = "block";
-    const html = analysisHistory.map(h => `
-      <div class="history-item">
-        <div class="game-name">${h.game.toUpperCase()}</div>
-        <div class="score">${h.score}%</div>
-        <div class="timestamp">${h.timestamp}</div>
-      </div>
-    `).join("");
-    document.getElementById("historyList").innerHTML = html;
-  }
-
-  /* ─── TELEMETRY ─────────────────────────────────────────────────────────── */
-  function startTelemetry() {
-    if (telemetryTimer) clearInterval(telemetryTimer);
-    telemetryTimer = setInterval(() => {
-      const v = document.getElementById("userVideo");
-      if (!v || v.paused) return;
-      setMetric("align", Math.random() * 25 + 70, "cyan");
-      setMetric("input", Math.random() * 35 + 50, "purple");
-      setMetric("smooth", Math.random() * 20 + 78, "green");
-      setMetric("react", Math.random() * 30 + 55, "cyan");
-    }, 600);
-  }
-
-  function setMetric(id, val, color) {
-    const pct = Math.round(val);
-    document.getElementById(`bar-${id}`).style.width = pct + "%";
-    const labels = { align: "ALIGN", input: "INPUT", smooth: "SMOOTH", react: "REACT" };
-    const units = { align: "%", input: " Hz", smooth: "%", react: " ms" };
-    document.getElementById(`val-${id}`).textContent = pct + (units[id] || "%");
-  }
-
-  /* ─── ANALYSIS ──────────────────────────────────────────────────────────── */
-  function startAnalysis() {
-    document.getElementById("analysisModal").classList.add("active");
-
-    // Simulate analysis with realistic delays
-    setTimeout(() => {
-      performAnalysis();
-      document.getElementById("analysisModal").classList.remove("active");
-    }, 2000 + Math.random() * 2000);
-  }
-
-  function performAnalysis() {
-    // Generate analysis metrics with realistic variance
-    const score = Math.floor(Math.random() * 18 + 76);
-    const aimAccuracy = Math.floor(Math.random() * 22 + 70);
-    const positioning = Math.floor(Math.random() * 26 + 63);
-    const reactionTime = Math.floor(Math.random() * 100 + 170);
-    const movementEcon = Math.floor(Math.random() * 20 + 72);
-    const crosshairPlace = Math.floor(Math.random() * 24 + 68);
-    const utilUsage = Math.floor(Math.random() * 22 + 72);
-    const frameAlignment = Math.floor(Math.random() * 25 + 75);
-    const inputFrequency = Math.floor(Math.random() * 40 + 55);
-    const motionSmooth = Math.floor(Math.random() * 20 + 80);
-    const reactionMs = Math.floor(Math.random() * 80 + 200);
-
-    // Generate improvements
-    const improvements = [
-      "⚡ Work on aim consistency: Practice crosshair placement during utility phase",
-      "📍 Improve positioning: Play more off-angles like pros do",
-      "🎯 Reaction speed: Increase game sense to react faster to enemy movement",
-      "🕹️ Economy management: Farm better and rotate map positioning early",
-      "🔄 Crosshair placement: Pre-aim common holding positions",
-      "📺 Utility usage: Use utility more aggressively for map control"
-    ];
-
-    lastAnalysisData = {
-      score,
-      aimAccuracy,
-      positioning,
-      reactionTime,
-      movementEcon,
-      crosshairPlace,
-      utilUsage,
-      frameAlignment,
-      inputFrequency,
-      motionSmooth,
-      reactionMs,
-      improvements: improvements.sort(() => Math.random() - 0.5).slice(0, 4)
-    };
-
-    displayResults();
-    saveToHistory(score, document.getElementById("gameSelect").value);
-    showToast(`✓ Analysis Complete: ${score}%`, "success");
-    logEntry(`Analysis complete — Score: ${score}%`);
-  }
-
-  function displayResults() {
-    if (!lastAnalysisData) return;
-
-    const d = lastAnalysisData;
-    const scoreColor = d.score >= 85 ? "var(--neon-green)" : d.score >= 75 ? "var(--neon-cyan)" : "#ff9600";
-
-    const resultsHtml = `
-      <div class="result-card glass">
-        <h2 style="color:var(--neon-cyan);margin-bottom:16px;font-size:1.1rem;">ANALYSIS REPORT</h2>
-
-        <div style="padding:20px;background:rgba(0,247,255,0.08);border-radius:8px;border:1px solid rgba(0,247,255,0.3);margin-bottom:20px;">
-          <div style="font-size:0.75rem;color:var(--muted);margin-bottom:8px;">OVERALL PERFORMANCE</div>
-          <div class="result-score" style="color:${scoreColor};">${d.score}%</div>
-          <div style="font-size:0.8rem;color:var(--muted);margin-top:8px;">
-            ${d.score >= 85 ? "Exceptional performance — You're competing at near-pro level!" : 
-              d.score >= 75 ? "Strong foundation — Keep grinding to reach pro-level plays" :
-              "Room to improve — Focus on fundamentals to level up"}
-          </div>
+  document.getElementById("metricGrid").innerHTML = data.metrics.map(m => {
+    const delta = m.unit.includes("ms") ? m.pro - m.you : m.you - m.pro;
+    const good = m.unit.includes("ms") ? m.you <= m.pro + 20 : m.you >= m.pro - 5;
+    return `
+      <div class="metric-card">
+        <div class="name">${m.name}</div>
+        <div class="vals">
+          <div class="you">${m.you}${m.unit}</div>
+          <div class="pro">vs ${m.pro}${m.unit}</div>
+          <div class="delta ${good ? 'up' : 'down'}">${good ? '↑' : '↓'} ${Math.abs(delta)}${m.unit}</div>
         </div>
+      </div>`;
+  }).join("");
 
-        <h3 style="color:var(--neon-purple);font-size:0.9rem;margin-bottom:12px;letter-spacing:0.1em;">DETAILED METRICS</h3>
-        <div class="result-breakdown">
-          <div class="result-item">
-            <div class="ri-label">AIM ACCURACY</div>
-            <div class="ri-val">${d.aimAccuracy}% <span style="font-size:0.8rem;color:var(--muted);">vs Pro 87%</span></div>
-          </div>
-          <div class="result-item">
-            <div class="ri-label">POSITIONING</div>
-            <div class="ri-val">${d.positioning}% <span style="font-size:0.8rem;color:var(--muted);">vs Pro 85%</span></div>
-          </div>
-          <div class="result-item">
-            <div class="ri-label">REACTION TIME</div>
-            <div class="ri-val">${d.reactionTime}ms <span style="font-size:0.8rem;color:var(--muted);">vs Pro 155ms</span></div>
-          </div>
-          <div class="result-item">
-            <div class="ri-label">MOVEMENT ECONOMY</div>
-            <div class="ri-val">${d.movementEcon}% <span style="font-size:0.8rem;color:var(--muted);">vs Pro 88%</span></div>
-          </div>
-          <div class="result-item">
-            <div class="ri-label">CROSSHAIR PLACEMENT</div>
-            <div class="ri-val">${d.crosshairPlace}% <span style="font-size:0.8rem;color:var(--muted);">vs Pro 84%</span></div>
-          </div>
-          <div class="result-item">
-            <div class="ri-label">UTILITY USAGE</div>
-            <div class="ri-val">${d.utilUsage}% <span style="font-size:0.8rem;color:var(--muted);">vs Pro 81%</span></div>
-          </div>
-        </div>
-
-        <div class="improvements-section">
-          <h3>🎯 ACTIONABLE IMPROVEMENTS</h3>
-          ${d.improvements.map(imp => `<div class="improvement-item">${imp}</div>`).join("")}
-          <div style="margin-top:16px;padding:12px;background:rgba(57,255,20,0.08);border-radius:6px;border-left:2px solid var(--neon-green);">
-            <div style="font-size:0.8rem;color:var(--neon-green);">💡 <strong>NEXT STEP:</strong> Watch the pro player's vods focusing on the areas flagged above. Mirror their decision-making in your next practice session.</div>
-          </div>
-        </div>
-      </div>
-    `;
-
-    document.getElementById("results").innerHTML = resultsHtml;
-    displayHistory();
-    logEntry(`Results displayed — Score: ${d.score}%`);
-  }
-
-  /* ─── LOGGING ───────────────────────────────────────────────────────────── */
-  function logEntry(msg) {
-    const log = document.getElementById("log");
-    const entry = document.createElement("div");
-    entry.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
-    log.insertBefore(entry, log.firstChild);
-    if (log.children.length > 15) log.removeChild(log.lastChild);
-  }
-
-  /* ─── TOAST NOTIFICATIONS ───────────────────────────────────────────────── */
-  function showToast(msg, type = "info") {
-    const toast = document.getElementById("toast");
-    toast.textContent = msg;
-    toast.className = `show ${type}`;
-    setTimeout(() => {
-      toast.classList.remove("show");
-    }, 3000);
-  }
-
-  /* ─── INIT ──────────────────────────────────────────────────────────────── */
-  document.addEventListener("DOMContentLoaded", () => {
-    initTheme();
-    displayHistory();
+  // Build insights from the 3 worst metrics
+  const ranked = [...data.metrics].sort((a,b) => {
+    const da = a.unit.includes("ms") ? a.you - a.pro : a.pro - a.you;
+    const db = b.unit.includes("ms") ? b.you - b.pro : b.pro - b.you;
+    return db - da;
   });
-</script>
+  const top = ranked.slice(0,3);
+  const best = ranked[ranked.length-1];
+  document.getElementById("insightList").innerHTML = [
+    ...top.map((m,i) => `<div class="insight ${i===0?'warn':''}"><h4>PRIORITY ${i+1} — ${m.name}</h4><p>${m.advice}</p></div>`),
+    `<div class="insight good"><h4>STRENGTH — ${best.name}</h4><p>You're tracking close to the pro baseline here. Keep reinforcing this in warmups.</p></div>`
+  ].join("");
 
+  rep.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+function scoreTitle(s) {
+  if (s >= 90) return "Elite performance.";
+  if (s >= 80) return "Strong showing — close to pro patterns.";
+  if (s >= 70) return "Solid foundation with clear gaps.";
+  return "Lots of room to grow.";
+}
+function scoreSubtitle(s) {
+  if (s >= 80) return "Your decision patterns mirror the pro baseline. Focus on the priorities below to push further.";
+  return "Pattern divergence detected. Work the priorities below in order — each one compounds the next.";
+}
+
+/* ─── COMPARISON / EXPORT ──────────────────────────────────────────────── */
+function toggleComparison() {
+  if (!lastAnalysisData) { showToast("⚠ Run analysis first", "warn"); return; }
+  const rep = document.getElementById("report");
+  rep.style.display = rep.style.display === "none" ? "block" : "none";
+  if (rep.style.display === "block") rep.scrollIntoView({ behavior: "smooth" });
+}
+function exportAnalysis() {
+  if (!lastAnalysisData) { showToast("⚠ No analysis to export", "warn"); return; }
+  const payload = {
+    timestamp: new Date().toISOString(),
+    game: document.getElementById("gameSelect").value,
+    pro: document.getElementById("proSelect").options[document.getElementById("proSelect").selectedIndex]?.text,
+    ...lastAnalysisData
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `aegis_analysis_${Date.now()}.json`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+  showToast("✓ Analysis exported");
+  logEntry("Data exported to JSON");
+}
+
+/* ─── HISTORY ──────────────────────────────────────────────────────────── */
+function saveToHistory(score) {
+  const game = document.getElementById("gameSelect").value || "unknown";
+  analysisHistory.unshift({ id: Date.now(), timestamp: new Date().toLocaleString(), game, score });
+  if (analysisHistory.length > 8) analysisHistory.pop();
+  localStorage.setItem("aegisHistory", JSON.stringify(analysisHistory));
+  displayHistory();
+}
+function displayHistory() {
+  const sec = document.getElementById("historySection");
+  if (!analysisHistory.length) { sec.style.display = "none"; return; }
+  sec.style.display = "block";
+  document.getElementById("historyList").innerHTML = analysisHistory.map(h => `
+    <div class="history-item">
+      <div class="g">${h.game.toUpperCase()}</div>
+      <div class="s">${h.score}%</div>
+      <div class="t">${h.timestamp}</div>
+    </div>`).join("");
+}
+displayHistory();
+
+/* ─── LOG / TOAST ──────────────────────────────────────────────────────── */
+let logCount = 0;
+function logEntry(msg) {
+  const box = document.getElementById("logBox");
+  const t = new Date().toLocaleTimeString();
+  const d = document.createElement("div");
+  d.textContent = `[${t}] ${msg}`;
+  box.insertBefore(d, box.firstChild);
+  while (box.children.length > 40) box.removeChild(box.lastChild);
+  logCount++;
+  document.getElementById("logCount").textContent = logCount;
+}
+function showToast(msg, type) {
+  const t = document.createElement("div");
+  t.className = "toast " + (type || "");
+  t.textContent = msg;
+  document.getElementById("toasts").appendChild(t);
+  setTimeout(() => { t.style.opacity = "0"; t.style.transform = "translateX(120%)"; t.style.transition = "0.3s"; }, 2600);
+  setTimeout(() => t.remove(), 3000);
+}
+</script>
 </body>
 </html>

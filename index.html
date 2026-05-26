@@ -3,2067 +3,861 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
+<meta name="description" content="Aegis Insight — AI-powered gameplay intelligence platform that benchmarks your play against professional players." />
+<meta name="theme-color" content="#050816" />
+<meta property="og:title" content="Aegis Insight | AI Gameplay Intelligence Platform" />
+<meta property="og:description" content="Benchmark your gameplay against pros with AI pattern recognition." />
+<meta property="og:type" content="website" />
 <title>Aegis Insight | AI Gameplay Intelligence Platform</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
 <style>
 :root{
-  --bg:#050816;
-  --bg2:#0b1026;
-  --surface:rgba(14,19,45,.82);
-  --surface-solid:#101735;
-  --card:#121935;
+  --bg:#050816; --bg2:#0b1026;
+  --surface:rgba(14,19,45,.82); --surface-solid:#101735; --card:#121935;
   --border:rgba(0,247,255,.12);
-
-  --cyan:#00f7ff;
-  --cyan-soft:rgba(0,247,255,.15);
-
-  --purple:#8f5cff;
-  --purple-soft:rgba(143,92,255,.15);
-
-  --green:#35ff88;
-  --red:#ff5370;
-  --yellow:#ffc857;
-
-  --text:#ecf3ff;
-  --muted:#95a2c7;
-
+  --cyan:#00f7ff; --cyan-soft:rgba(0,247,255,.15);
+  --purple:#8f5cff; --purple-soft:rgba(143,92,255,.15);
+  --green:#35ff88; --red:#ff5370; --yellow:#ffc857;
+  --text:#ecf3ff; --muted:#95a2c7;
   --shadow:0 20px 60px rgba(0,0,0,.45);
   --radius:18px;
 }
-
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-}
-
-html{
-  scroll-behavior:smooth;
-}
-
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
 body{
-  min-height:100vh;
-  overflow-x:hidden;
+  min-height:100vh; overflow-x:hidden; color:var(--text);
+  font-family:"Inter",sans-serif;
   background:
     radial-gradient(circle at top left, rgba(0,247,255,.12), transparent 35%),
     radial-gradient(circle at top right, rgba(143,92,255,.12), transparent 35%),
-    linear-gradient(180deg, #040611 0%, #090d1d 100%);
-  color:var(--text);
-  font-family:"Inter",sans-serif;
+    linear-gradient(180deg,#040611 0%,#090d1d 100%);
 }
-
 body::before{
-  content:"";
-  position:fixed;
-  inset:0;
+  content:""; position:fixed; inset:0; pointer-events:none; z-index:-1;
   background-image:
-    linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+    linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);
   background-size:40px 40px;
-  pointer-events:none;
-  z-index:-1;
 }
-
-.container{
-  max-width:1600px;
-  margin:auto;
-  padding:28px;
-}
+.mono{font-family:"JetBrains Mono",monospace}
+.container{max-width:1600px;margin:auto;padding:28px}
 
 /* NAV */
-
-.navbar{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin-bottom:28px;
-  gap:20px;
-}
-
-.brand{
-  display:flex;
-  align-items:center;
-  gap:16px;
-}
-
+.navbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;gap:20px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:16px}
 .brand-logo{
-  width:52px;
-  height:52px;
-  border-radius:14px;
-  background:
-    linear-gradient(135deg, rgba(0,247,255,.25), rgba(143,92,255,.25));
+  width:52px;height:52px;border-radius:14px;
+  background:linear-gradient(135deg,rgba(0,247,255,.25),rgba(143,92,255,.25));
   border:1px solid rgba(255,255,255,.08);
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  display:flex;align-items:center;justify-content:center;
   box-shadow:0 0 35px rgba(0,247,255,.15);
-  position:relative;
-  overflow:hidden;
+  position:relative;overflow:hidden;
 }
-
 .brand-logo::before{
-  content:"";
-  position:absolute;
-  inset:-20%;
-  background:conic-gradient(from 0deg, transparent, rgba(0,247,255,.4), transparent);
+  content:"";position:absolute;inset:-20%;
+  background:conic-gradient(from 0deg,transparent,rgba(0,247,255,.4),transparent);
   animation:spin 4s linear infinite;
 }
-
-.brand-logo span{
-  position:relative;
-  z-index:2;
-  font-size:1.3rem;
-}
-
-.brand h1{
-  font-size:1.45rem;
-  font-weight:800;
-  letter-spacing:.08em;
-}
-
-.brand p{
-  color:var(--muted);
-  font-size:.82rem;
-  margin-top:3px;
-}
-
-.nav-actions{
-  display:flex;
-  align-items:center;
-  gap:14px;
-  flex-wrap:wrap;
-}
-
+.brand-logo span{position:relative;z-index:2;font-size:1.3rem}
+.brand h1{font-size:1.45rem;font-weight:800;letter-spacing:.08em}
+.brand p{color:var(--muted);font-size:.82rem;margin-top:3px}
+.nav-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
 .nav-pill{
-  background:rgba(255,255,255,.04);
-  border:1px solid rgba(255,255,255,.06);
-  color:var(--muted);
-  padding:10px 16px;
-  border-radius:999px;
-  font-size:.78rem;
-  display:flex;
-  align-items:center;
-  gap:8px;
-  backdrop-filter:blur(10px);
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);
+  color:var(--muted);padding:10px 16px;border-radius:999px;font-size:.78rem;
+  display:flex;align-items:center;gap:8px;backdrop-filter:blur(10px);
 }
-
-.live-dot{
-  width:8px;
-  height:8px;
-  border-radius:50%;
-  background:var(--green);
-  box-shadow:0 0 10px var(--green);
-  animation:pulse 2s infinite;
-}
+.live-dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);animation:pulse 2s infinite}
 
 /* HERO */
-
 .hero{
-  position:relative;
-  overflow:hidden;
-  border-radius:28px;
-  background:
-    linear-gradient(145deg, rgba(0,247,255,.08), rgba(143,92,255,.08));
+  position:relative;overflow:hidden;border-radius:28px;
+  background:linear-gradient(145deg,rgba(0,247,255,.08),rgba(143,92,255,.08));
   border:1px solid rgba(255,255,255,.06);
-  padding:34px;
-  margin-bottom:24px;
-  box-shadow:var(--shadow);
+  padding:34px;margin-bottom:24px;box-shadow:var(--shadow);
 }
-
-.hero-grid{
-  display:grid;
-  grid-template-columns:1.2fr .8fr;
-  gap:26px;
-}
-
-.hero h2{
-  font-size:3rem;
-  line-height:1.08;
-  margin-bottom:18px;
-  max-width:760px;
-}
-
+.hero-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:26px}
+.hero h2{font-size:3rem;line-height:1.08;margin-bottom:18px;max-width:760px}
 .hero h2 span{
   background:linear-gradient(90deg,var(--cyan),#6cf5ff,#c391ff);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
 }
-
-.hero p{
-  color:var(--muted);
-  line-height:1.8;
-  max-width:760px;
-  font-size:1rem;
-}
-
-.hero-stats{
-  margin-top:26px;
-  display:flex;
-  flex-wrap:wrap;
-  gap:16px;
-}
-
-.hero-stat{
-  min-width:150px;
-  padding:16px;
-  border-radius:16px;
-  background:rgba(255,255,255,.04);
-  border:1px solid rgba(255,255,255,.05);
-}
-
-.hero-stat h3{
-  font-size:1.6rem;
-  margin-bottom:5px;
-}
-
-.hero-stat span{
-  color:var(--muted);
-  font-size:.82rem;
-}
-
-.hero-right{
-  display:grid;
-  gap:18px;
-}
-
-.ai-card{
-  background:rgba(255,255,255,.04);
-  border:1px solid rgba(255,255,255,.06);
-  border-radius:22px;
-  padding:22px;
-  backdrop-filter:blur(14px);
-}
-
-.ai-card h4{
-  font-size:.95rem;
-  margin-bottom:18px;
-  color:var(--cyan);
-  letter-spacing:.08em;
-}
-
-.ai-row{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:12px 0;
-  border-bottom:1px solid rgba(255,255,255,.05);
-}
-
-.ai-row:last-child{
-  border-bottom:none;
-}
-
-.ai-row span{
-  color:var(--muted);
-  font-size:.9rem;
-}
-
-.ai-row strong{
-  font-size:.95rem;
-}
-
-.glow{
-  box-shadow:0 0 35px rgba(0,247,255,.12);
-}
+.hero p{color:var(--muted);line-height:1.8;max-width:760px;font-size:1rem}
+.hero-stats{margin-top:26px;display:flex;flex-wrap:wrap;gap:16px}
+.hero-stat{min-width:150px;padding:16px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.05)}
+.hero-stat h3{font-size:1.6rem;margin-bottom:5px}
+.hero-stat span{color:var(--muted);font-size:.82rem}
+.hero-right{display:grid;gap:18px}
+.ai-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:22px;padding:22px;backdrop-filter:blur(14px)}
+.ai-card h4{font-size:.95rem;margin-bottom:18px;color:var(--cyan);letter-spacing:.08em}
+.ai-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.ai-row:last-child{border-bottom:none}
+.ai-row span{color:var(--muted);font-size:.9rem}
+.ai-row strong{font-size:.95rem}
+.tag{font-size:.7rem;padding:4px 10px;border-radius:999px;background:rgba(53,255,136,.12);color:var(--green);border:1px solid rgba(53,255,136,.25);letter-spacing:.08em}
 
 /* GRID */
+.dashboard{display:grid;grid-template-columns:1fr 360px;gap:24px}
 
-.dashboard{
-  display:grid;
-  grid-template-columns:1fr 360px;
-  gap:24px;
-}
-
-/* PANELS */
-
-.panel{
-  background:var(--surface);
-  border:1px solid rgba(255,255,255,.06);
-  border-radius:var(--radius);
-  backdrop-filter:blur(18px);
-  box-shadow:var(--shadow);
-}
-
-.panel-header{
-  padding:24px 24px 0 24px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-}
-
-.panel-title h3{
-  font-size:1rem;
-  letter-spacing:.08em;
-}
-
-.panel-title p{
-  margin-top:5px;
-  color:var(--muted);
-  font-size:.85rem;
-}
+/* PANEL */
+.panel{background:var(--surface);border:1px solid rgba(255,255,255,.06);border-radius:var(--radius);backdrop-filter:blur(18px);box-shadow:var(--shadow)}
+.panel-header{padding:24px 24px 0 24px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.panel-title h3{font-size:1rem;letter-spacing:.08em}
+.panel-title p{margin-top:5px;color:var(--muted);font-size:.85rem}
 
 /* UPLOAD */
-
-.upload-section{
-  padding:24px;
-}
-
-.upload-grid{
-  display:grid;
-  grid-template-columns:1fr 120px 1fr;
-  gap:20px;
-  align-items:center;
-}
-
-.upload-card{
-  position:relative;
-  min-height:250px;
-  border-radius:20px;
-  border:1.5px dashed rgba(255,255,255,.12);
-  background:rgba(255,255,255,.03);
-  overflow:hidden;
-  transition:.25s ease;
-}
-
-.upload-card:hover{
-  border-color:rgba(0,247,255,.5);
-  transform:translateY(-2px);
-}
-
-.upload-inner{
-  position:absolute;
-  inset:0;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  padding:24px;
-  text-align:center;
-}
-
-.upload-icon{
-  font-size:3rem;
-  margin-bottom:14px;
-}
-
-.upload-title{
-  font-weight:700;
-  margin-bottom:8px;
-}
-
-.upload-sub{
-  color:var(--muted);
-  font-size:.9rem;
-  line-height:1.7;
-  margin-bottom:18px;
-  max-width:280px;
-}
-
-.upload-file{
-  margin-top:14px;
-  color:var(--cyan);
-  font-size:.8rem;
-  word-break:break-word;
-}
-
-.button-row{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  justify-content:center;
-}
-
-.btn{
-  border:none;
-  cursor:pointer;
-  transition:.2s ease;
-  font-family:inherit;
-}
-
-.btn-primary{
-  background:linear-gradient(135deg,var(--cyan),#3fe8ff);
-  color:#041018;
-  font-weight:700;
-  padding:12px 18px;
-  border-radius:12px;
-}
-
-.btn-primary:hover{
-  transform:translateY(-2px);
-  box-shadow:0 0 20px rgba(0,247,255,.35);
-}
-
-.btn-secondary{
-  background:rgba(255,255,255,.05);
-  color:var(--text);
-  border:1px solid rgba(255,255,255,.08);
-  padding:12px 18px;
-  border-radius:12px;
-}
-
-.btn-secondary:hover{
-  background:rgba(255,255,255,.09);
-}
-
+.upload-section{padding:24px}
+.upload-grid{display:grid;grid-template-columns:1fr 120px 1fr;gap:20px;align-items:center}
+.upload-card{position:relative;min-height:260px;border-radius:20px;border:1.5px dashed rgba(255,255,255,.12);background:rgba(255,255,255,.03);overflow:hidden;transition:.25s ease}
+.upload-card:hover,.upload-card.drag{border-color:rgba(0,247,255,.5);transform:translateY(-2px);background:rgba(0,247,255,.04)}
+.upload-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center}
+.upload-icon{font-size:3rem;margin-bottom:14px}
+.upload-title{font-weight:700;margin-bottom:8px}
+.upload-sub{color:var(--muted);font-size:.9rem;line-height:1.7;margin-bottom:18px;max-width:280px}
+.upload-file{margin-top:14px;color:var(--cyan);font-size:.8rem;word-break:break-word;max-width:280px}
+.button-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.btn{border:none;cursor:pointer;transition:.2s ease;font-family:inherit;font-size:.88rem}
+.btn-primary{background:linear-gradient(135deg,var(--cyan),#3fe8ff);color:#041018;font-weight:700;padding:12px 18px;border-radius:12px}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 0 20px rgba(0,247,255,.35)}
+.btn-secondary{background:rgba(255,255,255,.05);color:var(--text);border:1px solid rgba(255,255,255,.08);padding:12px 18px;border-radius:12px}
+.btn-secondary:hover{background:rgba(255,255,255,.09)}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none!important;box-shadow:none!important}
 .launch-btn{
-  width:100px;
-  height:100px;
-  border-radius:50%;
-  background:
-    linear-gradient(135deg,var(--cyan),var(--purple));
-  color:white;
-  font-size:2rem;
-  font-weight:800;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  border:none;
-  cursor:pointer;
-  transition:.25s ease;
-  box-shadow:0 0 45px rgba(0,247,255,.25);
+  width:100px;height:100px;border-radius:50%;
+  background:linear-gradient(135deg,var(--cyan),var(--purple));
+  color:white;font-size:2rem;font-weight:800;display:flex;align-items:center;justify-content:center;
+  border:none;cursor:pointer;transition:.25s ease;box-shadow:0 0 45px rgba(0,247,255,.25);
 }
-
-.launch-btn:hover:not(:disabled){
-  transform:scale(1.08);
-}
-
-.launch-btn:disabled{
-  opacity:.3;
-  cursor:not-allowed;
-}
-
-.select-panel{
-  padding:24px;
-  display:flex;
-  flex-direction:column;
-  gap:14px;
-}
-
+.launch-btn:hover:not(:disabled){transform:scale(1.08)}
+.launch-btn:disabled{opacity:.3;cursor:not-allowed}
+.select-panel{padding:24px;display:flex;flex-direction:column;gap:14px}
+.select-panel label{font-size:.78rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
 .select-panel select{
-  width:100%;
-  background:#0b1024;
-  color:var(--text);
-  border:1px solid rgba(255,255,255,.08);
-  border-radius:12px;
-  padding:14px;
-  outline:none;
-  font-size:.92rem;
+  width:100%;background:#0b1024;color:var(--text);
+  border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:14px;outline:none;font-size:.92rem;
+  appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--cyan) 50%),linear-gradient(135deg,var(--cyan) 50%,transparent 50%);
+  background-position:calc(100% - 20px) center,calc(100% - 14px) center;background-size:6px 6px;background-repeat:no-repeat;
 }
+.select-panel select:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(0,247,255,.15)}
+.status{padding:14px;border-radius:14px;background:rgba(255,255,255,.04);color:var(--muted);font-size:.85rem;border:1px solid rgba(255,255,255,.05)}
+.status.ready{color:var(--green);border-color:rgba(53,255,136,.25)}
+.status.warn{color:var(--yellow);border-color:rgba(255,200,87,.25)}
 
-.status{
-  padding:14px;
-  border-radius:14px;
-  background:rgba(255,255,255,.04);
-  color:var(--muted);
-  font-size:.85rem;
-  border:1px solid rgba(255,255,255,.05);
-}
-
-.status.ready{
-  color:var(--green);
-  border-color:rgba(53,255,136,.25);
-}
-
-/* VIDEO SECTION */
-
-.workspace{
-  display:none;
-  margin-top:24px;
-  gap:20px;
-  grid-template-columns:1fr 1fr;
-}
-
-.video-card{
-  background:rgba(255,255,255,.03);
-  border:1px solid rgba(255,255,255,.05);
-  border-radius:20px;
-  overflow:hidden;
-}
-
-.video-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:16px 18px;
-  border-bottom:1px solid rgba(255,255,255,.05);
-}
-
-.video-header span{
-  color:var(--muted);
-  font-size:.8rem;
-  letter-spacing:.08em;
-}
-
-.video-frame{
-  position:relative;
-  aspect-ratio:16/9;
-  background:#000;
-}
-
-video,
-iframe{
-  width:100%;
-  height:100%;
-  border:none;
-}
-
-.overlay-video{
-  position:absolute;
-  inset:0;
-  mix-blend-mode:screen;
-  opacity:.35;
-  display:none;
-  pointer-events:none;
-}
+/* WORKSPACE */
+.workspace{display:none;margin-top:24px;gap:20px;grid-template-columns:1fr 1fr}
+.workspace.show{display:grid}
+.video-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);border-radius:20px;overflow:hidden}
+.video-header{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;border-bottom:1px solid rgba(255,255,255,.05)}
+.video-header strong{font-size:.85rem;letter-spacing:.08em}
+.video-header span{color:var(--muted);font-size:.75rem;letter-spacing:.08em}
+.video-frame{position:relative;aspect-ratio:16/9;background:#000}
+video,iframe{width:100%;height:100%;border:none;display:block}
+.overlay-video{position:absolute;inset:0;mix-blend-mode:screen;opacity:.35;display:none;pointer-events:none}
+.overlay-video.show{display:block}
 
 /* TOOLBAR */
-
-.toolbar{
-  margin-top:20px;
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  gap:14px;
-}
-
-.tool-btn{
-  padding:16px;
-  border-radius:16px;
-  background:rgba(255,255,255,.04);
-  border:1px solid rgba(255,255,255,.06);
-  color:var(--text);
-  cursor:pointer;
-  transition:.2s ease;
-  font-weight:600;
-}
-
-.tool-btn:hover{
-  transform:translateY(-2px);
-  border-color:rgba(0,247,255,.25);
-  background:rgba(0,247,255,.06);
-}
+.toolbar{margin-top:20px;display:grid;grid-template-columns:repeat(5,1fr);gap:14px;padding:0 24px 24px}
+.tool-btn{padding:16px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);color:var(--text);cursor:pointer;transition:.2s ease;font-weight:600;font-family:inherit;font-size:.85rem}
+.tool-btn:hover:not(:disabled){transform:translateY(-2px);border-color:rgba(0,247,255,.25);background:rgba(0,247,255,.06)}
+.tool-btn:disabled{opacity:.4;cursor:not-allowed}
+.tool-btn.active{border-color:var(--cyan);background:rgba(0,247,255,.08);color:var(--cyan)}
 
 /* ANALYSIS */
-
-.analysis-grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:18px;
-  margin-top:24px;
-}
-
-.metric-card{
-  background:rgba(255,255,255,.04);
-  border:1px solid rgba(255,255,255,.05);
-  border-radius:18px;
-  padding:20px;
-}
-
-.metric-card h4{
-  color:var(--muted);
-  font-size:.82rem;
-  margin-bottom:14px;
-  letter-spacing:.08em;
-}
-
-.metric-value{
-  font-size:2rem;
-  font-weight:800;
-  margin-bottom:10px;
-}
-
-.metric-bar{
-  width:100%;
-  height:8px;
-  border-radius:999px;
-  background:rgba(255,255,255,.08);
-  overflow:hidden;
-}
-
-.metric-fill{
-  height:100%;
-  width:0%;
-  border-radius:999px;
-  background:linear-gradient(90deg,var(--cyan),#7ffcff);
-  transition:1s ease;
-}
-
-.metric-desc{
-  margin-top:12px;
-  color:var(--muted);
-  line-height:1.7;
-  font-size:.88rem;
-}
+.analysis-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;padding:0 24px 24px}
+.metric-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.05);border-radius:18px;padding:20px}
+.metric-card h4{color:var(--muted);font-size:.78rem;margin-bottom:14px;letter-spacing:.1em}
+.metric-value{font-size:2rem;font-weight:800;margin-bottom:10px;font-family:"JetBrains Mono",monospace}
+.metric-bar{width:100%;height:8px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}
+.metric-fill{height:100%;width:0%;border-radius:999px;background:linear-gradient(90deg,var(--cyan),#7ffcff);transition:1s ease}
+.metric-desc{margin-top:12px;color:var(--muted);line-height:1.7;font-size:.85rem}
 
 /* REPORT */
-
-.report{
-  margin-top:24px;
-  padding:24px;
-  border-radius:20px;
-  background:
-    linear-gradient(135deg, rgba(0,247,255,.08), rgba(143,92,255,.08));
-  border:1px solid rgba(255,255,255,.06);
-  display:none;
-}
-
-.report-top{
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-start;
-  gap:20px;
-  flex-wrap:wrap;
-}
-
-.score{
-  font-size:4rem;
-  font-weight:900;
-  line-height:1;
-  background:linear-gradient(90deg,var(--cyan),#9bfffe);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-}
-
-.report-sub{
-  color:var(--muted);
-  margin-top:8px;
-}
-
-.insights{
-  margin-top:24px;
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:18px;
-}
-
-.insight{
-  background:rgba(0,0,0,.18);
-  border:1px solid rgba(255,255,255,.05);
-  border-radius:18px;
-  padding:18px;
-}
-
-.insight h5{
-  margin-bottom:10px;
-  color:var(--cyan);
-  font-size:.92rem;
-}
-
-.insight p{
-  color:var(--muted);
-  line-height:1.8;
-  font-size:.9rem;
-}
+.report{margin:0 24px 24px;padding:24px;border-radius:20px;background:linear-gradient(135deg,rgba(0,247,255,.08),rgba(143,92,255,.08));border:1px solid rgba(255,255,255,.06);display:none}
+.report.show{display:block}
+.report-top{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap}
+.score{font-size:4rem;font-weight:900;line-height:1;background:linear-gradient(90deg,var(--cyan),#9bfffe);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-family:"JetBrains Mono",monospace}
+.report-sub{color:var(--muted);margin-top:8px;font-size:.9rem}
+.summary-box{flex:1;min-width:260px;background:rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.05);border-radius:16px;padding:18px}
+.summary-box h5{color:var(--cyan);font-size:.85rem;margin-bottom:10px;letter-spacing:.08em}
+.summary-box p{color:var(--muted);line-height:1.7;font-size:.9rem}
+.insights{margin-top:24px;display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.insight{background:rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.05);border-radius:18px;padding:18px}
+.insight h5{margin-bottom:10px;color:var(--cyan);font-size:.92rem}
+.insight p{color:var(--muted);line-height:1.8;font-size:.9rem}
 
 /* SIDEBAR */
-
-.sidebar{
-  display:flex;
-  flex-direction:column;
-  gap:20px;
-}
-
-.sidebar-card{
-  padding:22px;
-}
-
-.sidebar-card h4{
-  margin-bottom:20px;
-  color:var(--cyan);
-  letter-spacing:.08em;
-  font-size:.9rem;
-}
-
-.live-metric{
-  margin-bottom:18px;
-}
-
-.live-metric:last-child{
-  margin-bottom:0;
-}
-
-.live-top{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin-bottom:8px;
-}
-
-.live-top span{
-  color:var(--muted);
-  font-size:.82rem;
-}
-
-.live-top strong{
-  font-size:.9rem;
-}
-
-.track{
-  height:8px;
-  background:rgba(255,255,255,.08);
-  border-radius:999px;
-  overflow:hidden;
-}
-
-.fill{
-  height:100%;
-  width:0%;
-  border-radius:999px;
-  transition:.8s ease;
-}
-
-.fill.cyan{
-  background:linear-gradient(90deg,var(--cyan),#75f8ff);
-}
-
-.fill.purple{
-  background:linear-gradient(90deg,var(--purple),#bb9eff);
-}
-
-.fill.green{
-  background:linear-gradient(90deg,var(--green),#7cffb2);
-}
-
-.activity-log{
-  max-height:300px;
-  overflow:auto;
-}
-
-.log-item{
-  padding:12px;
-  border-radius:12px;
-  margin-bottom:10px;
-  background:rgba(255,255,255,.04);
-  border:1px solid rgba(255,255,255,.05);
-  color:var(--muted);
-  font-size:.84rem;
-}
-
-.session-item{
-  padding:16px;
-  border-radius:16px;
-  background:rgba(255,255,255,.04);
-  border:1px solid rgba(255,255,255,.05);
-  margin-bottom:14px;
-}
-
-.session-item strong{
-  display:block;
-  margin-bottom:8px;
-}
-
-.session-item span{
-  color:var(--muted);
-  font-size:.84rem;
-}
+.sidebar{display:flex;flex-direction:column;gap:20px}
+.sidebar-card{padding:22px}
+.sidebar-card h4{margin-bottom:20px;color:var(--cyan);letter-spacing:.08em;font-size:.9rem;display:flex;align-items:center;gap:8px}
+.live-metric{margin-bottom:18px}
+.live-metric:last-child{margin-bottom:0}
+.live-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.live-top span{color:var(--muted);font-size:.82rem}
+.live-top strong{font-size:.9rem;font-family:"JetBrains Mono",monospace}
+.track{height:8px;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden}
+.fill{height:100%;width:0%;border-radius:999px;transition:.6s ease}
+.fill.cyan{background:linear-gradient(90deg,var(--cyan),#75f8ff)}
+.fill.purple{background:linear-gradient(90deg,var(--purple),#bb9eff)}
+.fill.green{background:linear-gradient(90deg,var(--green),#7cffb2)}
+.activity-log{max-height:280px;overflow:auto}
+.activity-log::-webkit-scrollbar{width:6px}
+.activity-log::-webkit-scrollbar-thumb{background:rgba(0,247,255,.2);border-radius:3px}
+.log-item{padding:10px 12px;border-radius:10px;margin-bottom:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.05);color:var(--muted);font-size:.8rem;display:flex;gap:10px;align-items:flex-start}
+.log-item time{color:var(--cyan);font-family:"JetBrains Mono",monospace;font-size:.72rem;flex-shrink:0}
+.session-item{padding:14px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.05);margin-bottom:12px;cursor:pointer;transition:.2s ease}
+.session-item:hover{border-color:rgba(0,247,255,.25);transform:translateX(2px)}
+.session-item strong{display:block;margin-bottom:6px;font-size:.9rem}
+.session-item span{color:var(--muted);font-size:.78rem;display:block}
+.session-item .score-badge{display:inline-block;margin-top:6px;padding:3px 10px;background:rgba(0,247,255,.12);color:var(--cyan);border-radius:999px;font-size:.72rem;font-family:"JetBrains Mono",monospace}
+.empty-state{color:var(--muted);font-size:.82rem;text-align:center;padding:18px 0}
 
 /* TOAST */
+.toast{position:fixed;bottom:28px;right:28px;padding:14px 20px;border-radius:14px;background:#11182f;border:1px solid rgba(255,255,255,.08);box-shadow:var(--shadow);color:var(--text);transform:translateY(20px);opacity:0;pointer-events:none;transition:.3s ease;z-index:999;max-width:340px;font-size:.88rem}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast.success{border-color:rgba(53,255,136,.3);color:var(--green)}
+.toast.warn{border-color:rgba(255,200,87,.3);color:var(--yellow)}
+.toast.error{border-color:rgba(255,83,112,.3);color:var(--red)}
 
-.toast{
-  position:fixed;
-  bottom:28px;
-  right:28px;
-  padding:14px 20px;
-  border-radius:14px;
-  background:#11182f;
-  border:1px solid rgba(255,255,255,.08);
-  box-shadow:var(--shadow);
-  color:var(--text);
-  transform:translateY(20px);
-  opacity:0;
-  pointer-events:none;
-  transition:.3s ease;
-  z-index:999;
-}
-
-.toast.show{
-  opacity:1;
-  transform:translateY(0);
-}
-
-.toast.success{
-  border-color:rgba(53,255,136,.3);
-  color:var(--green);
-}
-
-.toast.warn{
-  border-color:rgba(255,200,87,.3);
-  color:var(--yellow);
-}
+/* PROGRESS OVERLAY */
+.progress-overlay{position:fixed;inset:0;background:rgba(4,6,17,.85);backdrop-filter:blur(8px);z-index:998;display:none;align-items:center;justify-content:center;flex-direction:column;gap:20px}
+.progress-overlay.show{display:flex}
+.progress-ring{width:120px;height:120px;border:4px solid rgba(0,247,255,.15);border-top-color:var(--cyan);border-radius:50%;animation:spin 1s linear infinite}
+.progress-text{color:var(--cyan);font-family:"JetBrains Mono",monospace;letter-spacing:.1em;font-size:.9rem}
+.progress-step{color:var(--muted);font-size:.82rem;max-width:400px;text-align:center}
 
 /* FOOTER */
-
-.footer{
-  margin-top:26px;
-  text-align:center;
-  color:var(--muted);
-  font-size:.82rem;
-  padding-bottom:10px;
-}
+.footer{margin-top:26px;text-align:center;color:var(--muted);font-size:.82rem;padding-bottom:10px}
 
 /* ANIMS */
-
-@keyframes pulse{
-  0%,100%{opacity:1}
-  50%{opacity:.3}
-}
-
-@keyframes spin{
-  from{transform:rotate(0deg)}
-  to{transform:rotate(360deg)}
-}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 
 /* RESPONSIVE */
-
 @media(max-width:1300px){
-  .dashboard{
-    grid-template-columns:1fr;
-  }
-
-  .sidebar{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-  }
+  .dashboard{grid-template-columns:1fr}
+  .sidebar{display:grid;grid-template-columns:1fr 1fr}
 }
-
 @media(max-width:1000px){
-  .hero-grid{
-    grid-template-columns:1fr;
-  }
-
-  .upload-grid{
-    grid-template-columns:1fr;
-  }
-
-  .workspace{
-    grid-template-columns:1fr;
-  }
-
-  .toolbar{
-    grid-template-columns:1fr 1fr;
-  }
-
-  .analysis-grid,
-  .insights{
-    grid-template-columns:1fr;
-  }
+  .hero-grid{grid-template-columns:1fr}
+  .upload-grid{grid-template-columns:1fr}
+  .workspace.show{grid-template-columns:1fr}
+  .toolbar{grid-template-columns:1fr 1fr}
+  .analysis-grid,.insights{grid-template-columns:1fr}
 }
-
 @media(max-width:700px){
-  .container{
-    padding:18px;
-  }
-
-  .hero{
-    padding:24px;
-  }
-
-  .hero h2{
-    font-size:2rem;
-  }
-
-  .sidebar{
-    grid-template-columns:1fr;
-  }
-
-  .toolbar{
-    grid-template-columns:1fr;
-  }
-
-  .navbar{
-    flex-direction:column;
-    align-items:flex-start;
-  }
+  .container{padding:18px}
+  .hero{padding:24px}
+  .hero h2{font-size:2rem}
+  .sidebar{grid-template-columns:1fr}
+  .toolbar{grid-template-columns:1fr}
+  .navbar{flex-direction:column;align-items:flex-start}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:0.001ms!important;transition-duration:0.001ms!important}
 }
 </style>
 </head>
-
 <body>
-
 <div class="container">
 
   <!-- NAV -->
-
-  <div class="navbar">
-
+  <nav class="navbar" aria-label="Primary">
     <div class="brand">
-      <div class="brand-logo">
-        <span>🛡</span>
-      </div>
-
+      <div class="brand-logo" aria-hidden="true"><span>🛡</span></div>
       <div>
         <h1>AEGIS INSIGHT</h1>
         <p>AI-powered professional gameplay intelligence platform</p>
       </div>
     </div>
-
     <div class="nav-actions">
-
-      <div class="nav-pill">
-        <div class="live-dot"></div>
-        LIVE ANALYTICS
-      </div>
-
-      <div class="nav-pill">
-        Neural Pattern Recognition Engine v4.8
-      </div>
-
+      <div class="nav-pill"><span class="live-dot"></span> LIVE ANALYTICS</div>
+      <div class="nav-pill">Neural Pattern Engine v4.8</div>
+      <button class="btn btn-secondary" id="helpBtn" title="Keyboard shortcuts">⌨ Shortcuts</button>
     </div>
-
-  </div>
+  </nav>
 
   <!-- HERO -->
-
   <section class="hero">
-
     <div class="hero-grid">
-
       <div>
-
-        <h2>
-          Analyze your gameplay against
-          <span>professional players</span>
-          using AI pattern intelligence.
-        </h2>
-
-        <p>
-          Aegis Insight compares player mechanics, movement patterns,
-          positioning, reaction timing, decision making, and combat efficiency
-          against professional-level gameplay footage. Upload your gameplay,
-          select a pro baseline, and receive a personalized performance report
-          with actionable improvement pathways.
-        </p>
-
+        <h2>Analyze your gameplay against <span>professional players</span> using AI pattern intelligence.</h2>
+        <p>Aegis Insight compares player mechanics, movement patterns, positioning, reaction timing, decision making, and combat efficiency against professional-level gameplay footage. Upload your gameplay, select a pro baseline, and receive a personalized performance report with actionable improvement pathways.</p>
         <div class="hero-stats">
-
-          <div class="hero-stat">
-            <h3>97.2%</h3>
-            <span>Movement Pattern Accuracy</span>
-          </div>
-
-          <div class="hero-stat">
-            <h3>14ms</h3>
-            <span>Frame Sync Latency</span>
-          </div>
-
-          <div class="hero-stat">
-            <h3>120+</h3>
-            <span>Professional Data Models</span>
-          </div>
-
+          <div class="hero-stat"><h3>97.2%</h3><span>Movement Pattern Accuracy</span></div>
+          <div class="hero-stat"><h3>14ms</h3><span>Frame Sync Latency</span></div>
+          <div class="hero-stat"><h3>120+</h3><span>Professional Data Models</span></div>
+          <div class="hero-stat"><h3 id="heroSessions">0</h3><span>Sessions Analyzed (You)</span></div>
         </div>
-
       </div>
-
       <div class="hero-right">
-
-        <div class="ai-card glow">
-
-          <h4>AI ANALYSIS ENGINE</h4>
-
-          <div class="ai-row">
-            <span>Crosshair Placement Model</span>
-            <strong>ACTIVE</strong>
-          </div>
-
-          <div class="ai-row">
-            <span>Reaction Timing Analyzer</span>
-            <strong>ACTIVE</strong>
-          </div>
-
-          <div class="ai-row">
-            <span>Movement Optimization</span>
-            <strong>ACTIVE</strong>
-          </div>
-
-          <div class="ai-row">
-            <span>Decision Intelligence</span>
-            <strong>ACTIVE</strong>
-          </div>
-
-        </div>
-
         <div class="ai-card">
-
-          <h4>SUPPORTED TITLES</h4>
-
-          <div class="ai-row">
-            <span>Valorant</span>
-            <strong>PRO READY</strong>
-          </div>
-
-          <div class="ai-row">
-            <span>Counter-Strike 2</span>
-            <strong>PRO READY</strong>
-          </div>
-
-          <div class="ai-row">
-            <span>League of Legends</span>
-            <strong>PRO READY</strong>
-          </div>
-
-          <div class="ai-row">
-            <span>Apex Legends</span>
-            <strong>PRO READY</strong>
-          </div>
-
+          <h4>AI ANALYSIS ENGINE</h4>
+          <div class="ai-row"><span>Crosshair Placement Model</span><span class="tag">ACTIVE</span></div>
+          <div class="ai-row"><span>Reaction Timing Analyzer</span><span class="tag">ACTIVE</span></div>
+          <div class="ai-row"><span>Movement Optimization</span><span class="tag">ACTIVE</span></div>
+          <div class="ai-row"><span>Decision Intelligence</span><span class="tag">ACTIVE</span></div>
         </div>
-
+        <div class="ai-card">
+          <h4>SUPPORTED TITLES</h4>
+          <div class="ai-row"><span>Valorant</span><span class="tag">PRO READY</span></div>
+          <div class="ai-row"><span>Counter-Strike 2</span><span class="tag">PRO READY</span></div>
+          <div class="ai-row"><span>League of Legends</span><span class="tag">PRO READY</span></div>
+          <div class="ai-row"><span>Apex Legends</span><span class="tag">PRO READY</span></div>
+        </div>
       </div>
-
     </div>
-
   </section>
 
   <!-- DASHBOARD -->
-
   <div class="dashboard">
-
     <!-- MAIN -->
+    <main class="panel">
+      <header class="panel-header">
+        <div class="panel-title">
+          <h3>SESSION INITIALIZATION</h3>
+          <p>Upload gameplay and select a professional reference model.</p>
+        </div>
+      </header>
 
-    <div>
-
-      <!-- UPLOAD PANEL -->
-
-      <section class="panel">
-
-        <div class="panel-header">
-
-          <div class="panel-title">
-            <h3>SESSION INITIALIZATION</h3>
-            <p>Upload gameplay and select a professional reference model.</p>
+      <div class="upload-section">
+        <div class="upload-grid">
+          <!-- Upload card -->
+          <div class="upload-card" id="uploadCard">
+            <div class="upload-inner">
+              <div class="upload-icon" aria-hidden="true">🎮</div>
+              <div class="upload-title">Upload Your Gameplay</div>
+              <div class="upload-sub">MP4, MOV, or WEBM up to 500 MB. Recommended 1080p @ 60fps. Drag &amp; drop supported.</div>
+              <div class="button-row">
+                <button class="btn btn-primary" id="uploadBtn">Upload Video</button>
+                <button class="btn btn-secondary" id="demoBtn">Demo Session</button>
+              </div>
+              <div class="upload-file" id="uploadFile">No gameplay uploaded</div>
+              <input type="file" id="fileInput" accept="video/mp4,video/quicktime,video/webm" hidden />
+            </div>
           </div>
 
-        </div>
+          <!-- Launch -->
+          <div style="display:flex;justify-content:center">
+            <button class="launch-btn" id="launchBtn" disabled aria-label="Launch analysis">⚡</button>
+          </div>
 
-        <div class="upload-section">
-
-          <div class="upload-grid">
-
-            <!-- USER -->
-
-            <div class="upload-card">
-
-              <div class="upload-inner">
-
-                <div class="upload-icon">🎮</div>
-
-                <div class="upload-title">
-                  Upload Your Gameplay
-                </div>
-
-                <div class="upload-sub">
-                  MP4, MOV, or WEBM gameplay recordings supported.
-                  Recommended resolution: 1080p @ 60fps.
-                </div>
-
-                <div class="button-row">
-
-                  <button class="btn btn-primary"
-                    onclick="document.getElementById('videoInput').click()">
-                    Upload Video
-                  </button>
-
-                  <button class="btn btn-secondary"
-                    onclick="loadDemo()">
-                    Demo Session
-                  </button>
-
-                </div>
-
-                <div class="upload-file" id="fileLabel">
-                  No gameplay uploaded
-                </div>
-
-              </div>
-
-            </div>
-
-            <!-- LAUNCH -->
-
-            <div style="display:flex;justify-content:center;">
-              <button class="launch-btn"
-                id="launchBtn"
-                disabled>
-                ⚡
-              </button>
-            </div>
-
-            <!-- SELECT -->
-
-            <div class="panel select-panel">
-
-              <select id="gameSelect">
-                <option value="">Select Game</option>
+          <!-- Select panel -->
+          <div class="select-panel">
+            <div>
+              <label for="gameSelect">Select Game</label>
+              <select id="gameSelect" aria-label="Select game">
+                <option value="">— Choose game —</option>
                 <option value="valorant">Valorant</option>
                 <option value="cs2">Counter-Strike 2</option>
                 <option value="lol">League of Legends</option>
                 <option value="apex">Apex Legends</option>
               </select>
-
-              <select id="proSelect" disabled>
-                <option value="">Select Professional Baseline</option>
+            </div>
+            <div>
+              <label for="proSelect">Professional Baseline</label>
+              <select id="proSelect" aria-label="Select professional baseline" disabled>
+                <option value="">— Select a game first —</option>
               </select>
-
-              <div class="status" id="statusBox">
-                Waiting for gameplay upload and baseline selection...
-              </div>
-
             </div>
-
+            <div class="status" id="statusBox">Waiting for gameplay upload and baseline selection…</div>
           </div>
-
-          <input hidden type="file" accept="video/*" id="videoInput">
-
-          <!-- WORKSPACE -->
-
-          <div class="workspace" id="workspace">
-
-            <div class="video-card">
-
-              <div class="video-header">
-                <strong>PLAYER FOOTAGE</strong>
-                <span id="playerMeta">UNINITIALIZED</span>
-              </div>
-
-              <div class="video-frame">
-                <video id="userVideo" controls></video>
-                <video id="overlayVideo" class="overlay-video"></video>
-              </div>
-
-            </div>
-
-            <div class="video-card">
-
-              <div class="video-header">
-                <strong id="proLabel">PROFESSIONAL BASELINE</strong>
-                <span>REFERENCE MODEL</span>
-              </div>
-
-              <div class="video-frame">
-                <div id="yt-player"></div>
-              </div>
-
-            </div>
-
-          </div>
-
-          <!-- TOOLS -->
-
-          <div class="toolbar" id="toolbar" style="display:none;">
-
-            <button class="tool-btn" onclick="syncPlay()">
-              ▶ Sync Playback
-            </button>
-
-            <button class="tool-btn" onclick="syncPause()">
-              ⏸ Pause Session
-            </button>
-
-            <button class="tool-btn" onclick="toggleGhostMode()">
-              👻 Ghost Overlay
-            </button>
-
-            <button class="tool-btn" onclick="runAnalysis()">
-              📊 Generate Analysis
-            </button>
-
-            <button class="tool-btn" onclick="exportReport()">
-              📥 Export Report
-            </button>
-
-          </div>
-
-          <!-- METRICS -->
-
-          <div class="analysis-grid" id="metricsGrid" style="display:none;">
-
-            <div class="metric-card">
-
-              <h4>CROSSHAIR ACCURACY</h4>
-
-              <div class="metric-value" id="mAim">0%</div>
-
-              <div class="metric-bar">
-                <div class="metric-fill" id="fillAim"></div>
-              </div>
-
-              <div class="metric-desc">
-                Measures pre-aim efficiency, target acquisition,
-                and precision consistency compared to pro reference footage.
-              </div>
-
-            </div>
-
-            <div class="metric-card">
-
-              <h4>MOVEMENT EFFICIENCY</h4>
-
-              <div class="metric-value" id="mMove">0%</div>
-
-              <div class="metric-bar">
-                <div class="metric-fill" id="fillMove"></div>
-              </div>
-
-              <div class="metric-desc">
-                Tracks pathing smoothness, strafing efficiency,
-                and unnecessary movement penalties.
-              </div>
-
-            </div>
-
-            <div class="metric-card">
-
-              <h4>REACTION TIMING</h4>
-
-              <div class="metric-value" id="mReact">0ms</div>
-
-              <div class="metric-bar">
-                <div class="metric-fill" id="fillReact"></div>
-              </div>
-
-              <div class="metric-desc">
-                Estimates average decision-to-action latency
-                during high pressure combat interactions.
-              </div>
-
-            </div>
-
-            <div class="metric-card">
-
-              <h4>POSITIONING IQ</h4>
-
-              <div class="metric-value" id="mPosition">0%</div>
-
-              <div class="metric-bar">
-                <div class="metric-fill" id="fillPosition"></div>
-              </div>
-
-              <div class="metric-desc">
-                Evaluates spacing, angle control,
-                and map positioning relative to professional standards.
-              </div>
-
-            </div>
-
-          </div>
-
-          <!-- REPORT -->
-
-          <div class="report" id="report">
-
-            <div class="report-top">
-
-              <div>
-                <div class="score" id="finalScore">0%</div>
-                <div class="report-sub">
-                  Overall Professional Similarity Score
-                </div>
-              </div>
-
-              <div style="max-width:520px;">
-                <h3 style="margin-bottom:12px;">
-                  AI Performance Summary
-                </h3>
-
-                <p style="color:var(--muted);line-height:1.9;" id="summaryText">
-                  Analysis summary generated dynamically.
-                </p>
-              </div>
-
-            </div>
-
-            <div class="insights">
-
-              <div class="insight">
-
-                <h5>Mechanics Optimization</h5>
-
-                <p id="insight1">
-                  —
-                </p>
-
-              </div>
-
-              <div class="insight">
-
-                <h5>Movement Intelligence</h5>
-
-                <p id="insight2">
-                  —
-                </p>
-
-              </div>
-
-              <div class="insight">
-
-                <h5>Professional Improvement Path</h5>
-
-                <p id="insight3">
-                  —
-                </p>
-
-              </div>
-
-              <div class="insight">
-
-                <h5>Training Recommendation</h5>
-
-                <p id="insight4">
-                  —
-                </p>
-
-              </div>
-
-            </div>
-
-          </div>
-
         </div>
+      </div>
 
+      <!-- Workspace -->
+      <div class="workspace" id="workspace">
+        <div class="video-card">
+          <div class="video-header"><strong>PLAYER FOOTAGE</strong><span id="playerLabel">UNINITIALIZED</span></div>
+          <div class="video-frame">
+            <video id="playerVideo" controls playsinline preload="metadata"></video>
+            <video id="ghostVideo" class="overlay-video" muted playsinline preload="metadata"></video>
+          </div>
+        </div>
+        <div class="video-card">
+          <div class="video-header"><strong>PROFESSIONAL BASELINE</strong><span id="proLabel">REFERENCE MODEL</span></div>
+          <div class="video-frame">
+            <video id="proVideo" controls muted playsinline preload="metadata"></video>
+          </div>
+        </div>
+      </div>
+
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <button class="tool-btn" id="syncBtn" disabled>▶ Sync Playback</button>
+        <button class="tool-btn" id="pauseBtn" disabled>⏸ Pause Session</button>
+        <button class="tool-btn" id="ghostBtn" disabled>👻 Ghost Overlay</button>
+        <button class="tool-btn" id="analyzeBtn" disabled>📊 Generate Analysis</button>
+        <button class="tool-btn" id="exportBtn" disabled>📥 Export Report</button>
+      </div>
+
+      <!-- Analysis -->
+      <div class="analysis-grid">
+        <div class="metric-card">
+          <h4>CROSSHAIR ACCURACY</h4>
+          <div class="metric-value" id="crosshairVal">0%</div>
+          <div class="metric-bar"><div class="metric-fill" id="crosshairBar"></div></div>
+          <div class="metric-desc">Pre-aim efficiency, target acquisition, and precision consistency vs. pro reference.</div>
+        </div>
+        <div class="metric-card">
+          <h4>MOVEMENT EFFICIENCY</h4>
+          <div class="metric-value" id="movementVal">0%</div>
+          <div class="metric-bar"><div class="metric-fill" id="movementBar"></div></div>
+          <div class="metric-desc">Pathing smoothness, strafing efficiency, and unnecessary movement penalties.</div>
+        </div>
+        <div class="metric-card">
+          <h4>REACTION TIMING</h4>
+          <div class="metric-value" id="reactionVal">0ms</div>
+          <div class="metric-bar"><div class="metric-fill" id="reactionBar"></div></div>
+          <div class="metric-desc">Average decision-to-action latency during high pressure combat interactions.</div>
+        </div>
+        <div class="metric-card">
+          <h4>POSITIONING IQ</h4>
+          <div class="metric-value" id="positioningVal">0%</div>
+          <div class="metric-bar"><div class="metric-fill" id="positioningBar"></div></div>
+          <div class="metric-desc">Spacing, angle control, and map positioning relative to professional standards.</div>
+        </div>
+      </div>
+
+      <!-- Report -->
+      <section class="report" id="report" aria-live="polite">
+        <div class="report-top">
+          <div>
+            <div class="score" id="overallScore">0%</div>
+            <div class="report-sub">Overall Professional Similarity Score</div>
+          </div>
+          <div class="summary-box">
+            <h5>AI PERFORMANCE SUMMARY</h5>
+            <p id="summaryText">Analysis summary generated dynamically.</p>
+          </div>
+        </div>
+        <div class="insights">
+          <div class="insight"><h5>Mechanics Optimization</h5><p id="insMechanics">—</p></div>
+          <div class="insight"><h5>Movement Intelligence</h5><p id="insMovement">—</p></div>
+          <div class="insight"><h5>Professional Improvement Path</h5><p id="insPath">—</p></div>
+          <div class="insight"><h5>Training Recommendation</h5><p id="insTraining">—</p></div>
+        </div>
       </section>
-
-    </div>
+    </main>
 
     <!-- SIDEBAR -->
-
     <aside class="sidebar">
-
       <div class="panel sidebar-card">
-
-        <h4>LIVE TELEMETRY</h4>
-
+        <h4>📡 LIVE TELEMETRY</h4>
         <div class="live-metric">
-
-          <div class="live-top">
-            <span>Frame Alignment</span>
-            <strong id="tAlign">0%</strong>
-          </div>
-
-          <div class="track">
-            <div class="fill cyan" id="barAlign"></div>
-          </div>
-
+          <div class="live-top"><span>Frame Alignment</span><strong id="telFrameVal">0%</strong></div>
+          <div class="track"><div class="fill cyan" id="telFrame"></div></div>
         </div>
-
         <div class="live-metric">
-
-          <div class="live-top">
-            <span>Movement Smoothness</span>
-            <strong id="tSmooth">0%</strong>
-          </div>
-
-          <div class="track">
-            <div class="fill green" id="barSmooth"></div>
-          </div>
-
+          <div class="live-top"><span>Movement Smoothness</span><strong id="telMoveVal">0%</strong></div>
+          <div class="track"><div class="fill purple" id="telMove"></div></div>
         </div>
-
         <div class="live-metric">
-
-          <div class="live-top">
-            <span>Input Frequency</span>
-            <strong id="tInput">0Hz</strong>
-          </div>
-
-          <div class="track">
-            <div class="fill purple" id="barInput"></div>
-          </div>
-
+          <div class="live-top"><span>Input Frequency</span><strong id="telInputVal">0 Hz</strong></div>
+          <div class="track"><div class="fill green" id="telInput"></div></div>
         </div>
-
         <div class="live-metric">
-
-          <div class="live-top">
-            <span>Reaction Stability</span>
-            <strong id="tReaction">0ms</strong>
-          </div>
-
-          <div class="track">
-            <div class="fill cyan" id="barReaction"></div>
-          </div>
-
+          <div class="live-top"><span>Reaction Stability</span><strong id="telReactVal">0 ms</strong></div>
+          <div class="track"><div class="fill cyan" id="telReact"></div></div>
         </div>
-
       </div>
 
       <div class="panel sidebar-card">
-
-        <h4>SYSTEM LOG</h4>
-
+        <h4>📜 SYSTEM LOG</h4>
         <div class="activity-log" id="activityLog"></div>
-
       </div>
 
       <div class="panel sidebar-card">
-
-        <h4>RECENT ANALYSIS</h4>
-
-        <div id="sessionHistory"></div>
-
+        <h4>🗂 RECENT ANALYSIS</h4>
+        <div id="recentList"><div class="empty-state">No analyses yet. Run your first session to populate history.</div></div>
       </div>
-
     </aside>
-
   </div>
 
-  <div class="footer">
-    Aegis Insight © 2026 — AI gameplay analytics & professional benchmarking platform
-  </div>
-
+  <footer class="footer">
+    Aegis Insight © 2026 — AI gameplay analytics &amp; professional benchmarking platform · <a href="#" id="clearHistory" style="color:var(--cyan);text-decoration:none">Clear local history</a>
+  </footer>
 </div>
 
-<div class="toast" id="toast"></div>
+<!-- Toast -->
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<!-- Progress Overlay -->
+<div class="progress-overlay" id="progressOverlay" role="dialog" aria-modal="true" aria-label="Analysis in progress">
+  <div class="progress-ring" aria-hidden="true"></div>
+  <div class="progress-text" id="progressText">INITIALIZING NEURAL ENGINE…</div>
+  <div class="progress-step" id="progressStep">Booting pattern recognition models</div>
+</div>
 
 <script>
-/* =========================================================
-   AEGIS INSIGHT — DEPLOYMENT READY FRONTEND
-========================================================= */
-
-const gameData = {
-  valorant: [
-    {
-      name: "TenZ — VCT Pro Analysis",
-      id: "HA62OZjJPog"
-    },
-    {
-      name: "Aspas — Aim Masterclass",
-      id: "0j88O9l3b0I"
-    }
-  ],
-
-  cs2: [
-    {
-      name: "s1mple — CS2 Precision",
-      id: "8TUO7c1KV_I"
-    },
-    {
-      name: "donk — Aggressive Entries",
-      id: "XJVgWssbnac"
-    }
-  ],
-
-  lol: [
-    {
-      name: "Faker — Midlane Macro",
-      id: "HMXmTsEXuJY"
-    },
-    {
-      name: "Chovy — Positioning",
-      id: "JfeHvdAy24E"
-    }
-  ],
-
-  apex: [
-    {
-      name: "ImperialHal — IGL Breakdown",
-      id: "NJjH50Ma25s"
-    },
-    {
-      name: "Verhulst — Movement Tracking",
-      id: "9IX-MduSpuY"
-    }
-  ]
-};
-
-let userReady = false;
-let proReady = false;
-let ytPlayer = null;
-let currentVideoId = "";
-let telemetryInterval = null;
-let reportData = null;
-
-/* =========================================================
-   YOUTUBE API
-========================================================= */
-
-const tag = document.createElement("script");
-tag.src = "https://www.youtube.com/iframe_api";
-document.head.appendChild(tag);
-
-window.onYouTubeIframeAPIReady = () => {
-  log("YouTube playback engine initialized.");
-};
-
-function createPlayer(videoId){
-
-  currentVideoId = videoId;
-
-  document.getElementById("yt-player").innerHTML = "";
-
-  ytPlayer = new YT.Player("yt-player",{
-    videoId,
-    playerVars:{
-      rel:0,
-      modestbranding:1
-    }
-  });
-}
-
-/* =========================================================
-   TOAST
-========================================================= */
-
-function showToast(message, type="success"){
-
-  const toast = document.getElementById("toast");
-
-  toast.textContent = message;
-  toast.className = `toast show ${type}`;
-
-  setTimeout(() => {
-    toast.classList.remove("show");
-  },3000);
-}
-
-/* =========================================================
-   LOGGING
-========================================================= */
-
-function log(message){
-
-  const container = document.getElementById("activityLog");
-
-  const div = document.createElement("div");
-
-  div.className = "log-item";
-
-  div.innerHTML = `
-    <strong style="display:block;margin-bottom:5px;">
-      ${new Date().toLocaleTimeString()}
-    </strong>
-    ${message}
-  `;
-
-  container.prepend(div);
-}
-
-/* =========================================================
-   FILE INPUT
-========================================================= */
-
-document.getElementById("videoInput")
-.addEventListener("change",(e)=>{
-
-  const file = e.target.files[0];
-
-  if(!file) return;
-
-  const url = URL.createObjectURL(file);
-
-  const video = document.getElementById("userVideo");
-  const overlay = document.getElementById("overlayVideo");
-
-  video.src = url;
-  overlay.src = url;
-
-  document.getElementById("fileLabel").textContent = file.name;
-
-  document.getElementById("playerMeta").textContent =
-    `${Math.round(file.size / 1024 / 1024)}MB SESSION`;
-
-  userReady = true;
-
-  log(`Gameplay uploaded: ${file.name}`);
-
-  updateLaunch();
-});
-
-/* =========================================================
-   GAME SELECTION
-========================================================= */
-
-document.getElementById("gameSelect")
-.addEventListener("change",(e)=>{
-
-  const value = e.target.value;
-
-  const proSelect = document.getElementById("proSelect");
-
-  proSelect.innerHTML =
-    `<option value="">Select Professional Baseline</option>`;
-
-  if(!value){
-    proSelect.disabled = true;
-    return;
-  }
-
-  proSelect.disabled = false;
-
-  gameData[value].forEach(pro => {
-
-    const option = document.createElement("option");
-
-    option.value = pro.id;
-    option.textContent = pro.name;
-
-    proSelect.appendChild(option);
-  });
-
-  log(`Game profile loaded: ${value.toUpperCase()}`);
-});
-
-document.getElementById("proSelect")
-.addEventListener("change",(e)=>{
-
-  const id = e.target.value;
-
-  if(!id) return;
-
-  const name =
-    e.target.options[e.target.selectedIndex].textContent;
-
-  document.getElementById("proLabel").textContent =
-    name.toUpperCase();
-
-  proReady = true;
-
-  createPlayer(id);
-
-  log(`Professional baseline selected: ${name}`);
-
-  updateLaunch();
-});
-
-/* =========================================================
-   READY CHECK
-========================================================= */
-
-function updateLaunch(){
-
-  const launchBtn =
-    document.getElementById("launchBtn");
-
-  const status =
-    document.getElementById("statusBox");
-
-  if(userReady && proReady){
-
-    launchBtn.disabled = false;
-
-    status.classList.add("ready");
-
-    status.textContent =
-      "Session ready. Launch AI analysis workspace.";
-
-  } else {
-
-    launchBtn.disabled = true;
-
-    status.classList.remove("ready");
-
-    status.textContent =
-      "Waiting for gameplay upload and baseline selection...";
-  }
-}
-
-/* =========================================================
-   LAUNCH
-========================================================= */
-
-document.getElementById("launchBtn")
-.addEventListener("click",()=>{
-
-  document.getElementById("workspace")
-    .style.display = "grid";
-
-  document.getElementById("toolbar")
-    .style.display = "grid";
-
-  startTelemetry();
-
-  log("Aegis analysis workspace initialized.");
-
-  showToast("AI session initialized.");
-});
-
-/* =========================================================
-   DEMO
-========================================================= */
-
-function loadDemo(){
-
-  const demo =
-    "https://assets.mixkit.co/videos/preview/mixkit-first-person-shooter-video-game-concept-42906-large.mp4";
-
-  const video =
-    document.getElementById("userVideo");
-
-  const overlay =
-    document.getElementById("overlayVideo");
-
-  video.src = demo;
-  overlay.src = demo;
-
-  document.getElementById("fileLabel")
-    .textContent = "demo_session.mp4";
-
-  document.getElementById("playerMeta")
-    .textContent = "DEMO SESSION";
-
-  userReady = true;
-
-  document.getElementById("gameSelect").value = "cs2";
-
-  const event = new Event("change");
-
-  document.getElementById("gameSelect")
-    .dispatchEvent(event);
-
-  setTimeout(()=>{
-
-    document.getElementById("proSelect").value =
-      "8TUO7c1KV_I";
-
-    document.getElementById("proSelect")
-      .dispatchEvent(new Event("change"));
-
-  },100);
-
-  showToast("Demo session loaded.");
-
-  log("Demo environment loaded.");
-}
-
-/* =========================================================
-   VIDEO CONTROLS
-========================================================= */
-
-function syncPlay(){
-
-  const vid = document.getElementById("userVideo");
-
-  vid.play();
-
-  if(ytPlayer && ytPlayer.playVideo){
-    ytPlayer.playVideo();
-  }
-
-  log("Synchronized playback started.");
-}
-
-function syncPause(){
-
-  const vid = document.getElementById("userVideo");
-
-  vid.pause();
-
-  if(ytPlayer && ytPlayer.pauseVideo){
-    ytPlayer.pauseVideo();
-  }
-
-  log("Synchronized playback paused.");
-}
-
-function toggleGhostMode(){
-
-  const overlay =
-    document.getElementById("overlayVideo");
-
-  const enabled =
-    overlay.style.display === "block";
-
-  overlay.style.display =
-    enabled ? "none" : "block";
-
-  showToast(
-    enabled
-      ? "Ghost overlay disabled."
-      : "Ghost overlay enabled."
-  );
-
-  log(
-    enabled
-      ? "Ghost overlay disabled."
-      : "Ghost overlay enabled."
-  );
-}
-
-/* =========================================================
-   TELEMETRY
-========================================================= */
-
-function startTelemetry(){
-
-  clearInterval(telemetryInterval);
-
-  telemetryInterval = setInterval(()=>{
-
-    setTelemetry(
-      "Align",
-      rand(74,96),
-      "%"
-    );
-
-    setTelemetry(
-      "Smooth",
-      rand(68,94),
-      "%"
-    );
-
-    setTelemetry(
-      "Input",
-      rand(140,260),
-      "Hz"
-    );
-
-    setTelemetry(
-      "Reaction",
-      rand(145,230),
-      "ms"
-    );
-
-  },1000);
-}
-
-function setTelemetry(name,val,unit){
-
-  const ids = {
-    Align:"Align",
-    Smooth:"Smooth",
-    Input:"Input",
-    Reaction:"Reaction"
+(() => {
+  'use strict';
+
+  // ---------- Data ----------
+  const PROS = {
+    valorant: [
+      { id:'tenz',   name:'TenZ',    team:'Sentinels'   },
+      { id:'demon1', name:'Demon1',  team:'EG'          },
+      { id:'aspas',  name:'Aspas',   team:'Leviatán'    },
+    ],
+    cs2: [
+      { id:'s1mple', name:'s1mple',  team:'NAVI'        },
+      { id:'zywoo',  name:'ZywOo',   team:'Vitality'    },
+      { id:'donk',   name:'donk',    team:'Spirit'      },
+    ],
+    lol: [
+      { id:'faker',  name:'Faker',   team:'T1'          },
+      { id:'chovy',  name:'Chovy',   team:'GenG'        },
+      { id:'caps',   name:'Caps',    team:'G2'          },
+    ],
+    apex: [
+      { id:'imperialhal', name:'ImperialHal', team:'TSM' },
+      { id:'genburten',   name:'Genburten',   team:'DZ'  },
+      { id:'zer0',        name:'Zer0',        team:'TSM' },
+    ],
+  };
+  const DEMO_VIDEO = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
+  const PRO_VIDEO  = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4';
+  const MAX_SIZE   = 500 * 1024 * 1024;
+
+  // ---------- State ----------
+  const state = {
+    file:null, game:'', pro:'',
+    playerSrc:null, proSrc:null,
+    analyzed:false, ghost:false, telemetryTimer:null, lastReport:null,
   };
 
-  document.getElementById(
-    `t${ids[name]}`
-  ).textContent = `${val}${unit}`;
+  // ---------- Utils ----------
+  const $ = id => document.getElementById(id);
+  const fmtTime = () => new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  const clamp = (n,a,b) => Math.max(a,Math.min(b,n));
+  const seeded = seed => { let s = seed; return () => { s = (s*9301+49297)%233280; return s/233280; }; };
 
-  const bar =
-    document.getElementById(
-      `bar${ids[name]}`
-    );
-
-  const percent =
-    unit === "ms"
-      ? Math.max(30,100 - (val - 100) / 2)
-      : Math.min(100,val);
-
-  bar.style.width = `${percent}%`;
-}
-
-/* =========================================================
-   ANALYSIS
-========================================================= */
-
-function runAnalysis(){
-
-  const aim = rand(74,96);
-  const move = rand(68,92);
-  const react = rand(148,248);
-  const position = rand(70,95);
-
-  const score =
-    Math.round(
-      (aim + move + position + (100 - react/4)) / 4
-    );
-
-  reportData = {
-    score,
-    aim,
-    move,
-    react,
-    position
-  };
-
-  document.getElementById("metricsGrid")
-    .style.display = "grid";
-
-  animateMetric("mAim","fillAim",aim,"%");
-  animateMetric("mMove","fillMove",move,"%");
-  animateMetric("mReact","fillReact",react,"ms");
-  animateMetric("mPosition","fillPosition",position,"%");
-
-  setTimeout(()=>{
-
-    generateInsights(reportData);
-
-  },1000);
-
-  saveSession(reportData);
-
-  log("AI analysis report generated.");
-
-  showToast("Analysis complete.");
-}
-
-function animateMetric(textId,fillId,value,unit){
-
-  document.getElementById(textId)
-    .textContent = `${value}${unit}`;
-
-  const fill =
-    document.getElementById(fillId);
-
-  let width =
-    unit === "ms"
-      ? Math.max(30,100 - (value - 100)/2)
-      : value;
-
-  fill.style.width = `${width}%`;
-}
-
-function generateInsights(data){
-
-  document.getElementById("report")
-    .style.display = "block";
-
-  document.getElementById("finalScore")
-    .textContent = `${data.score}%`;
-
-  document.getElementById("summaryText")
-    .textContent =
-    `Your gameplay demonstrates ${
-      data.score >= 85
-        ? "high-level competitive fundamentals"
-        : "strong growth potential"
-    } with notable strengths in ${
-      data.aim > data.move
-        ? "precision mechanics and crosshair control"
-        : "movement consistency and path optimization"
-    }. The AI identified opportunities to improve reaction stability, positioning discipline, and engagement timing to better match professional execution patterns.`;
-
-  document.getElementById("insight1")
-    .textContent =
-    `Your average aiming precision scored ${data.aim}% against the professional reference model. Focus on reducing unnecessary crosshair movement and improving pre-aim placement before entering contested angles.`;
-
-  document.getElementById("insight2")
-    .textContent =
-    `Movement efficiency scored ${data.move}%. Your gameplay contains several inefficient directional adjustments and spacing inconsistencies during engagements. Practice maintaining smoother strafing patterns under pressure.`;
-
-  document.getElementById("insight3")
-    .textContent =
-    `Reaction latency averaged ${data.react}ms. Professional players consistently maintain lower cognitive hesitation during target acquisition. Prioritize routine aim drills and scenario repetition for faster decision execution.`;
-
-  document.getElementById("insight4")
-    .textContent =
-    `Recommended training workflow: 20 minutes of aim training, 30 minutes of movement drills, VOD review analysis, and 3 ranked sessions focused on positioning discipline rather than raw mechanics.`;
-}
-
-/* =========================================================
-   EXPORT
-========================================================= */
-
-function exportReport(){
-
-  if(!reportData){
-
-    showToast(
-      "Run an analysis before exporting.",
-      "warn"
-    );
-
-    return;
+  function toast(msg, type='') {
+    const t = $('toast');
+    t.textContent = msg;
+    t.className = 'toast show' + (type ? ' '+type : '');
+    clearTimeout(toast._t);
+    toast._t = setTimeout(()=> t.className = 'toast', 3200);
+  }
+  function log(msg) {
+    const el = document.createElement('div');
+    el.className = 'log-item';
+    el.innerHTML = `<time>${fmtTime()}</time><span>${msg}</span>`;
+    $('activityLog').prepend(el);
+    const items = $('activityLog').children;
+    while (items.length > 30) items[items.length-1].remove();
   }
 
-  const payload = {
-    platform:"Aegis Insight",
-    generated:new Date().toISOString(),
-    report:reportData
-  };
-
-  const blob =
-    new Blob(
-      [JSON.stringify(payload,null,2)],
-      {type:"application/json"}
-    );
-
-  const url =
-    URL.createObjectURL(blob);
-
-  const a =
-    document.createElement("a");
-
-  a.href = url;
-
-  a.download =
-    `aegis-report-${Date.now()}.json`;
-
-  a.click();
-
-  URL.revokeObjectURL(url);
-
-  showToast("Performance report exported.");
-
-  log("Performance report exported.");
-}
-
-/* =========================================================
-   STORAGE
-========================================================= */
-
-function saveSession(data){
-
-  const history =
-    JSON.parse(
-      localStorage.getItem("aegisHistory") || "[]"
-    );
-
-  history.unshift({
-    score:data.score,
-    date:new Date().toLocaleString()
+  // ---------- Pro select ----------
+  $('gameSelect').addEventListener('change', e => {
+    state.game = e.target.value;
+    const sel = $('proSelect');
+    sel.innerHTML = '';
+    if (!state.game) {
+      sel.disabled = true;
+      sel.innerHTML = '<option value="">— Select a game first —</option>';
+    } else {
+      sel.disabled = false;
+      sel.innerHTML = '<option value="">— Choose a professional —</option>' +
+        PROS[state.game].map(p => `<option value="${p.id}">${p.name} · ${p.team}</option>`).join('');
+      log(`Game selected: ${e.target.options[e.target.selectedIndex].text}`);
+    }
+    state.pro = '';
+    refreshReadiness();
+  });
+  $('proSelect').addEventListener('change', e => {
+    state.pro = e.target.value;
+    if (state.pro) {
+      const proObj = PROS[state.game].find(p => p.id === state.pro);
+      $('proLabel').textContent = `${proObj.name.toUpperCase()} · ${proObj.team}`;
+      state.proSrc = PRO_VIDEO;
+      $('proVideo').src = PRO_VIDEO;
+      log(`Pro baseline loaded: ${proObj.name}`);
+    }
+    refreshReadiness();
   });
 
-  if(history.length > 6){
-    history.pop();
+  // ---------- Upload ----------
+  const card = $('uploadCard');
+  $('uploadBtn').addEventListener('click', () => $('fileInput').click());
+  $('fileInput').addEventListener('change', e => handleFile(e.target.files[0]));
+  ['dragenter','dragover'].forEach(ev => card.addEventListener(ev, e => { e.preventDefault(); card.classList.add('drag'); }));
+  ['dragleave','drop'].forEach(ev => card.addEventListener(ev, e => { e.preventDefault(); card.classList.remove('drag'); }));
+  card.addEventListener('drop', e => { if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]); });
+
+  function handleFile(file) {
+    if (!file) return;
+    if (!file.type.startsWith('video/')) return toast('Unsupported file. Use MP4, MOV, or WEBM.', 'error');
+    if (file.size > MAX_SIZE) return toast('File too large. Max 500 MB.', 'error');
+    state.file = file;
+    state.playerSrc = URL.createObjectURL(file);
+    $('uploadFile').textContent = `✓ ${file.name} · ${(file.size/1024/1024).toFixed(1)} MB`;
+    $('playerVideo').src = state.playerSrc;
+    $('ghostVideo').src  = state.playerSrc;
+    $('playerLabel').textContent = 'PLAYER · LOADED';
+    toast('Gameplay loaded successfully.', 'success');
+    log(`Uploaded: ${file.name}`);
+    refreshReadiness();
   }
 
-  localStorage.setItem(
-    "aegisHistory",
-    JSON.stringify(history)
-  );
+  $('demoBtn').addEventListener('click', () => {
+    state.file = { name:'demo-session.mp4', size: 42*1024*1024 };
+    state.playerSrc = DEMO_VIDEO;
+    $('uploadFile').textContent = '✓ demo-session.mp4 (sample footage)';
+    $('playerVideo').src = DEMO_VIDEO;
+    $('ghostVideo').src  = DEMO_VIDEO;
+    $('playerLabel').textContent = 'PLAYER · DEMO';
+    toast('Demo session loaded.', 'success');
+    log('Demo session initialized');
+    refreshReadiness();
+  });
 
-  renderHistory();
-}
-
-function renderHistory(){
-
-  const history =
-    JSON.parse(
-      localStorage.getItem("aegisHistory") || "[]"
-    );
-
-  const container =
-    document.getElementById("sessionHistory");
-
-  if(history.length === 0){
-
-    container.innerHTML =
-      `<span style="color:var(--muted);font-size:.85rem;">
-        No completed sessions yet.
-      </span>`;
-
-    return;
+  function refreshReadiness() {
+    const ready = state.file && state.game && state.pro;
+    $('launchBtn').disabled = !ready;
+    const status = $('statusBox');
+    if (ready) {
+      status.textContent = '✓ Ready. Press ⚡ to enter the analysis workspace.';
+      status.className = 'status ready';
+    } else {
+      const missing = [];
+      if (!state.file) missing.push('upload');
+      if (!state.game) missing.push('game');
+      if (!state.pro)  missing.push('pro baseline');
+      status.textContent = `Awaiting: ${missing.join(', ')}.`;
+      status.className = 'status' + (missing.length === 1 ? ' warn' : '');
+    }
   }
 
-  container.innerHTML =
-    history.map(item => `
-      <div class="session-item">
-        <strong>${item.score}% Similarity</strong>
-        <span>${item.date}</span>
-      </div>
-    `).join("");
-}
+  // ---------- Launch ----------
+  $('launchBtn').addEventListener('click', launch);
+  function launch() {
+    $('workspace').classList.add('show');
+    ['syncBtn','pauseBtn','ghostBtn','analyzeBtn'].forEach(id => $(id).disabled = false);
+    startTelemetry();
+    log('Workspace initialized · telemetry streaming');
+    toast('Analysis workspace ready.', 'success');
+    $('workspace').scrollIntoView({ behavior:'smooth', block:'start' });
+  }
 
-renderHistory();
+  // ---------- Playback controls ----------
+  $('syncBtn').addEventListener('click', () => {
+    const p = $('playerVideo'), pr = $('proVideo'), g = $('ghostVideo');
+    [p,pr].forEach(v => { try { v.currentTime = 0; v.play(); } catch{} });
+    if (state.ghost) { try { g.currentTime = 0; g.play(); } catch{} }
+    log('Sync playback started');
+  });
+  $('pauseBtn').addEventListener('click', () => {
+    ['playerVideo','proVideo','ghostVideo'].forEach(id => $(id).pause());
+    log('Session paused');
+  });
+  $('ghostBtn').addEventListener('click', () => {
+    state.ghost = !state.ghost;
+    $('ghostVideo').classList.toggle('show', state.ghost);
+    $('ghostBtn').classList.toggle('active', state.ghost);
+    if (state.ghost) { $('ghostVideo').currentTime = $('playerVideo').currentTime; $('ghostVideo').play().catch(()=>{}); }
+    else $('ghostVideo').pause();
+    toast(`Ghost overlay ${state.ghost ? 'enabled' : 'disabled'}.`);
+    log(`Ghost overlay ${state.ghost ? 'ON' : 'OFF'}`);
+  });
 
-/* =========================================================
-   UTIL
-========================================================= */
+  // ---------- Telemetry ----------
+  function startTelemetry() {
+    if (state.telemetryTimer) return;
+    const set = (id, val, suffix='%') => {
+      $(id).style.width = clamp(val,0,100) + '%';
+      $(id+'Val').textContent = Math.round(val) + suffix;
+    };
+    state.telemetryTimer = setInterval(() => {
+      set('telFrame', 78 + Math.random()*20);
+      set('telMove',  60 + Math.random()*35);
+      $('telInput').style.width = clamp((90+Math.random()*40)/2,0,100)+'%';
+      $('telInputVal').textContent = Math.round(90+Math.random()*40)+' Hz';
+      $('telReact').style.width = clamp(100-(180+Math.random()*120)/4,0,100)+'%';
+      $('telReactVal').textContent = Math.round(180+Math.random()*120)+' ms';
+    }, 1400);
+  }
 
-function rand(min,max){
+  // ---------- Analysis ----------
+  $('analyzeBtn').addEventListener('click', runAnalysis);
 
-  return Math.floor(
-    Math.random() * (max - min + 1)
-  ) + min;
-}
+  const STEPS = [
+    'Extracting frame metadata…',
+    'Aligning player & pro timelines…',
+    'Computing crosshair drift vectors…',
+    'Modeling movement entropy…',
+    'Estimating reaction distributions…',
+    'Scoring positional IQ…',
+    'Synthesizing performance report…',
+  ];
+
+  async function runAnalysis() {
+    $('analyzeBtn').disabled = true;
+    const ov = $('progressOverlay');
+    ov.classList.add('show');
+    for (let i=0; i<STEPS.length; i++) {
+      $('progressText').textContent = `STAGE ${i+1}/${STEPS.length}`;
+      $('progressStep').textContent = STEPS[i];
+      await new Promise(r => setTimeout(r, 520));
+    }
+    ov.classList.remove('show');
+
+    // Deterministic-ish scoring seeded by file + pro
+    const seed = (state.file?.name?.length || 7) * 31 + state.pro.length * 13;
+    const rand = seeded(seed || 1);
+    const crosshair  = Math.round(58 + rand()*38);
+    const movement   = Math.round(55 + rand()*40);
+    const reactionMs = Math.round(165 + rand()*120);
+    const positioning= Math.round(52 + rand()*42);
+    const reactionScore = clamp(100 - (reactionMs - 140) / 2, 0, 100);
+    const overall = Math.round((crosshair + movement + reactionScore + positioning) / 4);
+
+    animateMetric('crosshairVal','crosshairBar', crosshair, '%');
+    animateMetric('movementVal','movementBar',   movement,  '%');
+    animateMetric('reactionVal','reactionBar',   reactionMs,'ms', reactionScore);
+    animateMetric('positioningVal','positioningBar', positioning, '%');
+    animateScore(overall);
+
+    const proObj = PROS[state.game].find(p => p.id === state.pro);
+    const summary = buildSummary(overall, proObj);
+    $('summaryText').textContent = summary.summary;
+    $('insMechanics').textContent = summary.mechanics;
+    $('insMovement').textContent  = summary.movement;
+    $('insPath').textContent      = summary.path;
+    $('insTraining').textContent  = summary.training;
+
+    $('report').classList.add('show');
+    $('exportBtn').disabled = false;
+    $('analyzeBtn').disabled = false;
+    state.analyzed = true;
+
+    state.lastReport = {
+      timestamp: new Date().toISOString(),
+      file: state.file?.name, game: state.game, pro: proObj.name, team: proObj.team,
+      metrics: { crosshair, movement, reactionMs, positioning, overall },
+      summary,
+    };
+    saveSession(state.lastReport);
+    log(`Analysis complete · ${overall}% similarity to ${proObj.name}`);
+    toast(`Analysis ready · ${overall}% pro-similarity`, 'success');
+    $('report').scrollIntoView({ behavior:'smooth', block:'start' });
+  }
+
+  function animateMetric(valId, barId, target, suffix, fillPct) {
+    const v = $(valId), b = $(barId);
+    const start = performance.now(), dur = 900;
+    const tick = now => {
+      const t = clamp((now-start)/dur, 0, 1);
+      const eased = 1 - Math.pow(1-t, 3);
+      v.textContent = Math.round(target * eased) + suffix;
+      b.style.width = (fillPct ?? target) * eased + '%';
+      if (t < 1) requestAnimationFrame(tick);
+      else v.textContent = target + suffix;
+    };
+    requestAnimationFrame(tick);
+  }
+  function animateScore(target) {
+    const el = $('overallScore'), start = performance.now(), dur = 1100;
+    const tick = now => {
+      const t = clamp((now-start)/dur, 0, 1);
+      const eased = 1 - Math.pow(1-t, 3);
+      el.textContent = Math.round(target * eased) + '%';
+      if (t < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
+
+  function buildSummary(score, pro) {
+    const tier = score >= 85 ? 'elite' : score >= 70 ? 'advanced' : score >= 55 ? 'intermediate' : 'developing';
+    return {
+      summary: `Your gameplay aligns at a ${tier} level against ${pro.name} (${pro.team}). The neural engine detected ${score}% pattern similarity across mechanics, movement, reaction, and positioning vectors.`,
+      mechanics: score >= 70
+        ? 'Crosshair discipline and target acquisition are strong. Focus on micro-correction reduction during sustained engagements.'
+        : 'Pre-aim placement drifts off common angles. Drill 15 minutes of aim-trainer routines focused on flick recovery and tracking.',
+      movement: score >= 65
+        ? 'Movement entropy is within professional bounds. Tighten counter-strafing windows to remove residual frames.'
+        : 'Excess movement detected during peeks. Practice stop-to-shoot timing and reduce unnecessary repositioning.',
+      path: `Aim to close the gap with ${pro.name} by replicating their utility-first map traversal and tempo control. Estimated runway: ${score>=75?'2–4 weeks':'6–10 weeks'} of focused VOD review.`,
+      training: score >= 70
+        ? 'Daily routine: 20 min aim-trainer · 30 min ranked with VOD review · 10 min utility lineups.'
+        : 'Daily routine: 30 min aim-trainer · 20 min deathmatch · 15 min movement drills · 1 VOD review.',
+    };
+  }
+
+  // ---------- Sessions ----------
+  const STORE = 'aegis-sessions-v1';
+  function loadSessions() { try { return JSON.parse(localStorage.getItem(STORE)||'[]'); } catch { return []; } }
+  function saveSession(r) {
+    const list = loadSessions();
+    list.unshift(r);
+    localStorage.setItem(STORE, JSON.stringify(list.slice(0,10)));
+    renderSessions();
+  }
+  function renderSessions() {
+    const list = loadSessions();
+    $('heroSessions').textContent = list.length;
+    const el = $('recentList');
+    if (!list.length) { el.innerHTML = '<div class="empty-state">No analyses yet. Run your first session to populate history.</div>'; return; }
+    el.innerHTML = list.map((r,i) => `
+      <div class="session-item" data-i="${i}">
+        <strong>${r.pro} · ${r.team}</strong>
+        <span>${new Date(r.timestamp).toLocaleString()}</span>
+        <span>${r.file || 'session'}</span>
+        <span class="score-badge">${r.metrics.overall}% similarity</span>
+      </div>`).join('');
+    el.querySelectorAll('.session-item').forEach(node => {
+      node.addEventListener('click', () => {
+        const r = loadSessions()[+node.dataset.i];
+        toast(`Loaded snapshot · ${r.pro} (${r.metrics.overall}%)`);
+      });
+    });
+  }
+  $('clearHistory').addEventListener('click', e => {
+    e.preventDefault();
+    if (confirm('Clear local analysis history?')) { localStorage.removeItem(STORE); renderSessions(); toast('History cleared.'); }
+  });
+
+  // ---------- Export ----------
+  $('exportBtn').addEventListener('click', () => {
+    if (!state.lastReport) return;
+    const blob = new Blob([JSON.stringify(state.lastReport, null, 2)], { type:'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `aegis-report-${Date.now()}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast('Report exported.', 'success');
+    log('Report exported as JSON');
+  });
+
+  // ---------- Shortcuts ----------
+  $('helpBtn').addEventListener('click', () => {
+    toast('Shortcuts: U=upload · D=demo · Space=play/pause · G=ghost · A=analyze · E=export', '');
+  });
+  document.addEventListener('keydown', e => {
+    if (['INPUT','SELECT','TEXTAREA'].includes(document.activeElement.tagName)) return;
+    const k = e.key.toLowerCase();
+    if (k === 'u') $('uploadBtn').click();
+    else if (k === 'd') $('demoBtn').click();
+    else if (k === 'g' && !$('ghostBtn').disabled) $('ghostBtn').click();
+    else if (k === 'a' && !$('analyzeBtn').disabled) $('analyzeBtn').click();
+    else if (k === 'e' && !$('exportBtn').disabled) $('exportBtn').click();
+    else if (e.code === 'Space' && $('workspace').classList.contains('show')) {
+      e.preventDefault();
+      const p = $('playerVideo');
+      p.paused ? $('syncBtn').click() : $('pauseBtn').click();
+    }
+  });
+
+  // ---------- Init ----------
+  log('System online · Neural Pattern Engine v4.8');
+  renderSessions();
+})();
 </script>
-
 </body>
 </html>

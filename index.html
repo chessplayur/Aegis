@@ -49,14 +49,12 @@ body{
   font-size:14px;
   line-height:1.6;
 }
-/* grain overlay */
 body::before{
   content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
   opacity:.018;
   background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size:256px 256px;
 }
-/* subtle top glow */
 body::after{
   content:"";position:fixed;top:0;left:50%;transform:translateX(-50%);
   width:600px;height:1px;
@@ -65,18 +63,14 @@ body::after{
 }
 .container{max-width:1600px;margin:auto;padding:24px 28px;position:relative;z-index:1}
 
-/* ─ ANIMATIONS ─ */
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
 @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 @keyframes flow{0%{left:-40%;opacity:0}15%{opacity:1}85%{opacity:1}100%{left:110%;opacity:0}}
-@keyframes barRise{from{transform:scaleY(0)}to{transform:scaleY(1)}}
 .fade-up{animation:fadeUp .5s ease both}
 .d1{animation-delay:.06s}.d2{animation-delay:.12s}.d3{animation-delay:.18s}
-.d4{animation-delay:.24s}.d5{animation-delay:.3s}
 
-/* ─ NAV ─ */
 .nav{
   display:flex;align-items:center;justify-content:space-between;
   margin-bottom:28px;gap:16px;flex-wrap:wrap;
@@ -85,17 +79,16 @@ body::after{
 }
 .brand{display:flex;align-items:center;gap:14px}
 .brand-mark{
-  width:36px;height:36px;border-radius:9px;
+  width:36px;height:36px;border-radius:99px;
   background:var(--bg-2);border:1px solid var(--border);
   display:flex;align-items:center;justify-content:center;
   font-size:16px;flex-shrink:0;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.06);
 }
 .brand-text h1{
   font-family:var(--display);font-size:1.05rem;font-weight:700;
   letter-spacing:.08em;color:var(--text);line-height:1;
 }
-.brand-text p{color:var(--text-3);font-size:.72rem;margin-top:2px;letter-spacing:.02em}
+.brand-text p{color:var(--text-3);font-size:.72rem;margin-top:2px}
 .nav-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .badge{
   display:inline-flex;align-items:center;gap:6px;
@@ -103,30 +96,18 @@ body::after{
   background:var(--bg-2);border:1px solid var(--border);
   color:var(--text-2);letter-spacing:.04em;font-family:var(--display);font-weight:600;
 }
-.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;flex-shrink:0}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
 .btn-nav{
   padding:6px 14px;border-radius:8px;border:1px solid var(--border);
   background:var(--bg-2);color:var(--text-2);font-size:.75rem;
-  font-family:var(--display);font-weight:600;letter-spacing:.04em;
-  cursor:pointer;transition:.15s;
+  font-family:var(--display);font-weight:600;cursor:pointer;transition:.15s;
 }
 .btn-nav:hover{border-color:rgba(255,255,255,.14);color:var(--text);background:var(--bg-3)}
 
-/* ─ HERO ─ */
-.hero{
-  display:grid;grid-template-columns:1.3fr .7fr;gap:24px;
-  margin-bottom:20px;
-}
+.hero{display:grid;grid-template-columns:1.3fr .7fr;gap:24px;margin-bottom:20px}
 .hero-main{
   background:var(--bg-1);border:1px solid var(--border);
-  border-radius:var(--radius-lg);padding:36px 40px;
-  position:relative;overflow:hidden;
-}
-.hero-main::before{
-  content:"";position:absolute;top:-80px;right:-80px;
-  width:280px;height:280px;border-radius:50%;
-  background:radial-gradient(circle,rgba(99,179,237,.06),transparent 70%);
-  pointer-events:none;
+  border-radius:var(--radius-lg);padding:36px 40px;position:relative;overflow:hidden;
 }
 .hero-eyebrow{
   display:inline-flex;align-items:center;gap:7px;
@@ -135,509 +116,189 @@ body::after{
   background:var(--cyan-dim);border:1px solid rgba(99,179,237,.2);
   padding:4px 11px;border-radius:999px;
 }
-.hero-eyebrow::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--cyan);flex-shrink:0}
-.hero-main h2{
-  font-family:var(--display);font-size:2.6rem;font-weight:800;
-  line-height:1.08;letter-spacing:-.02em;margin-bottom:14px;
-}
+.hero-eyebrow::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--cyan)}
+.hero-main h2{font-family:var(--display);font-size:2.6rem;font-weight:800;line-height:1.08;margin-bottom:14px}
 .hero-main h2 em{
-  font-style:normal;
-  background:linear-gradient(90deg,var(--cyan-2),var(--purple));
+  font-style:normal;background:linear-gradient(90deg,var(--cyan-2),var(--purple));
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;
 }
-.hero-main p{
-  color:var(--text-2);line-height:1.75;font-size:.9rem;max-width:560px;
-}
-.hero-kpis{
-  display:flex;flex-wrap:wrap;gap:8px;margin-top:28px;
-}
-.kpi{
-  padding:12px 16px;border-radius:10px;
-  background:var(--bg-2);border:1px solid var(--border-soft);
-  min-width:130px;
-}
-.kpi-val{
-  font-family:var(--mono);font-size:1.35rem;font-weight:600;
-  color:var(--text);display:block;line-height:1;margin-bottom:4px;
-}
-.kpi-lbl{color:var(--text-3);font-size:.68rem;letter-spacing:.04em;font-family:var(--display);font-weight:600}
+.hero-main p{color:var(--text-2);line-height:1.75;font-size:.9rem;max-width:560px}
+.hero-kpis{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px}
+.kpi{padding:12px 16px;border-radius:10px;background:var(--bg-2);border:1px solid var(--border-soft);min-width:130px}
+.kpi-val{font-family:var(--mono);font-size:1.35rem;font-weight:600;color:var(--text);display:block;margin-bottom:4px}
+.kpi-lbl{color:var(--text-3);font-size:.68rem;font-family:var(--display);font-weight:600}
 .hero-aside{display:grid;gap:10px;align-content:start}
-.info-card{
-  background:var(--bg-1);border:1px solid var(--border);
-  border-radius:var(--radius-lg);padding:18px 20px;
-}
-.info-card-title{
-  font-family:var(--display);font-size:.68rem;font-weight:700;
-  letter-spacing:.12em;color:var(--text-3);margin-bottom:12px;
-}
-.info-row{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:8px 0;border-bottom:1px solid var(--border-soft);font-size:.8rem;
-}
+.info-card{background:var(--bg-1);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 20px}
+.info-card-title{font-family:var(--display);font-size:.68rem;font-weight:700;letter-spacing:.12em;color:var(--text-3);margin-bottom:12px}
+.info-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border-soft);font-size:.8rem}
 .info-row:last-child{border-bottom:none;padding-bottom:0}
 .info-row span:first-child{color:var(--text-2)}
 .tag-badge{
   font-size:.62rem;padding:3px 8px;border-radius:999px;font-weight:700;
-  font-family:var(--display);letter-spacing:.08em;
-  background:var(--green-dim);color:var(--green);border:1px solid rgba(104,211,145,.2);
+  font-family:var(--display);background:var(--green-dim);color:var(--green);border:1px solid rgba(104,211,145,.2);
 }
 
-/* ─ PIPELINE ─ */
-.section-card{
-  background:var(--bg-1);border:1px solid var(--border);
-  border-radius:var(--radius-lg);margin-bottom:20px;
-  box-shadow:var(--shadow);
-}
-.section-header{
-  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;
-  padding:20px 24px 0;
-}
+.section-card{background:var(--bg-1);border:1px solid var(--border);border-radius:var(--radius-lg);margin-bottom:20px;box-shadow:var(--shadow)}
+.section-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding:20px 24px 0}
 .section-title{font-family:var(--display);font-size:.68rem;font-weight:700;letter-spacing:.14em;color:var(--text-3)}
-.section-sub{font-family:var(--display);font-size:.95rem;font-weight:700;color:var(--text);margin-top:3px;letter-spacing:.01em}
+.section-sub{font-family:var(--display);font-size:.95rem;font-weight:700;color:var(--text);margin-top:3px}
 .pipeline-legend{display:flex;gap:16px;align-items:center}
-.leg{display:flex;align-items:center;gap:6px;font-size:.7rem;color:var(--text-3);font-family:var(--display);font-weight:600;letter-spacing:.04em}
+.leg{display:flex;align-items:center;gap:6px;font-size:.7rem;color:var(--text-3);font-family:var(--display);font-weight:600}
 .leg-dot{width:7px;height:7px;border-radius:50%}
 .leg-dot.active{background:var(--cyan)}
 .leg-dot.done{background:var(--green)}
 .leg-dot.wait{background:rgba(255,255,255,.15)}
-
-.pipeline-flow{
-  display:flex;align-items:center;padding:24px;
-  gap:0;overflow-x:auto;
-}
-.pipeline-flow::-webkit-scrollbar{height:3px}
-.pipeline-flow::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.pipeline-flow{display:flex;align-items:center;padding:24px;overflow-x:auto}
 .pipe-step{display:flex;flex-direction:column;align-items:center;gap:10px;min-width:140px;flex:1;max-width:180px}
 .pipe-box{
-  width:100%;border-radius:var(--radius);
-  background:var(--bg-2);border:1px solid var(--border);
-  padding:18px 12px;
-  display:flex;flex-direction:column;align-items:center;gap:8px;
-  transition:.3s cubic-bezier(.34,1.56,.64,1);cursor:default;
-  position:relative;overflow:hidden;
+  width:100%;border-radius:var(--radius);background:var(--bg-2);border:1px solid var(--border);
+  padding:18px 12px;display:flex;flex-direction:column;align-items:center;gap:8px;transition:.3s ease;
 }
-.pipe-box::before{
-  content:"";position:absolute;inset:0;
-  background:linear-gradient(180deg,rgba(255,255,255,.02),transparent);
-  pointer-events:none;
-}
-.pipe-box.active{
-  border-color:rgba(99,179,237,.4);
-  box-shadow:0 0 0 1px rgba(99,179,237,.15),0 4px 16px rgba(99,179,237,.08);
-  transform:translateY(-2px);
-}
-.pipe-box.done{border-color:rgba(104,211,145,.3);box-shadow:0 0 0 1px rgba(104,211,145,.1)}
-.pipe-icon{font-size:1.6rem;line-height:1}
-.pipe-name{font-family:var(--display);font-size:.78rem;font-weight:700;letter-spacing:.06em;text-align:center}
-.pipe-sub{font-size:.67rem;color:var(--text-3);text-align:center;line-height:1.5}
+.pipe-box.active{border-color:var(--cyan);box-shadow:0 0 12px rgba(99,179,237,.15)}
+.pipe-box.done{border-color:var(--green)}
+.pipe-icon{font-size:1.6rem}
+.pipe-name{font-family:var(--display);font-size:.78rem;font-weight:700;text-align:center}
+.pipe-sub{font-size:.67rem;color:var(--text-3);text-align:center}
 .pipe-badge{
-  font-size:.6rem;font-family:var(--display);font-weight:700;letter-spacing:.08em;
-  padding:2px 8px;border-radius:999px;
-  background:var(--bg-3);border:1px solid var(--border);color:var(--text-3);
-  transition:.25s;
+  font-size:.6rem;font-family:var(--display);font-weight:700;
+  padding:2px 8px;border-radius:999px;background:var(--bg-3);border:1px solid var(--border);color:var(--text-3);
 }
-.pipe-box.active .pipe-badge{background:var(--cyan-dim);border-color:rgba(99,179,237,.3);color:var(--cyan)}
-.pipe-box.done .pipe-badge{background:var(--green-dim);border-color:rgba(104,211,145,.25);color:var(--green)}
-.pipe-arrow{
-  flex-shrink:0;width:40px;height:1px;
-  background:var(--border);position:relative;align-self:center;margin-bottom:26px;
-}
-.pipe-arrow::after{
-  content:"";position:absolute;top:0;left:0;height:1px;width:35%;
-  background:linear-gradient(90deg,var(--cyan),transparent);
-  animation:flow 2.2s linear infinite;
-}
-.pipe-arrow::before{
-  content:"";position:absolute;right:-5px;top:50%;transform:translateY(-50%);
-  width:0;height:0;
-  border-left:5px solid rgba(255,255,255,.15);
-  border-top:3px solid transparent;border-bottom:3px solid transparent;
-}
+.pipe-box.active .pipe-badge{background:var(--cyan-dim);border-color:var(--cyan);color:var(--cyan)}
+.pipe-box.done .pipe-badge{background:var(--green-dim);border-color:var(--green);color:var(--green)}
+.pipe-arrow{width:40px;height:1px;background:var(--border);position:relative;margin-bottom:26px;flex-shrink:0}
+.pipe-arrow::after{content:"";position:absolute;top:0;left:0;height:1px;width:35%;background:linear-gradient(90deg,var(--cyan),transparent);animation:flow 2.2s linear infinite}
 
-/* ─ DASHBOARD GRID ─ */
 .dashboard{display:grid;grid-template-columns:1fr 340px;gap:20px}
 .main-panel{background:var(--bg-1);border:1px solid var(--border);border-radius:var(--radius-lg)}
-.panel-head{
-  padding:20px 24px;border-bottom:1px solid var(--border);
-  display:flex;align-items:center;justify-content:space-between;
-}
-.panel-head-left{}
+.panel-head{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
 .panel-label{font-family:var(--display);font-size:.66rem;font-weight:700;letter-spacing:.14em;color:var(--text-3)}
 .panel-title{font-family:var(--display);font-size:.92rem;font-weight:700;color:var(--text);margin-top:2px}
 
-/* ─ UPLOAD AREA ─ */
 .upload-area{padding:24px}
 .upload-row{display:grid;grid-template-columns:1fr 100px 1fr;gap:20px;align-items:center}
 .drop-zone{
-  min-height:230px;border-radius:var(--radius-lg);
-  border:1.5px dashed var(--border);
-  background:var(--bg-2);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:24px;text-align:center;gap:10px;
-  transition:.2s ease;cursor:pointer;position:relative;overflow:hidden;
+  min-height:230px;border-radius:var(--radius-lg);border:1.5px dashed var(--border);
+  background:var(--bg-2);display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:24px;text-align:center;gap:10px;transition:.2s ease;cursor:pointer;
 }
-.drop-zone::before{
-  content:"";position:absolute;inset:0;
-  background:radial-gradient(circle at 50% 0%,rgba(99,179,237,.04),transparent 60%);
-}
-.drop-zone:hover,.drop-zone.drag{
-  border-color:rgba(99,179,237,.4);
-  background:var(--bg-3);
-}
-.drop-icon{
-  width:44px;height:44px;border-radius:11px;
-  background:var(--bg-3);border:1px solid var(--border);
-  display:flex;align-items:center;justify-content:center;font-size:1.3rem;
-}
-.drop-title{font-family:var(--display);font-size:.88rem;font-weight:700;letter-spacing:.02em}
-.drop-sub{color:var(--text-3);font-size:.75rem;line-height:1.65;max-width:240px}
-.drop-file{color:var(--cyan);font-size:.7rem;font-family:var(--mono);word-break:break-all;max-width:240px}
-.btn-row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
-.btn{
-  font-family:var(--display);font-weight:700;letter-spacing:.04em;
-  font-size:.78rem;cursor:pointer;border:none;transition:.15s ease;
-  border-radius:8px;padding:9px 16px;
-}
-.btn-primary{
-  background:var(--cyan);color:#0a1628;
-}
-.btn-primary:hover{background:var(--cyan-2);transform:translateY(-1px)}
-.btn-ghost{
-  background:var(--bg-3);color:var(--text-2);
-  border:1px solid var(--border);
-}
+.drop-zone:hover{border-color:var(--cyan);background:var(--bg-3)}
+.drop-icon{width:44px;height:44px;border-radius:11px;background:var(--bg-3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.3rem}
+.drop-title{font-family:var(--display);font-size:.88rem;font-weight:700}
+.drop-sub{color:var(--text-3);font-size:.75rem;max-width:240px}
+.btn-row{display:flex;gap:8px;margin-top:10px}
+.btn{font-family:var(--display);font-weight:700;font-size:.78rem;cursor:pointer;border:none;border-radius:8px;padding:9px 16px;transition:.15s}
+.btn-primary{background:var(--cyan);color:#0a1628}
+.btn-primary:hover{background:var(--cyan-2)}
+.btn-ghost{background:var(--bg-3);color:var(--text-2);border:1px solid var(--border)}
 .btn-ghost:hover{border-color:rgba(255,255,255,.12);color:var(--text)}
-.btn:disabled{opacity:.35;cursor:not-allowed;transform:none!important}
 
 .launch-wrap{display:flex;justify-content:center}
 .launch-btn{
   width:84px;height:84px;border-radius:50%;border:none;
   background:linear-gradient(135deg,var(--cyan),var(--purple));
-  color:#fff;font-size:1.8rem;cursor:pointer;
-  transition:.3s cubic-bezier(.34,1.56,.64,1);
-  box-shadow:0 0 0 0 rgba(99,179,237,0);
+  color:#fff;font-size:1.8rem;cursor:pointer;transition:.3s ease;
   display:flex;align-items:center;justify-content:center;
-  font-family:var(--display);
 }
-.launch-btn:hover:not(:disabled){
-  transform:scale(1.08);
-  box-shadow:0 0 0 8px rgba(99,179,237,.12),0 8px 32px rgba(99,179,237,.2);
-}
+.launch-btn:hover:not(:disabled){transform:scale(1.08);box-shadow:0 0 24px rgba(99,179,237,.3)}
 .launch-btn:disabled{opacity:.25;cursor:not-allowed}
 
 .config-panel{display:flex;flex-direction:column;gap:14px}
-.field-label{
-  font-family:var(--display);font-size:.68rem;font-weight:700;
-  letter-spacing:.1em;color:var(--text-3);display:block;margin-bottom:6px;
-}
+.field-label{font-family:var(--display);font-size:.68rem;font-weight:700;color:var(--text-3);margin-bottom:6px}
 select{
-  width:100%;background:var(--bg-2);color:var(--text);
-  border:1px solid var(--border);border-radius:9px;
-  padding:10px 12px;font-size:.82rem;font-family:var(--sans);
-  outline:none;appearance:none;cursor:pointer;
+  width:100%;background:var(--bg-2);color:var(--text);border:1px solid var(--border);
+  border-radius:9px;padding:10px 12px;outline:none;appearance:none;cursor:pointer;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%23718096' stroke-width='1.5' d='m6 8 4 4 4-4'/%3E%3C/svg%3E");
-  background-repeat:no-repeat;background-position:right 10px center;background-size:16px;
-  padding-right:32px;
-  transition:.15s;
+  background-repeat:no-repeat;background-position:right 10px center;background-size:16px;padding-right:32px;
 }
-select:focus{border-color:rgba(99,179,237,.4);box-shadow:0 0 0 3px rgba(99,179,237,.08)}
-select:disabled{opacity:.4;cursor:not-allowed}
-.status-msg{
-  padding:10px 13px;border-radius:9px;font-size:.75rem;
-  background:var(--bg-2);border:1px solid var(--border);
-  color:var(--text-3);line-height:1.5;
-}
+.status-msg{padding:10px 13px;border-radius:9px;font-size:.75rem;background:var(--bg-2);border:1px solid var(--border);color:var(--text-3)}
 .status-msg.ready{color:var(--green);border-color:rgba(104,211,145,.25)}
-.status-msg.warn{color:var(--yellow);border-color:rgba(246,224,94,.2)}
 
-/* ─ WORKSPACE ─ */
-.workspace{display:none;grid-template-columns:1fr 1fr;gap:16px;padding:0 24px 20px}
+.workspace{display:none;grid-template-columns:1fr;gap:16px;padding:0 24px 20px}
 .workspace.show{display:grid}
 .video-card{border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);background:var(--bg-2)}
-.vid-header{
-  display:flex;justify-content:space-between;align-items:center;
-  padding:11px 14px;border-bottom:1px solid var(--border);
-}
-.vid-header strong{font-family:var(--display);font-size:.72rem;font-weight:700;letter-spacing:.1em;color:var(--text-2)}
-.vid-header span{color:var(--text-3);font-size:.66rem;font-family:var(--mono)}
+.vid-header{display:flex;justify-content:space-between;align-items:center;padding:11px 14px;border-bottom:1px solid var(--border)}
+.vid-header strong{font-family:var(--display);font-size:.72rem;color:var(--text-2)}
 .vid-frame{position:relative;aspect-ratio:16/9;background:#000}
-video,iframe#proVideo{width:100%;height:100%;border:none;display:block}
-.overlay-video{position:absolute;inset:0;mix-blend-mode:screen;opacity:.3;display:none;pointer-events:none}
-.overlay-video.show{display:block}
+iframe#proVideo{width:100%;height:100%;border:none;display:block}
 
-/* ─ TOOLBAR ─ */
-.toolbar{
-  display:flex;gap:8px;flex-wrap:wrap;
-  padding:12px 24px 20px;
-}
+.toolbar{display:flex;gap:8px;padding:12px 24px 20px}
 .tool-btn{
-  flex:1;min-width:100px;padding:10px 12px;border-radius:9px;
-  background:var(--bg-2);border:1px solid var(--border);
-  color:var(--text-2);cursor:pointer;transition:.15s ease;
-  font-family:var(--display);font-size:.72rem;font-weight:700;letter-spacing:.04em;
-  display:flex;align-items:center;justify-content:center;gap:6px;
+  flex:1;padding:10px 12px;border-radius:9px;background:var(--bg-2);border:1px solid var(--border);
+  color:var(--text-2);cursor:pointer;font-family:var(--display);font-size:.72rem;font-weight:700;
+  display:flex;align-items:center;justify-content:center;gap:6px;transition:.15s;
 }
-.tool-btn:hover:not(:disabled){border-color:rgba(99,179,237,.25);color:var(--text);background:var(--bg-3)}
-.tool-btn:disabled{opacity:.3;cursor:not-allowed}
-.tool-btn.active{border-color:rgba(99,179,237,.4);background:var(--cyan-dim);color:var(--cyan)}
+.tool-btn:hover:not(:disabled){background:var(--bg-3);color:var(--text)}
+.tool-btn.active{border-color:var(--cyan);background:var(--cyan-dim);color:var(--cyan)}
 
-/* ─ METRICS ─ */
-.metrics-grid{
-  display:grid;grid-template-columns:1fr 1fr;gap:12px;
-  padding:0 24px 16px;
-}
-.metric-tile{
-  border-radius:var(--radius);background:var(--bg-2);border:1px solid var(--border-soft);
-  padding:16px 18px;transition:.2s;
-}
-.metric-tile:hover{border-color:var(--border)}
-.metric-tile-label{
-  font-family:var(--display);font-size:.64rem;font-weight:700;
-  letter-spacing:.12em;color:var(--text-3);margin-bottom:8px;
-}
-.metric-val{
-  font-family:var(--mono);font-size:1.8rem;font-weight:600;
-  line-height:1;margin-bottom:8px;color:var(--text);
-}
+.metrics-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 24px 16px}
+.metric-tile{border-radius:var(--radius);background:var(--bg-2);border:1px solid var(--border-soft);padding:16px 18px}
+.metric-tile-label{font-family:var(--display);font-size:.64rem;font-weight:700;color:var(--text-3);margin-bottom:8px}
+.metric-val{font-family:var(--mono);font-size:1.8rem;font-weight:600;color:var(--text);margin-bottom:8px;line-height:1}
 .bar-track{height:5px;background:rgba(255,255,255,.07);border-radius:999px;overflow:hidden;margin-bottom:8px}
-.bar-fill{height:100%;width:0%;border-radius:999px;background:linear-gradient(90deg,var(--cyan),var(--cyan-2));transition:1s ease}
-.metric-note{font-size:.72rem;color:var(--text-3);line-height:1.6}
+.bar-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--cyan),var(--cyan-2));transition:1s ease}
+.metric-note{font-size:.72rem;color:var(--text-3)}
 
-/* ─ CHARTS ─ */
-.charts-row{
-  display:grid;grid-template-columns:1fr 1fr;gap:12px;
-  padding:0 24px 16px;
-}
-.chart-tile{
-  border-radius:var(--radius);background:var(--bg-2);border:1px solid var(--border-soft);
-  padding:18px;overflow:hidden;
-}
-.chart-tile-label{font-family:var(--display);font-size:.64rem;font-weight:700;letter-spacing:.12em;color:var(--text-3);margin-bottom:2px}
-.chart-tile-title{font-family:var(--display);font-size:.85rem;font-weight:700;color:var(--text);margin-bottom:14px}
-.chart-legend{display:flex;gap:14px;margin-top:10px;justify-content:center}
-.chart-leg{display:flex;align-items:center;gap:5px;font-size:.68rem;color:var(--text-3);font-family:var(--display);font-weight:600}
-.chart-leg-swatch{width:10px;height:3px;border-radius:2px;flex-shrink:0}
-
-/* ─ REPORT ─ */
-.report{
-  margin:0 24px 24px;border-radius:var(--radius-lg);
-  background:var(--bg-2);border:1px solid var(--border);
-  padding:24px;display:none;
-}
+.report{margin:0 24px 24px;border-radius:var(--radius-lg);background:var(--bg-2);border:1px solid var(--border);padding:24px;display:none}
 .report.show{display:block}
-.report-top{
-  display:flex;justify-content:space-between;align-items:flex-start;
-  gap:20px;flex-wrap:wrap;margin-bottom:22px;
-  padding-bottom:22px;border-bottom:1px solid var(--border);
-}
-.score-group{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap}
-.score{
-  font-family:var(--mono);font-size:3.5rem;font-weight:600;line-height:1;
-  background:linear-gradient(90deg,var(--cyan-2),#c4b5fd);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-}
-.tier-pill{
-  padding:5px 13px;border-radius:999px;font-size:.68rem;font-weight:700;
-  font-family:var(--display);letter-spacing:.08em;margin-bottom:5px;align-self:flex-end;
-}
-.tier-pill.elite{background:rgba(246,224,94,.1);color:var(--yellow);border:1px solid rgba(246,224,94,.3)}
-.tier-pill.advanced{background:var(--cyan-dim);color:var(--cyan);border:1px solid rgba(99,179,237,.3)}
-.tier-pill.intermediate{background:var(--purple-dim);color:var(--purple);border:1px solid rgba(183,148,244,.3)}
-.tier-pill.developing{background:rgba(252,129,129,.08);color:var(--red);border:1px solid rgba(252,129,129,.25)}
-.report-sub-text{color:var(--text-3);font-size:.75rem;margin-top:4px;font-family:var(--display);font-weight:600;letter-spacing:.04em}
-.summary-box{
-  flex:1;min-width:240px;max-width:380px;
-  background:var(--bg-3);border:1px solid var(--border-soft);
-  border-radius:var(--radius);padding:16px;
-}
-.summary-box h5{
-  font-family:var(--display);font-size:.68rem;font-weight:700;
-  letter-spacing:.12em;color:var(--cyan);margin-bottom:8px;
-}
-.summary-box p{color:var(--text-2);font-size:.78rem;line-height:1.75}
+.report-top{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap;margin-bottom:22px;padding-bottom:22px;border-bottom:1px solid var(--border)}
+.score{font-family:var(--mono);font-size:3.5rem;font-weight:600;line-height:1;background:linear-gradient(90deg,var(--cyan-2),#c4b5fd);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.tier-pill{padding:5px 13px;border-radius:999px;font-size:.68rem;font-weight:700;font-family:var(--display);background:var(--cyan-dim);color:var(--cyan);border:1px solid rgba(99,179,237,.3)}
+.summary-box{flex:1;min-width:240px;max-width:380px;background:var(--bg-3);border:1px solid var(--border-soft);border-radius:var(--radius);padding:16px}
+.summary-box h5{font-family:var(--display);font-size:.68rem;color:var(--cyan);margin-bottom:8px}
+.summary-box p{color:var(--text-2);font-size:.78rem}
 
-/* Delta table */
 .delta-table{width:100%;border-collapse:collapse;margin-bottom:20px}
-.delta-table th{
-  font-family:var(--display);font-size:.64rem;font-weight:700;letter-spacing:.1em;
-  color:var(--text-3);padding:7px 10px;text-align:left;
-  border-bottom:1px solid var(--border);
-}
+.delta-table th{font-family:var(--display);font-size:.64rem;color:var(--text-3);padding:7px 10px;text-align:left;border-bottom:1px solid var(--border)}
 .delta-table td{padding:10px 10px;font-size:.78rem;border-bottom:1px solid rgba(255,255,255,.03)}
-.delta-table tr:last-child td{border-bottom:none}
-.delta-pos{color:var(--green);font-family:var(--mono);font-size:.75rem;font-weight:600}
-.delta-neg{color:var(--red);font-family:var(--mono);font-size:.75rem;font-weight:600}
-.delta-neutral{color:var(--yellow);font-family:var(--mono);font-size:.75rem;font-weight:600}
-.delta-bar-wrap{width:80px;height:4px;background:rgba(255,255,255,.06);border-radius:999px;overflow:hidden;display:inline-block;vertical-align:middle;margin-left:8px}
-.delta-bar-fill{height:100%;border-radius:999px}
+.delta-pos{color:var(--green);font-family:var(--mono)}
 
-.insights-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
-.insight-card{
-  background:var(--bg-3);border:1px solid var(--border-soft);
-  border-radius:var(--radius);padding:16px;
-}
-.insight-card h5{
-  font-family:var(--display);font-size:.72rem;font-weight:700;
-  letter-spacing:.06em;color:var(--cyan);margin-bottom:7px;
-}
-.insight-card p{color:var(--text-2);font-size:.76rem;line-height:1.7}
-.report-actions{display:flex;gap:8px;flex-wrap:wrap}
-
-/* ─ SIDEBAR ─ */
 .sidebar{display:flex;flex-direction:column;gap:14px}
-.side-card{
-  background:var(--bg-1);border:1px solid var(--border);
-  border-radius:var(--radius-lg);padding:18px 20px;
-}
-.side-title{
-  font-family:var(--display);font-size:.68rem;font-weight:700;
-  letter-spacing:.12em;color:var(--text-3);margin-bottom:16px;
-  display:flex;align-items:center;gap:7px;
-}
-.side-title::before{content:"";width:3px;height:12px;border-radius:2px;background:var(--cyan);flex-shrink:0}
-.live-row{margin-bottom:12px}
-.live-row:last-child{margin-bottom:0}
-.live-meta{display:flex;justify-content:space-between;margin-bottom:5px;align-items:center}
-.live-meta span{font-size:.72rem;color:var(--text-3)}
-.live-meta strong{font-family:var(--mono);font-size:.74rem;color:var(--text-2)}
-.track{height:4px;background:rgba(255,255,255,.06);border-radius:999px;overflow:hidden}
-.fill{height:100%;width:0%;border-radius:999px;transition:.5s ease}
-.fill.c{background:linear-gradient(90deg,var(--cyan),var(--cyan-2))}
-.fill.p{background:linear-gradient(90deg,var(--purple),#d6bcfa)}
-.fill.g{background:linear-gradient(90deg,var(--green),#9ae6b4)}
-
-.log-feed{max-height:240px;overflow-y:auto;display:flex;flex-direction:column;gap:4px}
-.log-feed::-webkit-scrollbar{width:3px}
-.log-feed::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
-.log-item{
-  padding:8px 10px;border-radius:7px;
-  background:var(--bg-2);border:1px solid var(--border-soft);
-  display:flex;gap:8px;align-items:flex-start;
-}
-.log-time{font-family:var(--mono);font-size:.62rem;color:var(--cyan);flex-shrink:0}
-.log-msg{font-size:.72rem;color:var(--text-3);line-height:1.5}
-.session-item{
-  padding:12px;border-radius:9px;background:var(--bg-2);border:1px solid var(--border-soft);
-  margin-bottom:8px;cursor:pointer;transition:.15s;
-}
-.session-item:hover{border-color:rgba(99,179,237,.2);transform:translateX(2px)}
-.session-item:last-child{margin-bottom:0}
-.session-item strong{display:block;font-family:var(--display);font-size:.8rem;font-weight:700;letter-spacing:.02em;margin-bottom:3px}
-.session-item span{display:block;font-size:.68rem;color:var(--text-3)}
-.session-score{
-  display:inline-block;margin-top:5px;padding:2px 8px;
-  background:var(--cyan-dim);color:var(--cyan);border-radius:999px;
-  font-size:.62rem;font-family:var(--mono);font-weight:600;
-}
+.side-card{background:var(--bg-1);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 20px}
+.side-title{font-family:var(--display);font-size:.68rem;font-weight:700;color:var(--text-3);margin-bottom:16px;display:flex;align-items:center;gap:7px}
+.side-title::before{content:"";width:3px;height:12px;background:var(--cyan);border-radius:2px}
+.session-item{padding:12px;border-radius:9px;background:var(--bg-2);border:1px solid var(--border-soft);margin-bottom:8px;cursor:pointer;transition:.15s}
+.session-item:hover{border-color:var(--cyan);transform:translateX(2px)}
+.session-item strong{display:block;font-size:.8rem;color:var(--text-2)}
+.session-score{display:inline-block;margin-top:5px;padding:2px 8px;background:var(--cyan-dim);color:var(--cyan);border-radius:999px;font-size:.62rem;font-family:var(--mono)}
 .empty{color:var(--text-3);font-size:.75rem;text-align:center;padding:14px 0}
 
-/* ─ PROGRESS OVERLAY ─ */
 .progress-overlay{
-  position:fixed;inset:0;background:rgba(9,9,11,.9);
-  backdrop-filter:blur(12px);z-index:999;
+  position:fixed;inset:0;background:rgba(9,9,11,.9);backdrop-filter:blur(12px);z-index:999;
   display:none;align-items:center;justify-content:center;flex-direction:column;gap:18px;
 }
 .progress-overlay.show{display:flex}
-.progress-ring{
-  width:56px;height:56px;border-radius:50%;
-  border:2px solid rgba(99,179,237,.15);border-top-color:var(--cyan);
-  animation:spin .9s linear infinite;
-}
-.progress-label{
-  font-family:var(--display);font-size:.78rem;font-weight:700;
-  letter-spacing:.14em;color:var(--cyan);
-}
-.progress-desc{color:var(--text-3);font-size:.75rem;max-width:360px;text-align:center}
+.progress-ring{width:56px;height:56px;border-radius:50%;border:2px solid rgba(99,179,237,.15);border-top-color:var(--cyan);animation:spin .9s linear infinite}
+.progress-label{font-family:var(--display);font-size:.78rem;font-weight:700;color:var(--cyan)}
 .progress-track{width:240px;height:3px;background:rgba(255,255,255,.06);border-radius:999px;overflow:hidden}
-.progress-fill{height:100%;width:0%;border-radius:999px;background:linear-gradient(90deg,var(--cyan),var(--purple));transition:.35s ease}
+.progress-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--cyan),var(--purple));transition:.35s ease}
 
-/* ─ MODAL ─ */
-.modal-backdrop{
-  position:fixed;inset:0;background:rgba(9,9,11,.75);
-  backdrop-filter:blur(8px);z-index:1100;
-  display:none;align-items:center;justify-content:center;padding:20px;
-}
-.modal-backdrop.show{display:flex;animation:fadeIn .18s ease}
-.modal{
-  background:var(--bg-1);border:1px solid var(--border);
-  border-radius:var(--radius-xl);padding:28px;max-width:460px;width:100%;
-  box-shadow:0 24px 64px rgba(0,0,0,.6);
-}
-.modal h3{
-  font-family:var(--display);font-size:1rem;font-weight:700;
-  letter-spacing:.06em;color:var(--text);margin-bottom:20px;
-  padding-bottom:14px;border-bottom:1px solid var(--border);
-}
+.modal-backdrop{position:fixed;inset:0;background:rgba(9,9,11,.75);backdrop-filter:blur(8px);z-index:1100;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-backdrop.show{display:flex}
+.modal{background:var(--bg-1);border:1px solid var(--border);border-radius:var(--radius-xl);padding:28px;max-width:460px;width:100%}
+.modal h3{font-family:var(--display);font-size:1rem;color:var(--text);margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border)}
 .shortcuts-grid{display:grid;grid-template-columns:auto 1fr;gap:9px 14px;align-items:center}
-.key{
-  font-family:var(--mono);font-size:.72rem;font-weight:600;
-  background:var(--bg-2);border:1px solid var(--border);
-  border-radius:5px;padding:4px 9px;color:var(--text-2);
-  text-align:center;min-width:32px;display:inline-block;
-  box-shadow:0 2px 0 var(--border);
-}
-.key-desc{font-size:.78rem;color:var(--text-3)}
-.modal-close{margin-top:20px;width:100%}
+.key{font-family:var(--mono);font-size:.72rem;background:var(--bg-2);border:1px solid var(--border);border-radius:5px;padding:4px 9px}
 
-/* ─ TOAST ─ */
 .toast{
-  position:fixed;bottom:22px;right:22px;
-  padding:11px 16px;border-radius:10px;
-  background:var(--bg-1);border:1px solid var(--border);
-  box-shadow:var(--shadow);color:var(--text-2);
-  transform:translateY(12px);opacity:0;pointer-events:none;
-  transition:.25s ease;z-index:1200;max-width:320px;
-  font-size:.78rem;line-height:1.5;
+  position:fixed;bottom:22px;right:22px;padding:11px 16px;border-radius:10px;background:var(--bg-1);border:1px solid var(--border);
+  color:var(--text-2);transform:translateY(12px);opacity:0;pointer-events:none;transition:.25s;z-index:1200;font-size:.78rem;
 }
 .toast.show{opacity:1;transform:none}
 .toast.ok{color:var(--green);border-color:rgba(104,211,145,.25)}
-.toast.warn{color:var(--yellow);border-color:rgba(246,224,94,.2)}
-.toast.err{color:var(--red);border-color:rgba(252,129,129,.2)}
 
-/* ─ CONFETTI ─ */
 #confettiCanvas{position:fixed;inset:0;pointer-events:none;z-index:1300;opacity:0;transition:opacity .25s}
 #confettiCanvas.show{opacity:1}
+.footer{margin-top:20px;text-align:center;padding:16px;border-top:1px solid var(--border);font-size:.7rem;color:var(--text-3)}
 
-/* ─ FOOTER ─ */
-.footer{
-  margin-top:20px;text-align:center;padding:16px;
-  border-top:1px solid var(--border);
-  font-size:.7rem;color:var(--text-3);
-}
-.footer a{color:var(--cyan);text-decoration:none;opacity:.7}
-.footer a:hover{opacity:1}
-
-/* ─ RESPONSIVE ─ */
-@media(max-width:1280px){
-  .dashboard{grid-template-columns:1fr}
-  .sidebar{display:grid;grid-template-columns:1fr 1fr}
-}
 @media(max-width:1000px){
-  .hero{grid-template-columns:1fr}
-  .upload-row{grid-template-columns:1fr}
-  .workspace.show{grid-template-columns:1fr}
-  .toolbar{flex-wrap:wrap}
-  .metrics-grid,.charts-row,.insights-row{grid-template-columns:1fr}
-  .pipe-arrow{width:22px}
-  .pipe-sub{display:none}
+  .hero,.upload-row,.workspace.show,.metrics-grid{grid-template-columns:1fr}
 }
-@media(max-width:700px){
-  .container{padding:16px}
-  .hero-main h2{font-size:1.8rem}
-  .sidebar{grid-template-columns:1fr}
-  .pipeline-flow{flex-wrap:wrap;justify-content:center}
-  .pipe-arrow{display:none}
-  .delta-bar-wrap{display:none}
-  .nav{flex-direction:column;align-items:flex-start}
-}
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}}
 </style>
 </head>
 <body>
 <canvas id="confettiCanvas"></canvas>
 <div class="container">
 
-<!-- NAV -->
 <nav class="nav fade-up">
   <div class="brand">
     <div class="brand-mark">🛡</div>
@@ -653,12 +314,11 @@ video,iframe#proVideo{width:100%;height:100%;border:none;display:block}
   </div>
 </nav>
 
-<!-- HERO -->
 <div class="hero fade-up d1">
   <div class="hero-main">
     <div class="hero-eyebrow">AI-powered professional benchmarking</div>
     <h2>Analyze your gameplay against <em>professional players</em></h2>
-    <p>Aegis Insight compares player mechanics, movement patterns, positioning, reaction timing, and combat efficiency against professional-level gameplay footage. Upload your footage and receive a personalized performance report with actionable improvement pathways.</p>
+    <p>Aegis Insight compares player mechanics, movement patterns, positioning, reaction timing, and combat efficiency against professional-level gameplay footage.</p>
     <div class="hero-kpis">
       <div class="kpi"><span class="kpi-val">97.2%</span><span class="kpi-lbl">Pattern Accuracy</span></div>
       <div class="kpi"><span class="kpi-val">14ms</span><span class="kpi-lbl">Frame Sync Latency</span></div>
@@ -671,20 +331,15 @@ video,iframe#proVideo{width:100%;height:100%;border:none;display:block}
       <div class="info-card-title">AI ANALYSIS ENGINE</div>
       <div class="info-row"><span>Crosshair Placement Model</span><span class="tag-badge">ACTIVE</span></div>
       <div class="info-row"><span>Reaction Timing Analyzer</span><span class="tag-badge">ACTIVE</span></div>
-      <div class="info-row"><span>Movement Optimization</span><span class="tag-badge">ACTIVE</span></div>
-      <div class="info-row"><span>Decision Intelligence</span><span class="tag-badge">ACTIVE</span></div>
     </div>
     <div class="info-card">
       <div class="info-card-title">SUPPORTED TITLES</div>
       <div class="info-row"><span>Valorant</span><span class="tag-badge">PRO READY</span></div>
       <div class="info-row"><span>Counter-Strike 2</span><span class="tag-badge">PRO READY</span></div>
-      <div class="info-row"><span>League of Legends</span><span class="tag-badge">PRO READY</span></div>
-      <div class="info-row"><span>Apex Legends</span><span class="tag-badge">PRO READY</span></div>
     </div>
   </div>
 </div>
 
-<!-- PIPELINE -->
 <div class="section-card fade-up d2">
   <div class="section-header">
     <div>
@@ -733,901 +388,333 @@ video,iframe#proVideo{width:100%;height:100%;border:none;display:block}
         <div class="pipe-badge" id="pipeStatus3">PENDING</div>
       </div>
     </div>
-    <div class="pipe-arrow"></div>
-    <div class="pipe-step">
-      <div class="pipe-box" id="pipeStep4">
-        <div class="pipe-icon">📊</div>
-        <div class="pipe-name">REPORT</div>
-        <div class="pipe-sub">Insights & path</div>
-        <div class="pipe-badge" id="pipeStatus4">PENDING</div>
-      </div>
-    </div>
   </div>
 </div>
 
-<!-- DASHBOARD -->
 <div class="dashboard fade-up d3">
-  <main class="main-panel">
+  <div class="main-panel">
     <div class="panel-head">
-      <div class="panel-head-left">
-        <div class="panel-label">INITIALIZATION</div>
-        <div class="panel-title">Session Setup</div>
+      <div>
+        <div class="panel-label">WORKSPACE CONTROLS</div>
+        <div class="panel-title">Video Telemetry Processing Studio</div>
       </div>
     </div>
-
-    <div class="upload-area">
+    
+    <div class="upload-area" id="uploadArea">
       <div class="upload-row">
-        <div class="drop-zone" id="uploadCard">
-          <div class="drop-icon">🎮</div>
-          <div class="drop-title">Upload Gameplay</div>
-          <div class="drop-sub">MP4, MOV, or WEBM · up to 500 MB · 1080p @ 60fps recommended</div>
+        <div class="drop-zone" id="dropZone">
+          <div class="drop-icon">📤</div>
+          <div class="drop-title" id="dropTitle">Click to browse or drop video files here</div>
+          <div class="drop-sub">Supports high framerate competitive captures up to 4K resolution</div>
           <div class="btn-row">
-            <button class="btn btn-primary" id="uploadBtn">Choose File</button>
-            <button class="btn btn-ghost" id="demoBtn">Demo Session</button>
+            <button class="btn btn-ghost" id="demoBtn">⚡ Run Live Sample Session</button>
           </div>
-          <div class="drop-file" id="uploadFile">No gameplay uploaded</div>
-          <input type="file" id="fileInput" accept="video/mp4,video/quicktime,video/webm" hidden/>
         </div>
-
         <div class="launch-wrap">
-          <button class="launch-btn" id="launchBtn" disabled aria-label="Launch analysis">⚡</button>
+          <button class="launch-btn" id="launchBtn" disabled>▶</button>
         </div>
-
         <div class="config-panel">
           <div>
-            <label class="field-label" for="gameSelect">GAME</label>
+            <label class="field-label">BENCHMARK MODEL TARGET</label>
             <select id="gameSelect">
-              <option value="">— Choose game —</option>
-              <option value="valorant">Valorant</option>
-              <option value="cs2">Counter-Strike 2</option>
-              <option value="lol">League of Legends</option>
-              <option value="apex">Apex Legends</option>
+              <option value="val">Valorant (Radiant Pro Dataset)</option>
+              <option value="cs2">Counter-Strike 2 (S-Tier Major Dataset)</option>
             </select>
           </div>
-          <div>
-            <label class="field-label" for="proSelect">PROFESSIONAL BASELINE</label>
-            <select id="proSelect" disabled>
-              <option value="">— Select a game first —</option>
-            </select>
-          </div>
-          <div class="status-msg" id="statusBox">Awaiting gameplay upload and baseline selection…</div>
+          <div class="status-msg ready">Neural engine calibrated and optimized for active profiles.</div>
         </div>
       </div>
     </div>
 
-    <!-- Workspace -->
     <div class="workspace" id="workspace">
       <div class="video-card">
-        <div class="vid-header"><strong>PLAYER FOOTAGE</strong><span id="playerLabel">UNINITIALIZED</span></div>
-        <div class="vid-frame">
-          <video id="playerVideo" controls playsinline preload="metadata"></video>
-          <video id="ghostVideo" class="overlay-video" muted playsinline preload="metadata"></video>
+        <div class="vid-header">
+          <strong id="videoTitle">WORKSPACE ACTIVE</strong>
+          <span>SYNCHRONIZED DEEPSTREAM</span>
         </div>
-      </div>
-      <div class="video-card">
-        <div class="vid-header"><strong>PRO BASELINE</strong><span id="proLabel">REFERENCE MODEL</span></div>
         <div class="vid-frame">
-          <div id="proVideo"></div>
+          <iframe id="proVideo" title="Pro Stream Gameplay" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
         </div>
       </div>
     </div>
 
-    <!-- Toolbar -->
     <div class="toolbar">
-      <button class="tool-btn" id="syncBtn" disabled>▶ Sync Playback</button>
-      <button class="tool-btn" id="pauseBtn" disabled>⏸ Pause</button>
-      <button class="tool-btn" id="ghostBtn" disabled>👻 Ghost Overlay</button>
-      <button class="tool-btn" id="analyzeBtn" disabled>📊 Run Analysis</button>
-      <button class="tool-btn" id="exportBtn" disabled>📥 Export</button>
+      <button class="tool-btn active">📊 Realtime Vector Feed</button>
+      <button class="tool-btn">🎯 Placement Mapping</button>
     </div>
 
-    <!-- Metrics -->
     <div class="metrics-grid">
       <div class="metric-tile">
-        <div class="metric-tile-label">CROSSHAIR ACCURACY</div>
-        <div class="metric-val" id="crosshairVal">0%</div>
-        <div class="bar-track"><div class="bar-fill" id="crosshairBar"></div></div>
-        <div class="metric-note">Pre-aim efficiency, target acquisition, and precision consistency vs. pro reference.</div>
+        <div class="metric-tile-label">AI PRO CONVERGENCE INDEX</div>
+        <div class="metric-val" id="metricVal1">0.0%</div>
+        <div class="bar-track"><div class="bar-fill" id="bar1"></div></div>
+        <div class="metric-note">Measures macro movement path delta against professional positioning indexes.</div>
       </div>
       <div class="metric-tile">
-        <div class="metric-tile-label">MOVEMENT EFFICIENCY</div>
-        <div class="metric-val" id="movementVal">0%</div>
-        <div class="bar-track"><div class="bar-fill" id="movementBar"></div></div>
-        <div class="metric-note">Pathing smoothness, strafing efficiency, and unnecessary movement penalties.</div>
-      </div>
-      <div class="metric-tile">
-        <div class="metric-tile-label">REACTION TIMING</div>
-        <div class="metric-val" id="reactionVal">0ms</div>
-        <div class="bar-track"><div class="bar-fill" id="reactionBar"></div></div>
-        <div class="metric-note">Average decision-to-action latency during high pressure combat interactions.</div>
-      </div>
-      <div class="metric-tile">
-        <div class="metric-tile-label">POSITIONING IQ</div>
-        <div class="metric-val" id="positioningVal">0%</div>
-        <div class="bar-track"><div class="bar-fill" id="positioningBar"></div></div>
-        <div class="metric-note">Spacing, angle control, and map positioning relative to professional standards.</div>
+        <div class="metric-tile-label">REACTION LATENCY RATIO</div>
+        <div class="metric-val" id="metricVal2">0ms</div>
+        <div class="bar-track"><div class="bar-fill" id="bar2"></div></div>
+        <div class="metric-note">Dynamic frame interval timestamp calculation from event trigger to input registration.</div>
       </div>
     </div>
 
-    <!-- Charts -->
-    <div class="charts-row" id="chartsSection" style="display:none">
-      <div class="chart-tile">
-        <div class="chart-tile-label">PERFORMANCE RADAR</div>
-        <div class="chart-tile-title">Player vs Pro Benchmark</div>
-        <div id="radarContainer"></div>
-        <div class="chart-legend">
-          <div class="chart-leg"><div class="chart-leg-swatch" style="background:var(--cyan)"></div>Your Performance</div>
-          <div class="chart-leg"><div class="chart-leg-swatch" style="background:transparent;border:1.5px dashed var(--purple)"></div>Pro Benchmark</div>
-        </div>
-      </div>
-      <div class="chart-tile">
-        <div class="chart-tile-label">PERFORMANCE TIMELINE</div>
-        <div class="chart-tile-title">Consistency Across Segments</div>
-        <div id="timelineContainer"></div>
-        <div class="chart-legend">
-          <div class="chart-leg"><div class="chart-leg-swatch" style="background:var(--cyan)"></div>Your Score</div>
-          <div class="chart-leg"><div class="chart-leg-swatch" style="background:var(--purple)"></div>Pro Average</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Report -->
-    <section class="report" id="report" aria-live="polite">
+    <div class="report" id="report">
       <div class="report-top">
         <div>
-          <div class="score-group">
-            <div class="score" id="overallScore">0%</div>
-            <div class="tier-pill" id="tierBadge">—</div>
-          </div>
-          <div class="report-sub-text">Overall Professional Similarity Score</div>
+          <div class="score" id="reportScore">0</div>
+          <div class="report-sub-text">OVERALL MECHANICAL SCORE</div>
         </div>
+        <div class="tier-pill" id="reportTier">PROCESSING</div>
         <div class="summary-box">
-          <h5>AI PERFORMANCE SUMMARY</h5>
-          <p id="summaryText">Analysis summary generated dynamically.</p>
+          <h5>AI COGNITIVE INSIGHT</h5>
+          <p id="reportSummary">Session data indicates excellent recovery control loops but systemic crosshair placement layout variance.</p>
         </div>
       </div>
-
-      <table class="delta-table" id="deltaTable">
+      <table class="delta-table">
         <thead>
           <tr>
-            <th>METRIC</th><th>YOUR SCORE</th><th>PRO BASELINE</th><th>DELTA</th><th>PROGRESS</th>
+            <th>METRIC SYSTEM</th>
+            <th>YOUR METRIC</th>
+            <th>PRO PERFORMANCE BASELINE</th>
+            <th>VARIANCE DELTA</th>
           </tr>
         </thead>
-        <tbody id="deltaBody"></tbody>
+        <tbody id="reportTableBody"></tbody>
       </table>
+    </div>
+  </div>
 
-      <div class="insights-row">
-        <div class="insight-card"><h5>Mechanics Optimization</h5><p id="insMechanics">—</p></div>
-        <div class="insight-card"><h5>Movement Intelligence</h5><p id="insMovement">—</p></div>
-        <div class="insight-card"><h5>Professional Improvement Path</h5><p id="insPath">—</p></div>
-        <div class="insight-card"><h5>Training Recommendation</h5><p id="insTraining">—</p></div>
-      </div>
-
-      <div class="report-actions">
-        <button class="btn btn-ghost" id="shareBtn">🔗 Share Results</button>
-        <button class="btn btn-ghost" id="exportBtn2">📥 Export JSON</button>
-      </div>
-    </section>
-  </main>
-
-  <!-- SIDEBAR -->
-  <aside class="sidebar fade-up d4">
+  <div class="sidebar">
     <div class="side-card">
-      <div class="side-title">LIVE TELEMETRY</div>
-      <div class="live-row">
-        <div class="live-meta"><span>Frame Alignment</span><strong id="telFrameVal">0%</strong></div>
-        <div class="track"><div class="fill c" id="telFrame"></div></div>
-      </div>
-      <div class="live-row">
-        <div class="live-meta"><span>Movement Smoothness</span><strong id="telMoveVal">0%</strong></div>
-        <div class="track"><div class="fill p" id="telMove"></div></div>
-      </div>
-      <div class="live-row">
-        <div class="live-meta"><span>Input Frequency</span><strong id="telInputVal">— Hz</strong></div>
-        <div class="track"><div class="fill g" id="telInput"></div></div>
-      </div>
-      <div class="live-row">
-        <div class="live-meta"><span>Reaction Stability</span><strong id="telReactVal">— ms</strong></div>
-        <div class="track"><div class="fill c" id="telReact"></div></div>
+      <div class="side-title">HISTORICAL REPORT SESSIONS</div>
+      <div id="sessionsList">
+        <div class="empty">No historical data recorded in local workspace cache.</div>
       </div>
     </div>
-
-    <div class="side-card">
-      <div class="side-title">SYSTEM LOG</div>
-      <div class="log-feed" id="activityLog"></div>
-    </div>
-
-    <div class="side-card">
-      <div class="side-title">RECENT ANALYSES</div>
-      <div id="recentList"><div class="empty">No analyses yet.</div></div>
-    </div>
-  </aside>
+  </div>
 </div>
 
 <footer class="footer">
-  Aegis Insight © 2026 — AI gameplay analytics &amp; professional benchmarking ·
-  <a href="#" id="clearHistory">Clear local history</a>
+  <p>&copy; 2026 Aegis Insight Systems Inc. Powered by Neural Core Engine v4.8.</p>
 </footer>
 </div>
 
-<!-- Toast -->
-<div class="toast" id="toast" role="status" aria-live="polite"></div>
-
-<!-- Progress -->
-<div class="progress-overlay" id="progressOverlay" role="dialog" aria-modal="true">
-  <div class="progress-ring" aria-hidden="true"></div>
-  <div class="progress-label" id="progressText">INITIALIZING NEURAL ENGINE…</div>
-  <div class="progress-desc" id="progressStep">Booting pattern recognition models</div>
-  <div class="progress-track"><div class="progress-fill" id="progressBarFill"></div></div>
+<div class="progress-overlay" id="progressOverlay">
+  <div class="progress-ring"></div>
+  <div class="progress-label" id="progressLabel">PROCESSING INPUT</div>
+  <div class="progress-desc" id="progressDesc">Syncing timeline frames with global telemetry data tables...</div>
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
 </div>
 
-<!-- Shortcuts Modal -->
-<div class="modal-backdrop" id="shortcutsModal" role="dialog" aria-modal="true">
+<div class="modal-backdrop" id="helpModal">
   <div class="modal">
-    <h3>⌨ Keyboard Shortcuts</h3>
+    <h3>WORKFLOW ENVIRONMENT SHORTCUTS</h3>
     <div class="shortcuts-grid">
-      <span class="key">U</span><span class="key-desc">Open file upload dialog</span>
-      <span class="key">D</span><span class="key-desc">Load demo session</span>
-      <span class="key">SPACE</span><span class="key-desc">Play / pause synced playback</span>
-      <span class="key">G</span><span class="key-desc">Toggle ghost overlay</span>
-      <span class="key">A</span><span class="key-desc">Generate AI analysis</span>
-      <span class="key">E</span><span class="key-desc">Export report as JSON</span>
-      <span class="key">S</span><span class="key-desc">Share results to clipboard</span>
-      <span class="key">ESC</span><span class="key-desc">Close this modal</span>
+      <span class="key">D</span><span class="key-desc">Instantly load profile demo streams</span>
+      <span class="key">Space</span><span class="key-desc">Initialize system vector computations</span>
+      <span class="key">Esc</span><span class="key-desc">Dismiss open modal dialog menus</span>
     </div>
-    <button class="btn btn-ghost modal-close" id="modalCloseBtn">Close</button>
+    <button class="btn btn-primary modal-close" id="closeHelpBtn">Close Shortcuts View</button>
   </div>
 </div>
 
+<div class="toast" id="toast">Engine update notification registered successfully.</div>
+
 <script>
-(() => {
-'use strict';
-
-// ─── Data ────────────────────────────────────────────────────────
-const PROS = {
-  valorant:[
-    {id:'tenz',   name:'TenZ',       team:'Sentinels', yt:'mlTiB02-A8U', proScores:{crosshair:94,movement:91,reaction:89,positioning:88,decision:90}},
-    {id:'demon1', name:'Demon1',     team:'EG',        yt:'rQPZC93T8lQ', proScores:{crosshair:96,movement:88,reaction:93,positioning:85,decision:87}},
-    {id:'aspas',  name:'Aspas',      team:'Leviatán',  yt:'mlTiB02-A8U', proScores:{crosshair:92,movement:93,reaction:91,positioning:90,decision:92}},
-  ],
-  cs2:[
-    {id:'s1mple', name:'s1mple',     team:'NAVI',      yt:'mKHyVnPhFtA', proScores:{crosshair:97,movement:90,reaction:95,positioning:93,decision:94}},
-    {id:'zywoo',  name:'ZywOo',      team:'Vitality',  yt:'u12JTXDRodY', proScores:{crosshair:95,movement:92,reaction:90,positioning:94,decision:95}},
-    {id:'donk',   name:'donk',       team:'Spirit',    yt:'u12JTXDRodY', proScores:{crosshair:93,movement:94,reaction:92,positioning:91,decision:90}},
-  ],
-  lol:[
-    {id:'faker',  name:'Faker',      team:'T1',        yt:'a6p8fMBbL8w', proScores:{crosshair:90,movement:95,reaction:94,positioning:97,decision:98}},
-    {id:'chovy',  name:'Chovy',      team:'GenG',      yt:'a6p8fMBbL8w', proScores:{crosshair:92,movement:93,reaction:91,positioning:95,decision:96}},
-    {id:'caps',   name:'Caps',       team:'G2',        yt:'a6p8fMBbL8w', proScores:{crosshair:91,movement:92,reaction:93,positioning:93,decision:94}},
-  ],
-  apex:[
-    {id:'imperialhal',name:'ImperialHal',team:'TSM',   yt:'UpaoivubUXA', proScores:{crosshair:88,movement:96,reaction:90,positioning:97,decision:96}},
-    {id:'genburten',  name:'Genburten',  team:'DZ',    yt:'dr_3jbmrdFY', proScores:{crosshair:93,movement:91,reaction:94,positioning:92,decision:91}},
-    {id:'zer0',       name:'Zer0',       team:'TSM',   yt:'UpaoivubUXA', proScores:{crosshair:90,movement:95,reaction:92,positioning:94,decision:93}},
-  ],
-};
-const DEMO_VIDEO = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
-const MAX_SIZE   = 500*1024*1024;
-
-// ─── YouTube IFrame API (no API key required) ────────────────────
-let ytPlayer=null, ytReady=false, pendingProId=null;
-window.onYouTubeIframeAPIReady=function(){
-  ytPlayer=new YT.Player('proVideo',{
-    playerVars:{modestbranding:1,rel:0,playsinline:1,controls:1},
-    events:{onReady:()=>{ytReady=true; if(pendingProId){loadProVideo(pendingProId); pendingProId=null;}}}
-  });
-};
-(function loadYT(){const s=document.createElement('script');s.src='https://www.youtube.com/iframe_api';document.head.appendChild(s);})();
-function loadProVideo(videoId){
-  if(!ytReady){pendingProId=videoId;return;}
-  try{ytPlayer.loadVideoById({videoId,suggestedQuality:'hd720'});ytPlayer.mute();}catch{}
-}
-function proPlay(){try{ytPlayer&&ytPlayer.playVideo&&ytPlayer.playVideo();}catch{}}
-function proPause(){try{ytPlayer&&ytPlayer.pauseVideo&&ytPlayer.pauseVideo();}catch{}}
-function proSeek(t){try{ytPlayer&&ytPlayer.seekTo&&ytPlayer.seekTo(t,true);}catch{}}
-
-// ─── State ───────────────────────────────────────────────────────
-const state = {
-  file:null, game:'', pro:'',
-  playerSrc:null, proSrc:null,
-  analyzed:false, ghost:false,
-  telemetryTimer:null, lastReport:null,
+const videoDb = {
+  val: {
+    title: "Valorant Radiant Sample Session",
+    embedUrl: "https://www.youtube.com/embed/P66_GWe7p2g?autoplay=1&mute=1&controls=0&loop=1&playlist=P66_GWe7p2g",
+    metrics: { convergence: "89.4%", latency: "142ms", score: 89, tier: "ELITE" },
+    table: [
+      { name: "Crosshair Micro-Placement", user: "4.2 px off", pro: "< 2.0 px", delta: "+2.2 px" },
+      { name: "First Bullet Accuracy Ratio", user: "68.2%", pro: "79.5%", delta: "-11.3%" }
+    ]
+  },
+  cs2: {
+    title: "Counter-Strike 2 Major Session",
+    embedUrl: "https://www.youtube.com/embed/U38Cg_U9rrc?autoplay=1&mute=1&controls=0&loop=1&playlist=U38Cg_U9rrc",
+    metrics: { convergence: "92.1%", latency: "131ms", score: 94, tier: "A-TIER PRO" },
+    table: [
+      { name: "Recoil Pattern Vector Sync", user: "91.4%", pro: "96.8%", delta: "-5.4%" },
+      { name: "Prefire Placement Delta", user: "12ms", pro: "8ms", delta: "+4ms" }
+    ]
+  }
 };
 
-// ─── Utils ───────────────────────────────────────────────────────
-const $  = id => document.getElementById(id);
-const fmtTime = () => new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'});
-const clamp = (n,a,b) => Math.max(a,Math.min(b,n));
-const seeded = seed => { let s=seed; return ()=>{s=(s*9301+49297)%233280;return s/233280;}; };
-const lerp = (a,b,t) => a+(b-a)*t;
+let loadedData = null;
+let historicalSessionsCount = 0;
 
-function toast(msg,type=''){
-  const t=$('toast');
-  t.textContent=msg; t.className='toast show'+(type?' '+type:'');
-  clearTimeout(toast._t);
-  toast._t=setTimeout(()=>t.className='toast',3400);
-}
-function log(msg){
-  const el=document.createElement('div');
-  el.className='log-item';
-  el.innerHTML=`<time>${fmtTime()}</time><span>${msg}</span>`;
-  $('activityLog').prepend(el);
-  const items=$('activityLog').children;
-  while(items.length>30)items[items.length-1].remove();
+const el = (id) => document.getElementById(id);
+
+function showToast(msg, type='ok') {
+  const t = el('toast');
+  t.innerText = msg;
+  t.className = `toast show ${type}`;
+  setTimeout(() => t.classList.remove('show'), 3000);
 }
 
-// ─── Pipeline ────────────────────────────────────────────────────
-function setPipelineStep(idx, state){
-  // state: 'active'|'complete'|'pending'
-  const box = $(`pipeStep${idx}`);
-  const statusEl = $(`pipeStatus${idx}`);
-  if(!box) return;
-  box.className = 'step-box' + (state==='active'?' active':state==='complete'?' complete':'');
-  statusEl.textContent = state==='active'?'PROCESSING…':state==='complete'?'COMPLETE':'PENDING';
-}
-function resetPipeline(){
-  for(let i=0;i<5;i++) setPipelineStep(i,'pending');
-  setPipelineStep(0,'pending');
-  $('pipeStatus0').textContent = 'WAITING';
-}
-function activateUpload(){
-  setPipelineStep(0,'active');
-  $('pipeStatus0').textContent = 'LOADED';
-  setTimeout(()=>setPipelineStep(0,'complete'),600);
-}
+el('helpBtn').addEventListener('click', () => el('helpModal').classList.add('show'));
+el('closeHelpBtn').addEventListener('click', () => el('helpModal').classList.remove('show'));
+el('helpModal').addEventListener('click', (e) => { if(e.target === el('helpModal')) el('helpModal').classList.remove('show'); });
 
-// ─── Pro Select ──────────────────────────────────────────────────
-$('gameSelect').addEventListener('change',e=>{
-  state.game=e.target.value;
-  const sel=$('proSelect');
-  sel.innerHTML='';
-  if(!state.game){
-    sel.disabled=true;
-    sel.innerHTML='<option value="">— Select a game first —</option>';
-  } else {
-    sel.disabled=false;
-    sel.innerHTML='<option value="">— Choose a professional —</option>'+
-      PROS[state.game].map(p=>`<option value="${p.id}">${p.name} · ${p.team}</option>`).join('');
-    log(`Game selected: ${e.target.options[e.target.selectedIndex].text}`);
-  }
-  state.pro='';
-  refreshReadiness();
-});
-$('proSelect').addEventListener('change',e=>{
-  state.pro=e.target.value;
-  if(state.pro){
-    const proObj=PROS[state.game].find(p=>p.id===state.pro);
-    $('proLabel').textContent=`${proObj.name.toUpperCase()} · ${proObj.team}`;
-    state.proSrc=proObj.yt;
-    loadProVideo(proObj.yt);
-    log(`Pro baseline loaded: ${proObj.name}`);
-  }
-  refreshReadiness();
+el('demoBtn').addEventListener('click', (e) => {
+  e.stopPropagation();
+  const selectedGame = el('gameSelect').value;
+  loadedData = videoDb[selectedGame];
+  el('dropTitle').innerText = `Loaded Context: ${loadedData.title}`;
+  el('launchBtn').removeAttribute('disabled');
+  showToast("Demo configuration telemetry initialized.", "ok");
 });
 
-// ─── Upload ──────────────────────────────────────────────────────
-const card=$('uploadCard');
-$('uploadBtn').addEventListener('click',()=>$('fileInput').click());
-$('fileInput').addEventListener('change',e=>handleFile(e.target.files[0]));
-['dragenter','dragover'].forEach(ev=>card.addEventListener(ev,e=>{e.preventDefault();card.classList.add('drag');}));
-['dragleave','drop'].forEach(ev=>card.addEventListener(ev,e=>{e.preventDefault();card.classList.remove('drag');}));
-card.addEventListener('drop',e=>{if(e.dataTransfer.files[0])handleFile(e.dataTransfer.files[0]);});
+el('launchBtn').addEventListener('click', startAnalysisPipeline);
 
-function handleFile(file){
-  if(!file) return;
-  if(!file.type.startsWith('video/')) return toast('Unsupported file. Use MP4, MOV, or WEBM.','error');
-  if(file.size>MAX_SIZE) return toast('File too large. Max 500 MB.','error');
-  state.file=file;
-  state.playerSrc=URL.createObjectURL(file);
-  $('uploadFile').textContent=`✓ ${file.name} · ${(file.size/1024/1024).toFixed(1)} MB`;
-  $('playerVideo').src=state.playerSrc;
-  $('ghostVideo').src=state.playerSrc;
-  $('playerLabel').textContent='PLAYER · LOADED';
-  toast('Gameplay loaded successfully.','success');
-  log(`Uploaded: ${file.name}`);
-  activateUpload();
-  refreshReadiness();
-}
-$('demoBtn').addEventListener('click',()=>{
-  state.file={name:'demo-session.mp4',size:42*1024*1024};
-  state.playerSrc=DEMO_VIDEO;
-  $('uploadFile').textContent='✓ demo-session.mp4 (sample footage)';
-  $('playerVideo').src=DEMO_VIDEO;
-  $('ghostVideo').src=DEMO_VIDEO;
-  $('playerLabel').textContent='PLAYER · DEMO';
-  toast('Demo session loaded.','success');
-  log('Demo session initialized');
-  activateUpload();
-  refreshReadiness();
-});
-
-function refreshReadiness(){
-  const ready=state.file&&state.game&&state.pro;
-  $('launchBtn').disabled=!ready;
-  const status=$('statusBox');
-  if(ready){
-    status.textContent='✓ Ready. Press ⚡ to enter the analysis workspace.';
-    status.className='status ready';
-  } else {
-    const missing=[];
-    if(!state.file) missing.push('upload');
-    if(!state.game) missing.push('game');
-    if(!state.pro)  missing.push('pro baseline');
-    status.textContent=`Awaiting: ${missing.join(', ')}.`;
-    status.className='status'+(missing.length===1?' warn':'');
-  }
-}
-
-// ─── Launch ──────────────────────────────────────────────────────
-$('launchBtn').addEventListener('click',launch);
-function launch(){
-  $('workspace').classList.add('show');
-  ['syncBtn','pauseBtn','ghostBtn','analyzeBtn'].forEach(id=>$(id).disabled=false);
-  startTelemetry();
-  setPipelineStep(1,'active');
-  setTimeout(()=>setPipelineStep(1,'complete'),1200);
-  log('Workspace initialized · telemetry streaming');
-  toast('Analysis workspace ready.','success');
-  $('workspace').scrollIntoView({behavior:'smooth',block:'start'});
-}
-
-// ─── Playback ────────────────────────────────────────────────────
-$('syncBtn').addEventListener('click',()=>{
-  const p=$('playerVideo'),g=$('ghostVideo');
-  try{p.currentTime=0;p.play();}catch{}
-  proSeek(0);proPlay();
-  if(state.ghost){try{g.currentTime=0;g.play();}catch{}}
-  log('Sync playback started');
-});
-$('pauseBtn').addEventListener('click',()=>{
-  ['playerVideo','ghostVideo'].forEach(id=>$(id).pause());
-  proPause();
-  log('Session paused');
-});
-$('ghostBtn').addEventListener('click',()=>{
-  state.ghost=!state.ghost;
-  $('ghostVideo').classList.toggle('show',state.ghost);
-  $('ghostBtn').classList.toggle('active',state.ghost);
-  if(state.ghost){$('ghostVideo').currentTime=$('playerVideo').currentTime;$('ghostVideo').play().catch(()=>{});}
-  else $('ghostVideo').pause();
-  toast(`Ghost overlay ${state.ghost?'enabled':'disabled'}.`);
-  log(`Ghost overlay ${state.ghost?'ON':'OFF'}`);
-});
-
-// ─── Telemetry ───────────────────────────────────────────────────
-function startTelemetry(){
-  if(state.telemetryTimer) return;
-  const set=(id,val,suffix='%')=>{
-    $(id).style.width=clamp(val,0,100)+'%';
-    $(id+'Val').textContent=Math.round(val)+suffix;
-  };
-  state.telemetryTimer=setInterval(()=>{
-    set('telFrame',78+Math.random()*20);
-    set('telMove', 60+Math.random()*35);
-    const hz=Math.round(90+Math.random()*40);
-    $('telInput').style.width=clamp(hz/2,0,100)+'%';
-    $('telInputVal').textContent=hz+' Hz';
-    const ms=Math.round(170+Math.random()*120);
-    $('telReact').style.width=clamp(100-(ms-140)/4,0,100)+'%';
-    $('telReactVal').textContent=ms+' ms';
-  },1400);
-}
-
-// ─── Analysis ────────────────────────────────────────────────────
-$('analyzeBtn').addEventListener('click',runAnalysis);
-
-const STEPS=[
-  [2,'Extracting frame metadata…'],
-  [2,'Aligning player & pro timelines…'],
-  [3,'Computing crosshair drift vectors…'],
-  [3,'Modeling movement entropy…'],
-  [4,'Estimating reaction distributions…'],
-  [4,'Scoring positional IQ…'],
-  [5,'Synthesizing performance report…'],
-];
-
-async function runAnalysis(){
-  $('analyzeBtn').disabled=true;
-  const ov=$('progressOverlay');
-  ov.classList.add('show');
-  const fill=$('progressBarFill');
-  for(let i=0;i<STEPS.length;i++){
-    const [pipeIdx,stepText]=STEPS[i];
-    $('progressText').textContent=`STAGE ${i+1}/${STEPS.length}`;
-    $('progressStep').textContent=stepText;
-    fill.style.width=Math.round((i+1)/STEPS.length*100)+'%';
-    // Activate pipeline step
-    if(pipeIdx<=4) setPipelineStep(pipeIdx-1,'active');
-    await new Promise(r=>setTimeout(r,520));
-    if(pipeIdx<=4) setPipelineStep(pipeIdx-1,'complete');
-  }
-  setPipelineStep(4,'complete');
-  ov.classList.remove('show');
-
-  // Scores
-  const seed=(state.file?.name?.length||7)*31+state.pro.length*13;
-  const rand=seeded(seed||1);
-  const crosshair  =Math.round(58+rand()*38);
-  const movement   =Math.round(55+rand()*40);
-  const reactionMs =Math.round(155+rand()*130);
-  const positioning=Math.round(52+rand()*42);
-  const decision   =Math.round(54+rand()*38);
-  const reactionScore=clamp(100-(reactionMs-140)/2,0,100);
-  const overall=Math.round((crosshair+movement+reactionScore+positioning+decision)/5);
-
-  animateMetric('crosshairVal','crosshairBar',crosshair,'%');
-  animateMetric('movementVal','movementBar',movement,'%');
-  animateMetric('reactionVal','reactionBar',reactionMs,'ms',reactionScore);
-  animateMetric('positioningVal','positioningBar',positioning,'%');
-  animateScore(overall);
-
-  const proObj=PROS[state.game].find(p=>p.id===state.pro);
-  const summary=buildSummary(overall,proObj);
-
-  // Tier
-  const tier=overall>=85?'elite':overall>=70?'advanced':overall>=55?'intermediate':'developing';
-  const tierLabels={elite:'⭐ ELITE TIER',advanced:'◆ ADVANCED',intermediate:'▲ INTERMEDIATE',developing:'▶ DEVELOPING'};
-  const tierEl=$('tierBadge');
-  tierEl.textContent=tierLabels[tier];
-  tierEl.className='tier-badge '+tier;
-
-  $('summaryText').textContent=summary.summary;
-  $('insMechanics').textContent=summary.mechanics;
-  $('insMovement').textContent=summary.movement;
-  $('insPath').textContent=summary.path;
-  $('insTraining').textContent=summary.training;
-
-  // Delta table
-  buildDeltaTable({crosshair,movement,reactionScore,positioning,decision},proObj.proScores);
-
-  // Charts
-  const allScores={crosshair,movement,reaction:reactionScore,positioning,decision};
-  $('chartsSection').style.display='grid';
-  buildRadarChart(allScores, proObj.proScores);
-  buildTimelineChart(overall, rand);
-
-  $('report').classList.add('show');
-  $('exportBtn').disabled=false;
-  $('analyzeBtn').disabled=false;
-  state.analyzed=true;
-
-  state.lastReport={
-    timestamp:new Date().toISOString(),
-    file:state.file?.name, game:state.game,
-    pro:proObj.name, team:proObj.team, tier,
-    metrics:{crosshair,movement,reactionMs,reactionScore,positioning,decision,overall},
-    summary,
-  };
-  saveSession(state.lastReport);
-  log(`Analysis complete · ${overall}% similarity to ${proObj.name}`);
-  toast(`Analysis ready · ${overall}% pro-similarity`,'success');
-  if(overall>=78) triggerConfetti();
-  $('chartsSection').scrollIntoView({behavior:'smooth',block:'start'});
-}
-
-function animateMetric(valId,barId,target,suffix,fillPct){
-  const v=$(valId),b=$(barId);
-  const start=performance.now(),dur=950;
-  const tick=now=>{
-    const t=clamp((now-start)/dur,0,1);
-    const e=1-Math.pow(1-t,3);
-    v.textContent=Math.round(target*e)+suffix;
-    b.style.width=(fillPct??target)*e+'%';
-    if(t<1)requestAnimationFrame(tick);
-    else v.textContent=target+suffix;
-  };
-  requestAnimationFrame(tick);
-}
-function animateScore(target){
-  const el=$('overallScore'),start=performance.now(),dur=1200;
-  const tick=now=>{
-    const t=clamp((now-start)/dur,0,1);
-    const e=1-Math.pow(1-t,3);
-    el.textContent=Math.round(target*e)+'%';
-    if(t<1)requestAnimationFrame(tick);
-  };
-  requestAnimationFrame(tick);
-}
-
-function buildSummary(score,pro){
-  const tier=score>=85?'elite':score>=70?'advanced':score>=55?'intermediate':'developing';
-  return{
-    summary:`Your gameplay aligns at a ${tier} level against ${pro.name} (${pro.team}). The neural engine detected ${score}% pattern similarity across mechanics, movement, reaction, and positioning vectors.`,
-    mechanics:score>=70
-      ?'Crosshair discipline and target acquisition are strong. Focus on micro-correction reduction during sustained engagements.'
-      :'Pre-aim placement drifts off common angles. Drill 15 minutes of aim-trainer routines focused on flick recovery and tracking.',
-    movement:score>=65
-      ?'Movement entropy is within professional bounds. Tighten counter-strafing windows to remove residual frames.'
-      :'Excess movement detected during peeks. Practice stop-to-shoot timing and reduce unnecessary repositioning.',
-    path:`Aim to close the gap with ${pro.name} by replicating their utility-first map traversal and tempo control. Estimated runway: ${score>=75?'2–4 weeks':'6–10 weeks'} of focused VOD review.`,
-    training:score>=70
-      ?'Daily routine: 20 min aim-trainer · 30 min ranked with VOD review · 10 min utility lineups.'
-      :'Daily routine: 30 min aim-trainer · 20 min deathmatch · 15 min movement drills · 1 VOD review.',
-  };
-}
-
-// ─── Delta Table ─────────────────────────────────────────────────
-function buildDeltaTable(player,pro){
-  const rows=[
-    ['CROSSHAIR ACCURACY', player.crosshair, pro.crosshair, '%'],
-    ['MOVEMENT EFFICIENCY',player.movement,  pro.movement,  '%'],
-    ['REACTION SCORE',     player.reactionScore, pro.reaction,'%'],
-    ['POSITIONING IQ',     player.positioning, pro.positioning,'%'],
-    ['DECISION MAKING',    player.decision,  pro.decision,  '%'],
+function startAnalysisPipeline() {
+  if(!loadedData) return;
+  el('launchBtn').setAttribute('disabled', 'true');
+  const overlay = el('progressOverlay');
+  const fill = el('progressFill');
+  const label = el('progressLabel');
+  
+  overlay.classList.add('show');
+  
+  const steps = [
+    { p: 25, txt: "EXTRACTING KEYFRAMES", desc: "Isolating canvas stream data structures..." },
+    { p: 50, txt: "NEURAL VECTOR TRANSLATION", desc: "Processing crosshair vector positioning tables..." },
+    { p: 75, txt: "PRO MODEL MATRIX MATCH", desc: "Cross-referencing telemetry points with model vectors..." },
+    { p: 100, txt: "FINALIZING SYNCHRONIZATION", desc: "Compiling final baseline metrics..." }
   ];
-  $('deltaBody').innerHTML=rows.map(([label,p,pr,unit])=>{
-    const delta=p-pr;
-    const cls=delta>=0?'delta-pos':delta>=-10?'delta-neutral':'delta-neg';
-    const sign=delta>=0?'+':'';
-    const fillW=clamp(p,0,100);
-    return`<tr>
-      <td>${label}</td>
-      <td><strong>${p}${unit}</strong></td>
-      <td style="color:var(--muted)">${pr}${unit}</td>
-      <td><span class="${cls}">${sign}${delta}${unit}</span></td>
-      <td>
-        <div class="delta-bar-wrap">
-          <div class="delta-bar-fill" style="width:${fillW}%;background:${delta>=0?'linear-gradient(90deg,var(--green),#7cffb2)':'linear-gradient(90deg,var(--red),#ff8fa0)'}"></div>
-        </div>
-      </td>
-    </tr>`;
-  }).join('');
-}
 
-// ─── Radar Chart ─────────────────────────────────────────────────
-function buildRadarChart(player, pro){
-  const labels=['CROSSHAIR','MOVEMENT','REACTION','POSITION','DECISION'];
-  const pScores=[player.crosshair,player.movement,player.reaction,player.positioning,player.decision];
-  const prScores=[pro.crosshair,pro.movement,pro.reaction,pro.positioning,pro.decision];
-  const N=5, cx=180, cy=175, R=130;
-  const angles=Array.from({length:N},(_,i)=>-Math.PI/2+(2*Math.PI*i/N));
-  const pt=(ang,val)=>({x:cx+val/100*R*Math.cos(ang),y:cy+val/100*R*Math.sin(ang)});
-
-  // grid rings
-  const gridSVG=[25,50,75,100].map(pct=>{
-    const pts=angles.map(a=>pt(a,pct));
-    return`<polygon points="${pts.map(p=>`${p.x},${p.y}`).join(' ')}" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="1"/>`;
-  }).join('');
-
-  // spokes
-  const spokesSVG=angles.map(a=>{
-    const p=pt(a,100);
-    return`<line x1="${cx}" y1="${cy}" x2="${p.x}" y2="${p.y}" stroke="rgba(255,255,255,.1)" stroke-width="1"/>`;
-  }).join('');
-
-  // pro polygon
-  const prPts=angles.map((a,i)=>pt(a,prScores[i]));
-  const prPoly=`<polygon points="${prPts.map(p=>`${p.x},${p.y}`).join(' ')}"
-    fill="rgba(143,92,255,.1)" stroke="rgba(143,92,255,.7)" stroke-width="1.5" stroke-dasharray="5,3"/>`;
-
-  // player polygon (animated)
-  const pPts=angles.map((a,i)=>pt(a,pScores[i]));
-  const pPoly=`<polygon id="radarPlayer" points="${angles.map(a=>cx+','+cy).join(' ')}"
-    fill="rgba(0,247,255,.18)" stroke="rgba(0,247,255,.9)" stroke-width="2">
-    <animate attributeName="points" dur=".9s" fill="freeze"
-      from="${angles.map(a=>cx+','+cy).join(' ')}"
-      to="${pPts.map(p=>`${p.x},${p.y}`).join(' ')}"/>
-  </polygon>`;
-
-  // dots
-  const dots=pPts.map(p=>`<circle cx="${p.x}" cy="${p.y}" r="4" fill="var(--cyan)" stroke="#050816" stroke-width="1.5"/>`).join('');
-
-  // labels
-  const labelOffset=18;
-  const labelsSVG=angles.map((a,i)=>{
-    const p=pt(a,100+labelOffset/R*100);
-    const anchor=Math.cos(a)>0.1?'start':Math.cos(a)<-0.1?'end':'middle';
-    return`<text x="${p.x}" y="${p.y}" text-anchor="${anchor}" dominant-baseline="middle" class="radar-label">${labels[i]}</text>`;
-  }).join('');
-
-  // center dot
-  const center=`<circle cx="${cx}" cy="${cy}" r="3" fill="rgba(0,247,255,.4)"/>`;
-
-  const svgH=360;
-  const svg=`<svg viewBox="0 0 360 ${svgH}" xmlns="http://www.w3.org/2000/svg" style="overflow:visible">
-    ${gridSVG}${spokesSVG}${prPoly}${pPoly}${dots}${center}${labelsSVG}
-  </svg>`;
-  $('radarContainer').innerHTML=svg;
-}
-
-// ─── Timeline Chart ──────────────────────────────────────────────
-function buildTimelineChart(overall, rand){
-  const segments=8;
-  const pScores=Array.from({length:segments},()=>Math.round(clamp(overall+(rand()-0.5)*24,20,100)));
-  const prScores=Array.from({length:segments},()=>Math.round(clamp(88+(rand()-0.5)*10,70,100)));
-
-  const svgW=340,svgH=200;
-  const padL=36,padB=28,padT=12,padR=10;
-  const chartW=svgW-padL-padR;
-  const chartH=svgH-padB-padT;
-  const barGroupW=chartW/segments;
-  const barW=Math.floor(barGroupW*0.38);
-
-  // y-axis grid + labels
-  const gridLines=[0,25,50,75,100].map(v=>{
-    const y=padT+chartH*(1-v/100);
-    return`<line x1="${padL}" y1="${y}" x2="${svgW-padR}" y2="${y}" stroke="rgba(255,255,255,.06)" stroke-width="1"/>
-           <text x="${padL-6}" y="${y+4}" text-anchor="end" class="timeline-y-label">${v}</text>`;
-  }).join('');
-
-  // bars
-  const bars=pScores.map((ps,i)=>{
-    const prs=prScores[i];
-    const x=padL+i*barGroupW+barGroupW*0.12;
-    const yP=padT+chartH*(1-ps/100);
-    const hP=chartH*ps/100;
-    const yPr=padT+chartH*(1-prs/100);
-    const hPr=chartH*prs/100;
-    const dur=0.4+i*0.07;
-    const timeLabel=`${i*12}s`;
-    return`
-      <rect x="${x}" y="${yP}" width="${barW}" height="${hP}" rx="3"
-        fill="url(#barGradP)" opacity=".9"
-        transform-origin="${x+barW/2} ${padT+chartH}"
-        style="animation:barRise ${dur}s ease both;animation-delay:${i*0.06}s"/>
-      <rect x="${x+barW+3}" y="${yPr}" width="${barW}" height="${hPr}" rx="3"
-        fill="url(#barGradPr)" opacity=".75"
-        transform-origin="${x+barW+3+barW/2} ${padT+chartH}"
-        style="animation:barRise ${dur}s ease both;animation-delay:${i*0.06+0.15}s"/>
-      <text x="${x+barW+1}" y="${svgH-padB+14}" text-anchor="middle" class="timeline-x-label">${timeLabel}</text>
-    `;
-  }).join('');
-
-  // baseline pro avg line
-  const avgPro=Math.round(prScores.reduce((a,b)=>a+b,0)/segments);
-  const avgY=padT+chartH*(1-avgPro/100);
-  const avgLine=`<line x1="${padL}" y1="${avgY}" x2="${svgW-padR}" y2="${avgY}"
-    stroke="rgba(143,92,255,.5)" stroke-width="1" stroke-dasharray="4,3"/>`;
-
-  const svg=`<svg viewBox="0 0 ${svgW} ${svgH}" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <linearGradient id="barGradP" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#00f7ff"/>
-        <stop offset="100%" stop-color="rgba(0,247,255,.3)"/>
-      </linearGradient>
-      <linearGradient id="barGradPr" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#8f5cff"/>
-        <stop offset="100%" stop-color="rgba(143,92,255,.2)"/>
-      </linearGradient>
-    </defs>
-    ${gridLines}${bars}${avgLine}
-    <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${padT+chartH}" stroke="rgba(255,255,255,.12)" stroke-width="1"/>
-    <line x1="${padL}" y1="${padT+chartH}" x2="${svgW-padR}" y2="${padT+chartH}" stroke="rgba(255,255,255,.12)" stroke-width="1"/>
-  </svg>`;
-  $('timelineContainer').innerHTML=svg;
-}
-
-// ─── Sessions ────────────────────────────────────────────────────
-const STORE='aegis-sessions-v2';
-function loadSessions(){try{return JSON.parse(localStorage.getItem(STORE)||'[]');}catch{return[];}}
-function saveSession(r){
-  const list=loadSessions();
-  list.unshift(r);
-  localStorage.setItem(STORE,JSON.stringify(list.slice(0,10)));
-  renderSessions();
-}
-function renderSessions(){
-  const list=loadSessions();
-  $('heroSessions').textContent=list.length;
-  const el=$('recentList');
-  if(!list.length){el.innerHTML='<div class="empty-state">No analyses yet. Run your first session to populate history.</div>';return;}
-  el.innerHTML=list.map((r,i)=>`
-    <div class="session-item" data-i="${i}">
-      <strong>${r.pro} · ${r.team}</strong>
-      <span>${new Date(r.timestamp).toLocaleString()}</span>
-      <span style="color:var(--muted);font-size:.74rem">${r.game?.toUpperCase()||'—'} · ${r.file||'session'}</span>
-      <span class="score-badge">${r.metrics.overall}% similarity</span>
-    </div>`).join('');
-  el.querySelectorAll('.session-item').forEach(node=>{
-    node.addEventListener('click',()=>{
-      const r=loadSessions()[+node.dataset.i];
-      toast(`Snapshot: ${r.pro} · ${r.tier?.toUpperCase()||''} · ${r.metrics.overall}%`);
-    });
+  steps.forEach((step, idx) => {
+    setTimeout(() => {
+      fill.style.width = `${step.p}%`;
+      label.innerText = step.txt;
+      el('progressDesc').innerText = step.desc;
+      
+      const pipeBox = el(`pipeStep${idx}`);
+      const pipeBadge = el(`pipeStatus${idx}`);
+      if(pipeBox && pipeBadge) {
+        pipeBox.className = "pipe-box active";
+        pipeBadge.innerText = "ACTIVE";
+      }
+      if(idx > 0) {
+        const prevBox = el(`pipeStep${idx-1}`);
+        const prevBadge = el(`pipeStatus${idx-1}`);
+        if(prevBox && prevBadge) {
+          prevBox.className = "pipe-box done";
+          prevBadge.innerText = "DONE";
+        }
+      }
+    }, idx * 1000);
   });
-}
-$('clearHistory').addEventListener('click',e=>{
-  e.preventDefault();
-  if(confirm('Clear local analysis history?')){localStorage.removeItem(STORE);renderSessions();toast('History cleared.');}
-});
 
-// ─── Export ──────────────────────────────────────────────────────
-function doExport(){
-  if(!state.lastReport) return;
-  const blob=new Blob([JSON.stringify(state.lastReport,null,2)],{type:'application/json'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  a.href=url; a.download=`aegis-report-${Date.now()}.json`; a.click();
-  URL.revokeObjectURL(url);
-  toast('Report exported.','success');
-  log('Report exported as JSON');
+  setTimeout(() => {
+    overlay.classList.remove('show');
+    const lastBox = el('pipeStep3');
+    const lastBadge = el('pipeStatus3');
+    if(lastBox && lastBadge) {
+      lastBox.className = "pipe-box done";
+      lastBadge.innerText = "DONE";
+    }
+    displayTelemetryWorkspace();
+  }, steps.length * 1000);
 }
-$('exportBtn').addEventListener('click',doExport);
-$('exportBtn2').addEventListener('click',doExport);
 
-// ─── Share ───────────────────────────────────────────────────────
-function doShare(){
-  if(!state.lastReport){toast('Run an analysis first.','warn');return;}
-  const r=state.lastReport;
-  const txt=`🛡 Aegis Insight Analysis\n`+
-    `Game: ${r.game?.toUpperCase()} vs ${r.pro} (${r.team})\n`+
-    `Overall: ${r.metrics.overall}% · ${r.tier?.toUpperCase()}\n`+
-    `Crosshair: ${r.metrics.crosshair}% · Movement: ${r.metrics.movement}% · Reaction: ${r.metrics.reactionMs}ms · Positioning: ${r.metrics.positioning}%`;
-  navigator.clipboard.writeText(txt).then(()=>toast('Results copied to clipboard!','success')).catch(()=>toast('Copy failed — try manual export.','error'));
-}
-$('shareBtn').addEventListener('click',doShare);
+function displayTelemetryWorkspace() {
+  el('uploadArea').style.display = 'none';
+  el('workspace').classList.add('show');
+  
+  const iframe = el('proVideo');
+  iframe.src = loadedData.embedUrl;
+  el('videoTitle').innerText = loadedData.title.toUpperCase();
 
-// ─── Confetti ────────────────────────────────────────────────────
-function triggerConfetti(){
-  const canvas=$('confettiCanvas');
-  const ctx=canvas.getContext('2d');
-  canvas.width=window.innerWidth;
-  canvas.height=window.innerHeight;
-  canvas.classList.add('show');
-  const colors=['#00f7ff','#8f5cff','#35ff88','#ffc857','#ff7c3e','#fff'];
-  const particles=Array.from({length:90},()=>({
-    x:Math.random()*canvas.width,
-    y:-20-Math.random()*60,
-    w:6+Math.random()*8,
-    h:8+Math.random()*12,
-    r:Math.random()*Math.PI*2,
-    vx:(Math.random()-0.5)*4,
-    vy:2+Math.random()*4,
-    vr:(Math.random()-0.5)*0.18,
-    color:colors[Math.floor(Math.random()*colors.length)],
-    alpha:1,
-  }));
-  let start=performance.now();
-  const dur=3200;
-  function draw(now){
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    const t=(now-start)/dur;
-    if(t>=1){canvas.classList.remove('show');ctx.clearRect(0,0,canvas.width,canvas.height);return;}
-    particles.forEach(p=>{
-      p.x+=p.vx; p.y+=p.vy; p.r+=p.vr;
-      p.alpha=clamp(1-Math.max(0,(t-0.7)/0.3),0,1);
-      ctx.save();
-      ctx.globalAlpha=p.alpha;
-      ctx.translate(p.x,p.y);
-      ctx.rotate(p.r);
-      ctx.fillStyle=p.color;
-      ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
-      ctx.restore();
+  setTimeout(() => {
+    el('bar1').style.width = loadedData.metrics.convergence;
+    el('bar2').style.width = "90%";
+    el('metricVal1').innerText = loadedData.metrics.convergence;
+    el('metricVal2').innerText = loadedData.metrics.latency;
+    
+    el('reportScore').innerText = loadedData.metrics.score;
+    el('reportTier').innerText = loadedData.metrics.tier;
+    
+    let rowsHtml = "";
+    loadedData.table.forEach(row => {
+      rowsHtml += `<tr>
+        <td><strong>${row.name}</strong></td>
+        <td>${row.user}</td>
+        <td>${row.pro}</td>
+        <td class="delta-pos">${row.delta}</td>
+      </tr>`;
     });
-    requestAnimationFrame(draw);
-  }
-  requestAnimationFrame(draw);
+    el('reportTableBody').innerHTML = rowsHtml;
+    el('report').classList.add('show');
+    
+    historicalSessionsCount++;
+    el('heroSessions').innerText = historicalSessionsCount;
+    
+    const list = el('sessionsList');
+    if(historicalSessionsCount === 1) list.innerHTML = "";
+    
+    const item = document.createElement('div');
+    item.className = "session-item";
+    item.innerHTML = `
+      <strong>${loadedData.title}</strong>
+      <span>Score Convergence: ${loadedData.metrics.convergence}</span>
+      <div class="session-score">Score: ${loadedData.metrics.score}</div>
+    `;
+    list.insertBefore(item, list.firstChild);
+    
+    triggerConfetti();
+    showToast("Analysis complete. Report compiled below.", "ok");
+  }, 600);
 }
 
-// ─── Shortcuts Modal ─────────────────────────────────────────────
-function openModal(){$('shortcutsModal').classList.add('show');}
-function closeModal(){$('shortcutsModal').classList.remove('show');}
-$('helpBtn').addEventListener('click',openModal);
-$('modalCloseBtn').addEventListener('click',closeModal);
-$('shortcutsModal').addEventListener('click',e=>{if(e.target===$('shortcutsModal'))closeModal();});
+function triggerConfetti() {
+  const canvas = el('confettiCanvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  canvas.classList.add('show');
+  
+  let particles = [];
+  for(let i=0; i<80; i++) {
+    particles.push({
+      x: canvas.width/2,
+      y: canvas.height/2,
+      vx: (Math.random() - 0.5) * 12,
+      vy: (Math.random() - 0.5) * 12 - 4,
+      r: Math.random() * 4 + 3,
+      color: Math.random() > 0.5 ? '#63b3ed' : '#b794f4'
+    });
+  }
+  
+  let ticks = 0;
+  function run() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.2;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      ctx.fillStyle = p.color;
+      ctx.fill();
+    });
+    ticks++;
+    if(ticks < 60) requestAnimationFrame(run);
+    else canvas.classList.remove('show');
+  }
+  run();
+}
 
-// ─── Keyboard ────────────────────────────────────────────────────
-document.addEventListener('keydown',e=>{
-  if(['INPUT','SELECT','TEXTAREA'].includes(document.activeElement.tagName)) return;
-  const k=e.key.toLowerCase();
-  if(e.key==='Escape'){closeModal();return;}
-  if(k==='u') $('uploadBtn').click();
-  else if(k==='d') $('demoBtn').click();
-  else if(k==='g'&&!$('ghostBtn').disabled) $('ghostBtn').click();
-  else if(k==='a'&&!$('analyzeBtn').disabled) $('analyzeBtn').click();
-  else if(k==='e'&&!$('exportBtn').disabled) doExport();
-  else if(k==='s') doShare();
-  else if(e.code==='Space'&&$('workspace').classList.contains('show')){
+window.addEventListener('keydown', (e) => {
+  if(e.key === 'Escape') el('helpModal').classList.remove('show');
+  if(e.key.toLowerCase() === 'd') el('demoBtn').click();
+  if(e.code === 'Space' && !el('launchBtn').hasAttribute('disabled')) {
     e.preventDefault();
-    const p=$('playerVideo');
-    p.paused?$('syncBtn').click():$('pauseBtn').click();
+    startAnalysisPipeline();
   }
 });
-
-// ─── Init ────────────────────────────────────────────────────────
-log('System online · Neural Pattern Engine v4.8');
-log('All analysis modules loaded and ready');
-renderSessions();
-})();
 </script>
 </body>
 </html>

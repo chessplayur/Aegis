@@ -1,720 +1,428 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<meta name="description" content="Aegis Insight — AI-powered gameplay intelligence platform"/>
-<meta name="theme-color" content="#09090b"/>
-<title>Aegis Insight | AI Gameplay Intelligence</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&display=swap" rel="stylesheet">
-<style>
-:root {
-  --bg: #09090b;
-  --bg-1: #111116;
-  --bg-2: #18181f;
-  --bg-3: #1e1e28;
-  --border: rgba(255,255,255,.07);
-  --border-soft: rgba(255,255,255,.04);
-  --border-active: rgba(99,179,237,.3);
-  --cyan: #63b3ed;
-  --cyan-2: #90cdf4;
-  --cyan-dim: rgba(99,179,237,.12);
-  --purple: #b794f4;
-  --purple-dim: rgba(183,148,244,.12);
-  --green: #68d391;
-  --green-dim: rgba(104,211,145,.1);
-  --red: #fc8181;
-  --yellow: #f6e05e;
-  --orange: #f6ad55;
-  --text: #f7fafc;
-  --text-2: #a0aec0;
-  --text-3: #718096;
-  --mono: "IBM Plex Mono",monospace;
-  --sans: "DM Sans",sans-serif;
-  --display: "Syne",sans-serif;
-  --radius: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 20px;
-  --shadow: 0 1px 3px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.25);
-  --shadow-sm: 0 1px 2px rgba(0,0,0,.3);
-}
-*{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{
-  min-height:100vh;overflow-x:hidden;
-  color:var(--text);font-family:var(--sans);
-  background:var(--bg);
-  font-size:14px;
-  line-height:1.6;
-}
-body::before{
-  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
-  opacity:.018;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size:256px 256px;
-}
-body::after{
-  content:"";position:fixed;top:0;left:50%;transform:translateX(-50%);
-  width:600px;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(99,179,237,.25),transparent);
-  pointer-events:none;z-index:1;
-}
-.container{max-width:1600px;margin:auto;padding:24px 28px;position:relative;z-index:1}
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+    <meta name="description" content="Aegis Insight — AI-powered gameplay intelligence platform"/>
+    <meta name="theme-color" content="#09090b"/>
+    <title>Aegis Insight | AI Gameplay Intelligence</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Syne:wght@700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #09090b;
+            --sidebar: #0c0c0e;
+            --card: #121217;
+            --border: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(255, 255, 255, 0.15);
+            --accent: #63b3ed;
+            --accent-glow: rgba(99, 179, 237, 0.3);
+            --text-main: #f4f4f5;
+            --text-dim: #a1a1aa;
+            --text-dark: #52525b;
+            --success: #4ade80;
+            --font-sans: 'Inter', sans-serif;
+            --font-display: 'Syne', sans-serif;
+            --font-mono: 'IBM Plex Mono', monospace;
+        }
 
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
-@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-@keyframes flow{0%{left:-40%;opacity:0}15%{opacity:1}85%{opacity:1}100%{left:110%;opacity:0}}
-.fade-up{animation:fadeUp .5s ease both}
-.d1{animation-delay:.06s}.d2{animation-delay:.12s}.d3{animation-delay:.18s}
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            font-family: var(--font-sans);
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
 
-.nav{
-  display:flex;align-items:center;justify-content:space-between;
-  margin-bottom:28px;gap:16px;flex-wrap:wrap;
-  padding-bottom:20px;
-  border-bottom:1px solid var(--border);
-}
-.brand{display:flex;align-items:center;gap:14px}
-.brand-mark{
-  width:36px;height:36px;border-radius:99px;
-  background:var(--bg-2);border:1px solid var(--border);
-  display:flex;align-items:center;justify-content:center;
-  font-size:16px;flex-shrink:0;
-}
-.brand-text h1{
-  font-family:var(--display);font-size:1.05rem;font-weight:700;
-  letter-spacing:.08em;color:var(--text);line-height:1;
-}
-.brand-text p{color:var(--text-3);font-size:.72rem;margin-top:2px}
-.nav-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.badge{
-  display:inline-flex;align-items:center;gap:6px;
-  padding:5px 11px;border-radius:999px;font-size:.7rem;
-  background:var(--bg-2);border:1px solid var(--border);
-  color:var(--text-2);letter-spacing:.04em;font-family:var(--display);font-weight:600;
-}
-.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
-.btn-nav{
-  padding:6px 14px;border-radius:8px;border:1px solid var(--border);
-  background:var(--bg-2);color:var(--text-2);font-size:.75rem;
-  font-family:var(--display);font-weight:600;cursor:pointer;transition:.15s;
-}
-.btn-nav:hover{border-color:rgba(255,255,255,.14);color:var(--text);background:var(--bg-3)}
+        /* Sidebar Navigation */
+        nav {
+            width: 260px;
+            background: var(--sidebar);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            flex-shrink: 0;
+        }
 
-.hero{display:grid;grid-template-columns:1.3fr .7fr;gap:24px;margin-bottom:20px}
-.hero-main{
-  background:var(--bg-1);border:1px solid var(--border);
-  border-radius:var(--radius-lg);padding:36px 40px;position:relative;overflow:hidden;
-}
-.hero-eyebrow{
-  display:inline-flex;align-items:center;gap:7px;
-  font-size:.68rem;font-family:var(--display);font-weight:600;letter-spacing:.12em;
-  color:var(--cyan);margin-bottom:18px;
-  background:var(--cyan-dim);border:1px solid rgba(99,179,237,.2);
-  padding:4px 11px;border-radius:999px;
-}
-.hero-eyebrow::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--cyan)}
-.hero-main h2{font-family:var(--display);font-size:2.6rem;font-weight:800;line-height:1.08;margin-bottom:14px}
-.hero-main h2 em{
-  font-style:normal;background:linear-gradient(90deg,var(--cyan-2),var(--purple));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-}
-.hero-main p{color:var(--text-2);line-height:1.75;font-size:.9rem;max-width:560px}
-.hero-kpis{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px}
-.kpi{padding:12px 16px;border-radius:10px;background:var(--bg-2);border:1px solid var(--border-soft);min-width:130px}
-.kpi-val{font-family:var(--mono);font-size:1.35rem;font-weight:600;color:var(--text);display:block;margin-bottom:4px}
-.kpi-lbl{color:var(--text-3);font-size:.68rem;font-family:var(--display);font-weight:600}
-.hero-aside{display:grid;gap:10px;align-content:start}
-.info-card{background:var(--bg-1);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 20px}
-.info-card-title{font-family:var(--display);font-size:.68rem;font-weight:700;letter-spacing:.12em;color:var(--text-3);margin-bottom:12px}
-.info-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border-soft);font-size:.8rem}
-.info-row:last-child{border-bottom:none;padding-bottom:0}
-.info-row span:first-child{color:var(--text-2)}
-.tag-badge{
-  font-size:.62rem;padding:3px 8px;border-radius:999px;font-weight:700;
-  font-family:var(--display);background:var(--green-dim);color:var(--green);border:1px solid rgba(104,211,145,.2);
-}
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: 1.2rem;
+            letter-spacing: -0.02em;
+            margin-bottom: 40px;
+        }
 
-.section-card{background:var(--bg-1);border:1px solid var(--border);border-radius:var(--radius-lg);margin-bottom:20px;box-shadow:var(--shadow)}
-.section-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding:20px 24px 0}
-.section-title{font-family:var(--display);font-size:.68rem;font-weight:700;letter-spacing:.14em;color:var(--text-3)}
-.section-sub{font-family:var(--display);font-size:.95rem;font-weight:700;color:var(--text);margin-top:3px}
-.pipeline-legend{display:flex;gap:16px;align-items:center}
-.leg{display:flex;align-items:center;gap:6px;font-size:.7rem;color:var(--text-3);font-family:var(--display);font-weight:600}
-.leg-dot{width:7px;height:7px;border-radius:50%}
-.leg-dot.active{background:var(--cyan)}
-.leg-dot.done{background:var(--green)}
-.leg-dot.wait{background:rgba(255,255,255,.15)}
-.pipeline-flow{display:flex;align-items:center;padding:24px;overflow-x:auto}
-.pipe-step{display:flex;flex-direction:column;align-items:center;gap:10px;min-width:140px;flex:1;max-width:180px}
-.pipe-box{
-  width:100%;border-radius:var(--radius);background:var(--bg-2);border:1px solid var(--border);
-  padding:18px 12px;display:flex;flex-direction:column;align-items:center;gap:8px;transition:.3s ease;
-}
-.pipe-box.active{border-color:var(--cyan);box-shadow:0 0 12px rgba(99,179,237,.15)}
-.pipe-box.done{border-color:var(--green)}
-.pipe-icon{font-size:1.6rem}
-.pipe-name{font-family:var(--display);font-size:.78rem;font-weight:700;text-align:center}
-.pipe-sub{font-size:.67rem;color:var(--text-3);text-align:center}
-.pipe-badge{
-  font-size:.6rem;font-family:var(--display);font-weight:700;
-  padding:2px 8px;border-radius:999px;background:var(--bg-3);border:1px solid var(--border);color:var(--text-3);
-}
-.pipe-box.active .pipe-badge{background:var(--cyan-dim);border-color:var(--cyan);color:var(--cyan)}
-.pipe-box.done .pipe-badge{background:var(--green-dim);border-color:var(--green);color:var(--green)}
-.pipe-arrow{width:40px;height:1px;background:var(--border);position:relative;margin-bottom:26px;flex-shrink:0}
-.pipe-arrow::after{content:"";position:absolute;top:0;left:0;height:1px;width:35%;background:linear-gradient(90deg,var(--cyan),transparent);animation:flow 2.2s linear infinite}
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--accent), #b794f4);
+            border-radius: 8px;
+        }
 
-.dashboard{display:grid;grid-template-columns:1fr 340px;gap:20px}
-.main-panel{background:var(--bg-1);border:1px solid var(--border);border-radius:var(--radius-lg)}
-.panel-head{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-.panel-label{font-family:var(--display);font-size:.66rem;font-weight:700;letter-spacing:.14em;color:var(--text-3)}
-.panel-title{font-family:var(--display);font-size:.92rem;font-weight:700;color:var(--text);margin-top:2px}
+        .nav-section { margin-bottom: 32px; }
+        .nav-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
 
-.upload-area{padding:24px}
-.upload-row{display:grid;grid-template-columns:1fr 100px 1fr;gap:20px;align-items:center}
-.drop-zone{
-  min-height:230px;border-radius:var(--radius-lg);border:1.5px dashed var(--border);
-  background:var(--bg-2);display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:24px;text-align:center;gap:10px;transition:.2s ease;cursor:pointer;
-}
-.drop-zone:hover{border-color:var(--cyan);background:var(--bg-3)}
-.drop-icon{width:44px;height:44px;border-radius:11px;background:var(--bg-3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.3rem}
-.drop-title{font-family:var(--display);font-size:.88rem;font-weight:700}
-.drop-sub{color:var(--text-3);font-size:.75rem;max-width:240px}
-.btn-row{display:flex;gap:8px;margin-top:10px}
-.btn{font-family:var(--display);font-weight:700;font-size:.78rem;cursor:pointer;border:none;border-radius:8px;padding:9px 16px;transition:.15s}
-.btn-primary{background:var(--cyan);color:#0a1628}
-.btn-primary:hover{background:var(--cyan-2)}
-.btn-ghost{background:var(--bg-3);color:var(--text-2);border:1px solid var(--border)}
-.btn-ghost:hover{border-color:rgba(255,255,255,.12);color:var(--text)}
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: 0.2s;
+            cursor: pointer;
+        }
 
-.launch-wrap{display:flex;justify-content:center}
-.launch-btn{
-  width:84px;height:84px;border-radius:50%;border:none;
-  background:linear-gradient(135deg,var(--cyan),var(--purple));
-  color:#fff;font-size:1.8rem;cursor:pointer;transition:.3s ease;
-  display:flex;align-items:center;justify-content:center;
-}
-.launch-btn:hover:not(:disabled){transform:scale(1.08);box-shadow:0 0 24px rgba(99,179,237,.3)}
-.launch-btn:disabled{opacity:.25;cursor:not-allowed}
+        .nav-item:hover, .nav-item.active {
+            background: rgba(255,255,255,0.05);
+            color: var(--text-main);
+        }
 
-.config-panel{display:flex;flex-direction:column;gap:14px}
-.field-label{font-family:var(--display);font-size:.68rem;font-weight:700;color:var(--text-3);margin-bottom:6px}
-select{
-  width:100%;background:var(--bg-2);color:var(--text);border:1px solid var(--border);
-  border-radius:9px;padding:10px 12px;outline:none;appearance:none;cursor:pointer;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%23718096' stroke-width='1.5' d='m6 8 4 4 4-4'/%3E%3C/svg%3E");
-  background-repeat:no-repeat;background-position:right 10px center;background-size:16px;padding-right:32px;
-}
-.status-msg{padding:10px 13px;border-radius:9px;font-size:.75rem;background:var(--bg-2);border:1px solid var(--border);color:var(--text-3)}
-.status-msg.ready{color:var(--green);border-color:rgba(104,211,145,.25)}
+        /* Main Workspace */
+        main {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            position: relative;
+        }
 
-.workspace{display:none;grid-template-columns:1fr;gap:16px;padding:0 24px 20px}
-.workspace.show{display:grid}
-.video-card{border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);background:var(--bg-2)}
-.vid-header{display:flex;justify-content:space-between;align-items:center;padding:11px 14px;border-bottom:1px solid var(--border)}
-.vid-header strong{font-family:var(--display);font-size:.72rem;color:var(--text-2)}
-.vid-frame{position:relative;aspect-ratio:16/9;background:#000}
-iframe#proVideo{width:100%;height:100%;border:none;display:block}
+        header {
+            padding: 20px 40px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(9, 9, 11, 0.8);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
 
-.toolbar{display:flex;gap:8px;padding:12px 24px 20px}
-.tool-btn{
-  flex:1;padding:10px 12px;border-radius:9px;background:var(--bg-2);border:1px solid var(--border);
-  color:var(--text-2);cursor:pointer;font-family:var(--display);font-size:.72rem;font-weight:700;
-  display:flex;align-items:center;justify-content:center;gap:6px;transition:.15s;
-}
-.tool-btn:hover:not(:disabled){background:var(--bg-3);color:var(--text)}
-.tool-btn.active{border-color:var(--cyan);background:var(--cyan-dim);color:var(--cyan)}
+        .content { padding: 40px; max-width: 1400px; margin: 0 auto; width: 100%; }
 
-.metrics-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 24px 16px}
-.metric-tile{border-radius:var(--radius);background:var(--bg-2);border:1px solid var(--border-soft);padding:16px 18px}
-.metric-tile-label{font-family:var(--display);font-size:.64rem;font-weight:700;color:var(--text-3);margin-bottom:8px}
-.metric-val{font-family:var(--mono);font-size:1.8rem;font-weight:600;color:var(--text);margin-bottom:8px;line-height:1}
-.bar-track{height:5px;background:rgba(255,255,255,.07);border-radius:999px;overflow:hidden;margin-bottom:8px}
-.bar-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--cyan),var(--cyan-2));transition:1s ease}
-.metric-note{font-size:.72rem;color:var(--text-3)}
+        /* Grid Layout */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+        }
 
-.report{margin:0 24px 24px;border-radius:var(--radius-lg);background:var(--bg-2);border:1px solid var(--border);padding:24px;display:none}
-.report.show{display:block}
-.report-top{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap;margin-bottom:22px;padding-bottom:22px;border-bottom:1px solid var(--border)}
-.score{font-family:var(--mono);font-size:3.5rem;font-weight:600;line-height:1;background:linear-gradient(90deg,var(--cyan-2),#c4b5fd);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.tier-pill{padding:5px 13px;border-radius:999px;font-size:.68rem;font-weight:700;font-family:var(--display);background:var(--cyan-dim);color:var(--cyan);border:1px solid rgba(99,179,237,.3)}
-.summary-box{flex:1;min-width:240px;max-width:380px;background:var(--bg-3);border:1px solid var(--border-soft);border-radius:var(--radius);padding:16px}
-.summary-box h5{font-family:var(--display);font-size:.68rem;color:var(--cyan);margin-bottom:8px}
-.summary-box p{color:var(--text-2);font-size:.78rem}
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            position: relative;
+        }
 
-.delta-table{width:100%;border-collapse:collapse;margin-bottom:20px}
-.delta-table th{font-family:var(--display);font-size:.64rem;color:var(--text-3);padding:7px 10px;text-align:left;border-bottom:1px solid var(--border)}
-.delta-table td{padding:10px 10px;font-size:.78rem;border-bottom:1px solid rgba(255,255,255,.03)}
-.delta-pos{color:var(--green);font-family:var(--mono)}
+        /* Upload Area */
+        .upload-zone {
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            padding: 60px 20px;
+            text-align: center;
+            transition: 0.3s;
+            cursor: pointer;
+            background: rgba(255,255,255,0.02);
+        }
 
-.sidebar{display:flex;flex-direction:column;gap:14px}
-.side-card{background:var(--bg-1);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 20px}
-.side-title{font-family:var(--display);font-size:.68rem;font-weight:700;color:var(--text-3);margin-bottom:16px;display:flex;align-items:center;gap:7px}
-.side-title::before{content:"";width:3px;height:12px;background:var(--cyan);border-radius:2px}
-.session-item{padding:12px;border-radius:9px;background:var(--bg-2);border:1px solid var(--border-soft);margin-bottom:8px;cursor:pointer;transition:.15s}
-.session-item:hover{border-color:var(--cyan);transform:translateX(2px)}
-.session-item strong{display:block;font-size:.8rem;color:var(--text-2)}
-.session-score{display:inline-block;margin-top:5px;padding:2px 8px;background:var(--cyan-dim);color:var(--cyan);border-radius:999px;font-size:.62rem;font-family:var(--mono)}
-.empty{color:var(--text-3);font-size:.75rem;text-align:center;padding:14px 0}
+        .upload-zone:hover {
+            border-color: var(--accent);
+            background: rgba(99, 179, 237, 0.05);
+        }
 
-.progress-overlay{
-  position:fixed;inset:0;background:rgba(9,9,11,.9);backdrop-filter:blur(12px);z-index:999;
-  display:none;align-items:center;justify-content:center;flex-direction:column;gap:18px;
-}
-.progress-overlay.show{display:flex}
-.progress-ring{width:56px;height:56px;border-radius:50%;border:2px solid rgba(99,179,237,.15);border-top-color:var(--cyan);animation:spin .9s linear infinite}
-.progress-label{font-family:var(--display);font-size:.78rem;font-weight:700;color:var(--cyan)}
-.progress-track{width:240px;height:3px;background:rgba(255,255,255,.06);border-radius:999px;overflow:hidden}
-.progress-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--cyan),var(--purple));transition:.35s ease}
+        /* Video Players */
+        .video-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 24px;
+            display: none; /* Hidden until video loaded */
+        }
 
-.modal-backdrop{position:fixed;inset:0;background:rgba(9,9,11,.75);backdrop-filter:blur(8px);z-index:1100;display:none;align-items:center;justify-content:center;padding:20px}
-.modal-backdrop.show{display:flex}
-.modal{background:var(--bg-1);border:1px solid var(--border);border-radius:var(--radius-xl);padding:28px;max-width:460px;width:100%}
-.modal h3{font-family:var(--display);font-size:1rem;color:var(--text);margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border)}
-.shortcuts-grid{display:grid;grid-template-columns:auto 1fr;gap:9px 14px;align-items:center}
-.key{font-family:var(--mono);font-size:.72rem;background:var(--bg-2);border:1px solid var(--border);border-radius:5px;padding:4px 9px}
+        .video-wrapper {
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            aspect-ratio: 16/9;
+            border: 1px solid var(--border);
+        }
 
-.toast{
-  position:fixed;bottom:22px;right:22px;padding:11px 16px;border-radius:10px;background:var(--bg-1);border:1px solid var(--border);
-  color:var(--text-2);transform:translateY(12px);opacity:0;pointer-events:none;transition:.25s;z-index:1200;font-size:.78rem;
-}
-.toast.show{opacity:1;transform:none}
-.toast.ok{color:var(--green);border-color:rgba(104,211,145,.25)}
+        video, iframe { width: 100%; height: 100%; border: none; }
 
-#confettiCanvas{position:fixed;inset:0;pointer-events:none;z-index:1300;opacity:0;transition:opacity .25s}
-#confettiCanvas.show{opacity:1}
-.footer{margin-top:20px;text-align:center;padding:16px;border-top:1px solid var(--border);font-size:.7rem;color:var(--text-3)}
+        /* Controls */
+        .controls-bar {
+            margin-top: 24px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
 
-@media(max-width:1000px){
-  .hero,.upload-row,.workspace.show,.metrics-grid{grid-template-columns:1fr}
-}
-</style>
+        select, .btn {
+            background: var(--card);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-family: var(--font-sans);
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #000;
+            border: none;
+            font-weight: 700;
+        }
+
+        .btn-primary:hover {
+            background: #90cdf4;
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        /* Metrics */
+        .metrics-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .metric-item {
+            background: rgba(255,255,255,0.03);
+            padding: 16px;
+            border-radius: 12px;
+            border-left: 3px solid var(--accent);
+        }
+
+        .metric-label { font-size: 0.75rem; color: var(--text-dim); margin-bottom: 4px; }
+        .metric-value { font-family: var(--font-mono); font-size: 1.2rem; font-weight: 600; }
+
+        /* Hidden inputs */
+        #fileInput { display: none; }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            background: rgba(74, 222, 128, 0.1);
+            color: var(--success);
+            border-radius: 99px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .live-pulse {
+            width: 8px;
+            height: 8px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(74, 222, 128, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
+        }
+    </style>
 </head>
 <body>
-<canvas id="confettiCanvas"></canvas>
-<div class="container">
 
-<nav class="nav fade-up">
-  <div class="brand">
-    <div class="brand-mark">🛡</div>
-    <div class="brand-text">
-      <h1>AEGIS INSIGHT</h1>
-      <p>AI gameplay intelligence platform</p>
-    </div>
-  </div>
-  <div class="nav-right">
-    <div class="badge"><span class="live-dot"></span>LIVE ANALYTICS</div>
-    <div class="badge">Neural Engine v4.8</div>
-    <button class="btn-nav" id="helpBtn">⌨ Shortcuts</button>
-  </div>
-</nav>
-
-<div class="hero fade-up d1">
-  <div class="hero-main">
-    <div class="hero-eyebrow">AI-powered professional benchmarking</div>
-    <h2>Analyze your gameplay against <em>professional players</em></h2>
-    <p>Aegis Insight compares player mechanics, movement patterns, positioning, reaction timing, and combat efficiency against professional-level gameplay footage.</p>
-    <div class="hero-kpis">
-      <div class="kpi"><span class="kpi-val">97.2%</span><span class="kpi-lbl">Pattern Accuracy</span></div>
-      <div class="kpi"><span class="kpi-val">14ms</span><span class="kpi-lbl">Frame Sync Latency</span></div>
-      <div class="kpi"><span class="kpi-val">120+</span><span class="kpi-lbl">Pro Data Models</span></div>
-      <div class="kpi"><span class="kpi-val" id="heroSessions">0</span><span class="kpi-lbl">Your Sessions</span></div>
-    </div>
-  </div>
-  <div class="hero-aside">
-    <div class="info-card">
-      <div class="info-card-title">AI ANALYSIS ENGINE</div>
-      <div class="info-row"><span>Crosshair Placement Model</span><span class="tag-badge">ACTIVE</span></div>
-      <div class="info-row"><span>Reaction Timing Analyzer</span><span class="tag-badge">ACTIVE</span></div>
-    </div>
-    <div class="info-card">
-      <div class="info-card-title">SUPPORTED TITLES</div>
-      <div class="info-row"><span>Valorant</span><span class="tag-badge">PRO READY</span></div>
-      <div class="info-row"><span>Counter-Strike 2</span><span class="tag-badge">PRO READY</span></div>
-    </div>
-  </div>
-</div>
-
-<div class="section-card fade-up d2">
-  <div class="section-header">
-    <div>
-      <div class="section-title">NEURAL ANALYSIS PIPELINE</div>
-      <div class="section-sub">How Aegis Insight processes your gameplay</div>
-    </div>
-    <div class="pipeline-legend">
-      <div class="leg"><div class="leg-dot active"></div>Processing</div>
-      <div class="leg"><div class="leg-dot done"></div>Complete</div>
-      <div class="leg"><div class="leg-dot wait"></div>Pending</div>
-    </div>
-  </div>
-  <div class="pipeline-flow" id="pipelineFlow">
-    <div class="pipe-step">
-      <div class="pipe-box" id="pipeStep0">
-        <div class="pipe-icon">📁</div>
-        <div class="pipe-name">VIDEO INPUT</div>
-        <div class="pipe-sub">MP4 · MOV · WEBM</div>
-        <div class="pipe-badge" id="pipeStatus0">WAITING</div>
-      </div>
-    </div>
-    <div class="pipe-arrow"></div>
-    <div class="pipe-step">
-      <div class="pipe-box" id="pipeStep1">
-        <div class="pipe-icon">🎬</div>
-        <div class="pipe-name">FRAME SYNC</div>
-        <div class="pipe-sub">60fps alignment</div>
-        <div class="pipe-badge" id="pipeStatus1">PENDING</div>
-      </div>
-    </div>
-    <div class="pipe-arrow"></div>
-    <div class="pipe-step">
-      <div class="pipe-box" id="pipeStep2">
-        <div class="pipe-icon">🧠</div>
-        <div class="pipe-name">AI PATTERN</div>
-        <div class="pipe-sub">Neural vectors</div>
-        <div class="pipe-badge" id="pipeStatus2">PENDING</div>
-      </div>
-    </div>
-    <div class="pipe-arrow"></div>
-    <div class="pipe-step">
-      <div class="pipe-box" id="pipeStep3">
-        <div class="pipe-icon">⚡</div>
-        <div class="pipe-name">PRO COMPARE</div>
-        <div class="pipe-sub">120+ models</div>
-        <div class="pipe-badge" id="pipeStatus3">PENDING</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="dashboard fade-up d3">
-  <div class="main-panel">
-    <div class="panel-head">
-      <div>
-        <div class="panel-label">WORKSPACE CONTROLS</div>
-        <div class="panel-title">Video Telemetry Processing Studio</div>
-      </div>
-    </div>
-    
-    <div class="upload-area" id="uploadArea">
-      <div class="upload-row">
-        <div class="drop-zone" id="dropZone">
-          <div class="drop-icon">📤</div>
-          <div class="drop-title" id="dropTitle">Click to browse or drop video files here</div>
-          <div class="drop-sub">Supports high framerate competitive captures up to 4K resolution</div>
-          <div class="btn-row">
-            <button class="btn btn-ghost" id="demoBtn">⚡ Run Live Sample Session</button>
-          </div>
+    <nav>
+        <div class="logo">
+            <div class="logo-icon"></div>
+            AEGIS
         </div>
-        <div class="launch-wrap">
-          <button class="launch-btn" id="launchBtn" disabled>▶</button>
+
+        <div class="nav-section">
+            <div class="nav-label">Core Engine</div>
+            <a class="nav-item active">● Dashboard</a>
+            <a class="nav-item">◈ Pro Library</a>
+            <a class="nav-item">◮ Neural Assets</a>
         </div>
-        <div class="config-panel">
-          <div>
-            <label class="field-label">BENCHMARK MODEL TARGET</label>
-            <select id="gameSelect">
-              <option value="val">Valorant (Radiant Pro Dataset)</option>
-              <option value="cs2">Counter-Strike 2 (S-Tier Major Dataset)</option>
-            </select>
-          </div>
-          <div class="status-msg ready">Neural engine calibrated and optimized for active profiles.</div>
+
+        <div class="nav-section">
+            <div class="nav-label">Historical Data</div>
+            <div id="sessionHistory" class="nav-item" style="font-size: 0.8rem; color: var(--text-dark);">
+                No recent sessions
+            </div>
         </div>
-      </div>
-    </div>
+    </nav>
 
-    <div class="workspace" id="workspace">
-      <div class="video-card">
-        <div class="vid-header">
-          <strong id="videoTitle">WORKSPACE ACTIVE</strong>
-          <span>SYNCHRONIZED DEEPSTREAM</span>
+    <main>
+        <header>
+            <div class="status-pill">
+                <div class="live-pulse"></div>
+                SYSTEMS OPERATIONAL
+            </div>
+            <div style="color: var(--text-dim); font-size: 0.85rem;">Neural Core v4.82</div>
+        </header>
+
+        <div class="content">
+            <div class="dashboard-grid">
+                
+                <div class="workspace">
+                    <div class="card">
+                        <h2 style="font-family: var(--font-display); margin-bottom: 8px;">Analysis Studio</h2>
+                        <p style="color: var(--text-dim); font-size: 0.9rem; margin-bottom: 24px;">
+                            Upload your gameplay clip to compare against Radiant/S-Tier benchmarks.
+                        </p>
+
+                        <div class="upload-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+                            <span style="font-size: 2rem;">📤</span>
+                            <h3 style="margin: 12px 0 4px;">Select Gameplay Clip</h3>
+                            <p style="color: var(--text-dark); font-size: 0.8rem;">Supports MP4, WebM up to 4K 60fps</p>
+                            <input type="file" id="fileInput" accept="video/*">
+                        </div>
+
+                        <div class="video-container" id="videoContainer">
+                            <div class="video-wrapper">
+                                <video id="userVideo" controls></video>
+                                <div style="padding:8px; font-size: 0.7rem; color: var(--text-dim)">LOCAL UPLOAD</div>
+                            </div>
+                            <div class="video-wrapper">
+                                <div id="youtubePlayer"></div>
+                                <div style="padding:8px; font-size: 0.7rem; color: var(--text-dim)">PRO REFERENCE</div>
+                            </div>
+                        </div>
+
+                        <div class="controls-bar">
+                            <select id="gameSelect">
+                                <option value="valorant">Valorant (Radiant Pro)</option>
+                                <option value="cs2">CS2 (S-Tier Major)</option>
+                                <option value="apex">Apex Legends (ALGS)</option>
+                            </select>
+                            <button class="btn btn-primary" id="analyzeBtn" disabled>START AI ANALYSIS</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar-info">
+                    <div class="card" style="margin-bottom: 24px;">
+                        <h3 style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-dark); margin-bottom: 16px;">Live Telemetry</h3>
+                        <div class="metrics-list">
+                            <div class="metric-item">
+                                <div class="metric-label">Convergence Index</div>
+                                <div class="metric-value" id="convergenceVal">0.00%</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-label">Reaction Latency</div>
+                                <div class="metric-value" id="latencyVal">-- ms</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-label">Crosshair Stability</div>
+                                <div class="metric-value" id="stabilityVal">Ready</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3 style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-dark); margin-bottom: 12px;">AI Insights</h3>
+                        <p id="aiLog" style="font-size: 0.85rem; color: var(--text-dim); line-height: 1.5;">
+                            Waiting for input stream... Select a video file to begin neural processing.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
         </div>
-        <div class="vid-frame">
-          <iframe id="proVideo" title="Pro Stream Gameplay" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-        </div>
-      </div>
-    </div>
+    </main>
 
-    <div class="toolbar">
-      <button class="tool-btn active">📊 Realtime Vector Feed</button>
-      <button class="tool-btn">🎯 Placement Mapping</button>
-    </div>
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const userVideo = document.getElementById('userVideo');
+        const videoContainer = document.getElementById('videoContainer');
+        const dropZone = document.getElementById('dropZone');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const gameSelect = document.getElementById('gameSelect');
+        const youtubePlayer = document.getElementById('youtubePlayer');
 
-    <div class="metrics-grid">
-      <div class="metric-tile">
-        <div class="metric-tile-label">AI PRO CONVERGENCE INDEX</div>
-        <div class="metric-val" id="metricVal1">0.0%</div>
-        <div class="bar-track"><div class="bar-fill" id="bar1"></div></div>
-        <div class="metric-note">Measures macro movement path delta against professional positioning indexes.</div>
-      </div>
-      <div class="metric-tile">
-        <div class="metric-tile-label">REACTION LATENCY RATIO</div>
-        <div class="metric-val" id="metricVal2">0ms</div>
-        <div class="bar-track"><div class="bar-fill" id="bar2"></div></div>
-        <div class="metric-note">Dynamic frame interval timestamp calculation from event trigger to input registration.</div>
-      </div>
-    </div>
+        // Reference Video Database (Simulated API Mapping)
+        const proClips = {
+            valorant: 'https://www.youtube.com/embed/S_8qjDkH9_M?autoplay=1&mute=1&controls=0',
+            cs2: 'https://www.youtube.com/embed/5-mZ0-G_9jY?autoplay=1&mute=1&controls=0',
+            apex: 'https://www.youtube.com/embed/v9i8qT8u0E0?autoplay=1&mute=1&controls=0'
+        };
 
-    <div class="report" id="report">
-      <div class="report-top">
-        <div>
-          <div class="score" id="reportScore">0</div>
-          <div class="report-sub-text">OVERALL MECHANICAL SCORE</div>
-        </div>
-        <div class="tier-pill" id="reportTier">PROCESSING</div>
-        <div class="summary-box">
-          <h5>AI COGNITIVE INSIGHT</h5>
-          <p id="reportSummary">Session data indicates excellent recovery control loops but systemic crosshair placement layout variance.</p>
-        </div>
-      </div>
-      <table class="delta-table">
-        <thead>
-          <tr>
-            <th>METRIC SYSTEM</th>
-            <th>YOUR METRIC</th>
-            <th>PRO PERFORMANCE BASELINE</th>
-            <th>VARIANCE DELTA</th>
-          </tr>
-        </thead>
-        <tbody id="reportTableBody"></tbody>
-      </table>
-    </div>
-  </div>
+        // Handle File Selection
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const url = URL.createObjectURL(file);
+                userVideo.src = url;
+                
+                // Show Interface
+                dropZone.style.display = 'none';
+                videoContainer.style.display = 'grid';
+                analyzeBtn.disabled = false;
+                
+                document.getElementById('aiLog').innerText = "File loaded. Ready for sync. AI models calibrated for " + gameSelect.options[gameSelect.selectedIndex].text;
+            }
+        });
 
-  <div class="sidebar">
-    <div class="side-card">
-      <div class="side-title">HISTORICAL REPORT SESSIONS</div>
-      <div id="sessionsList">
-        <div class="empty">No historical data recorded in local workspace cache.</div>
-      </div>
-    </div>
-  </div>
-</div>
+        // Run AI Analysis Simulation
+        analyzeBtn.addEventListener('click', function() {
+            analyzeBtn.innerText = "PROCESSING...";
+            analyzeBtn.disabled = true;
 
-<footer class="footer">
-  <p>&copy; 2026 Aegis Insight Systems Inc. Powered by Neural Core Engine v4.8.</p>
-</footer>
-</div>
+            // Load Pro Reference based on game
+            const selectedGame = gameSelect.value;
+            youtubePlayer.innerHTML = `<iframe src="${proClips[selectedGame]}" allow="autoplay"></iframe>`;
 
-<div class="progress-overlay" id="progressOverlay">
-  <div class="progress-ring"></div>
-  <div class="progress-label" id="progressLabel">PROCESSING INPUT</div>
-  <div class="progress-desc" id="progressDesc">Syncing timeline frames with global telemetry data tables...</div>
-  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
-</div>
+            // Simulate Data Generation
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    finalizeAnalysis();
+                } else {
+                    document.getElementById('convergenceVal').innerText = progress.toFixed(2) + "%";
+                    document.getElementById('latencyVal').innerText = (140 + Math.random() * 20).toFixed(0) + "ms";
+                }
+            }, 300);
+        });
 
-<div class="modal-backdrop" id="helpModal">
-  <div class="modal">
-    <h3>WORKFLOW ENVIRONMENT SHORTCUTS</h3>
-    <div class="shortcuts-grid">
-      <span class="key">D</span><span class="key-desc">Instantly load profile demo streams</span>
-      <span class="key">Space</span><span class="key-desc">Initialize system vector computations</span>
-      <span class="key">Esc</span><span class="key-desc">Dismiss open modal dialog menus</span>
-    </div>
-    <button class="btn btn-primary modal-close" id="closeHelpBtn">Close Shortcuts View</button>
-  </div>
-</div>
-
-<div class="toast" id="toast">Engine update notification registered successfully.</div>
-
-<script>
-const videoDb = {
-  val: {
-    title: "Valorant Radiant Sample Session",
-    embedUrl: "https://www.youtube.com/embed/P66_GWe7p2g?autoplay=1&mute=1&controls=0&loop=1&playlist=P66_GWe7p2g",
-    metrics: { convergence: "89.4%", latency: "142ms", score: 89, tier: "ELITE" },
-    table: [
-      { name: "Crosshair Micro-Placement", user: "4.2 px off", pro: "< 2.0 px", delta: "+2.2 px" },
-      { name: "First Bullet Accuracy Ratio", user: "68.2%", pro: "79.5%", delta: "-11.3%" }
-    ]
-  },
-  cs2: {
-    title: "Counter-Strike 2 Major Session",
-    embedUrl: "https://www.youtube.com/embed/U38Cg_U9rrc?autoplay=1&mute=1&controls=0&loop=1&playlist=U38Cg_U9rrc",
-    metrics: { convergence: "92.1%", latency: "131ms", score: 94, tier: "A-TIER PRO" },
-    table: [
-      { name: "Recoil Pattern Vector Sync", user: "91.4%", pro: "96.8%", delta: "-5.4%" },
-      { name: "Prefire Placement Delta", user: "12ms", pro: "8ms", delta: "+4ms" }
-    ]
-  }
-};
-
-let loadedData = null;
-let historicalSessionsCount = 0;
-
-const el = (id) => document.getElementById(id);
-
-function showToast(msg, type='ok') {
-  const t = el('toast');
-  t.innerText = msg;
-  t.className = `toast show ${type}`;
-  setTimeout(() => t.classList.remove('show'), 3000);
-}
-
-el('helpBtn').addEventListener('click', () => el('helpModal').classList.add('show'));
-el('closeHelpBtn').addEventListener('click', () => el('helpModal').classList.remove('show'));
-el('helpModal').addEventListener('click', (e) => { if(e.target === el('helpModal')) el('helpModal').classList.remove('show'); });
-
-el('demoBtn').addEventListener('click', (e) => {
-  e.stopPropagation();
-  const selectedGame = el('gameSelect').value;
-  loadedData = videoDb[selectedGame];
-  el('dropTitle').innerText = `Loaded Context: ${loadedData.title}`;
-  el('launchBtn').removeAttribute('disabled');
-  showToast("Demo configuration telemetry initialized.", "ok");
-});
-
-el('launchBtn').addEventListener('click', startAnalysisPipeline);
-
-function startAnalysisPipeline() {
-  if(!loadedData) return;
-  el('launchBtn').setAttribute('disabled', 'true');
-  const overlay = el('progressOverlay');
-  const fill = el('progressFill');
-  const label = el('progressLabel');
-  
-  overlay.classList.add('show');
-  
-  const steps = [
-    { p: 25, txt: "EXTRACTING KEYFRAMES", desc: "Isolating canvas stream data structures..." },
-    { p: 50, txt: "NEURAL VECTOR TRANSLATION", desc: "Processing crosshair vector positioning tables..." },
-    { p: 75, txt: "PRO MODEL MATRIX MATCH", desc: "Cross-referencing telemetry points with model vectors..." },
-    { p: 100, txt: "FINALIZING SYNCHRONIZATION", desc: "Compiling final baseline metrics..." }
-  ];
-
-  steps.forEach((step, idx) => {
-    setTimeout(() => {
-      fill.style.width = `${step.p}%`;
-      label.innerText = step.txt;
-      el('progressDesc').innerText = step.desc;
-      
-      const pipeBox = el(`pipeStep${idx}`);
-      const pipeBadge = el(`pipeStatus${idx}`);
-      if(pipeBox && pipeBadge) {
-        pipeBox.className = "pipe-box active";
-        pipeBadge.innerText = "ACTIVE";
-      }
-      if(idx > 0) {
-        const prevBox = el(`pipeStep${idx-1}`);
-        const prevBadge = el(`pipeStatus${idx-1}`);
-        if(prevBox && prevBadge) {
-          prevBox.className = "pipe-box done";
-          prevBadge.innerText = "DONE";
+        function finalizeAnalysis() {
+            analyzeBtn.innerText = "ANALYSIS COMPLETE";
+            document.getElementById('convergenceVal').style.color = "var(--success)";
+            document.getElementById('aiLog').innerHTML = "<strong>Result:</strong> Your movement patterns show a 84% correlation with Pro Tier positioning. Focus on 'Crosshair Micro-adjustments' during entry fragging.";
+            
+            // Log to sidebar
+            const history = document.getElementById('sessionHistory');
+            history.innerHTML = `<div style="color:var(--accent)">Session_${Math.floor(Math.random()*1000)} - 84% Score</div>`;
         }
-      }
-    }, idx * 1000);
-  });
 
-  setTimeout(() => {
-    overlay.classList.remove('show');
-    const lastBox = el('pipeStep3');
-    const lastBadge = el('pipeStatus3');
-    if(lastBox && lastBadge) {
-      lastBox.className = "pipe-box done";
-      lastBadge.innerText = "DONE";
-    }
-    displayTelemetryWorkspace();
-  }, steps.length * 1000);
-}
-
-function displayTelemetryWorkspace() {
-  el('uploadArea').style.display = 'none';
-  el('workspace').classList.add('show');
-  
-  const iframe = el('proVideo');
-  iframe.src = loadedData.embedUrl;
-  el('videoTitle').innerText = loadedData.title.toUpperCase();
-
-  setTimeout(() => {
-    el('bar1').style.width = loadedData.metrics.convergence;
-    el('bar2').style.width = "90%";
-    el('metricVal1').innerText = loadedData.metrics.convergence;
-    el('metricVal2').innerText = loadedData.metrics.latency;
-    
-    el('reportScore').innerText = loadedData.metrics.score;
-    el('reportTier').innerText = loadedData.metrics.tier;
-    
-    let rowsHtml = "";
-    loadedData.table.forEach(row => {
-      rowsHtml += `<tr>
-        <td><strong>${row.name}</strong></td>
-        <td>${row.user}</td>
-        <td>${row.pro}</td>
-        <td class="delta-pos">${row.delta}</td>
-      </tr>`;
-    });
-    el('reportTableBody').innerHTML = rowsHtml;
-    el('report').classList.add('show');
-    
-    historicalSessionsCount++;
-    el('heroSessions').innerText = historicalSessionsCount;
-    
-    const list = el('sessionsList');
-    if(historicalSessionsCount === 1) list.innerHTML = "";
-    
-    const item = document.createElement('div');
-    item.className = "session-item";
-    item.innerHTML = `
-      <strong>${loadedData.title}</strong>
-      <span>Score Convergence: ${loadedData.metrics.convergence}</span>
-      <div class="session-score">Score: ${loadedData.metrics.score}</div>
-    `;
-    list.insertBefore(item, list.firstChild);
-    
-    triggerConfetti();
-    showToast("Analysis complete. Report compiled below.", "ok");
-  }, 600);
-}
-
-function triggerConfetti() {
-  const canvas = el('confettiCanvas');
-  const ctx = canvas.getContext('2d');
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-  canvas.classList.add('show');
-  
-  let particles = [];
-  for(let i=0; i<80; i++) {
-    particles.push({
-      x: canvas.width/2,
-      y: canvas.height/2,
-      vx: (Math.random() - 0.5) * 12,
-      vy: (Math.random() - 0.5) * 12 - 4,
-      r: Math.random() * 4 + 3,
-      color: Math.random() > 0.5 ? '#63b3ed' : '#b794f4'
-    });
-  }
-  
-  let ticks = 0;
-  function run() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    particles.forEach(p => {
-      p.x += p.vx;
-      p.y += p.vy;
-      p.vy += 0.2;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
-      ctx.fillStyle = p.color;
-      ctx.fill();
-    });
-    ticks++;
-    if(ticks < 60) requestAnimationFrame(run);
-    else canvas.classList.remove('show');
-  }
-  run();
-}
-
-window.addEventListener('keydown', (e) => {
-  if(e.key === 'Escape') el('helpModal').classList.remove('show');
-  if(e.key.toLowerCase() === 'd') el('demoBtn').click();
-  if(e.code === 'Space' && !el('launchBtn').hasAttribute('disabled')) {
-    e.preventDefault();
-    startAnalysisPipeline();
-  }
-});
-</script>
+        // Drag and Drop support
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.style.borderColor = "var(--accent)"; });
+        dropZone.addEventListener('dragleave', () => { dropZone.style.borderColor = "var(--border)"; });
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            fileInput.files = e.dataTransfer.files;
+            fileInput.dispatchEvent(new Event('change'));
+        });
+    </script>
 </body>
 </html>

@@ -49,14 +49,12 @@ body{
   font-size:14px;
   line-height:1.6;
 }
-/* grain overlay */
 body::before{
   content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
   opacity:.018;
   background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size:256px 256px;
 }
-/* subtle top glow */
 body::after{
   content:"";position:fixed;top:0;left:50%;transform:translateX(-50%);
   width:600px;height:1px;
@@ -65,18 +63,15 @@ body::after{
 }
 .container{max-width:1600px;margin:auto;padding:24px 28px;position:relative;z-index:1}
 
-/* ─ ANIMATIONS ─ */
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
 @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 @keyframes flow{0%{left:-40%;opacity:0}15%{opacity:1}85%{opacity:1}100%{left:110%;opacity:0}}
-@keyframes barRise{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+
 .fade-up{animation:fadeUp .5s ease both}
 .d1{animation-delay:.06s}.d2{animation-delay:.12s}.d3{animation-delay:.18s}
-.d4{animation-delay:.24s}.d5{animation-delay:.3s}
 
-/* ─ NAV ─ */
 .nav{
   display:flex;align-items:center;justify-content:space-between;
   margin-bottom:28px;gap:16px;flex-wrap:wrap;
@@ -112,7 +107,6 @@ body::after{
 }
 .btn-nav:hover{border-color:rgba(255,255,255,.14);color:var(--text);background:var(--bg-3)}
 
-/* ─ HERO ─ */
 .hero{
   display:grid;grid-template-columns:1.3fr .7fr;gap:24px;
   margin-bottom:20px;
@@ -182,7 +176,6 @@ body::after{
   background:var(--green-dim);color:var(--green);border:1px solid rgba(104,211,145,.2);
 }
 
-/* ─ PIPELINE ─ */
 .section-card{
   background:var(--bg-1);border:1px solid var(--border);
   border-radius:var(--radius-lg);margin-bottom:20px;
@@ -254,18 +247,15 @@ body::after{
   border-top:3px solid transparent;border-bottom:3px solid transparent;
 }
 
-/* ─ DASHBOARD GRID ─ */
 .dashboard{display:grid;grid-template-columns:1fr 340px;gap:20px}
 .main-panel{background:var(--bg-1);border:1px solid var(--border);border-radius:var(--radius-lg)}
 .panel-head{
   padding:20px 24px;border-bottom:1px solid var(--border);
   display:flex;align-items:center;justify-content:space-between;
 }
-.panel-head-left{}
 .panel-label{font-family:var(--display);font-size:.66rem;font-weight:700;letter-spacing:.14em;color:var(--text-3)}
 .panel-title{font-family:var(--display);font-size:.92rem;font-weight:700;color:var(--text);margin-top:2px}
 
-/* ─ UPLOAD AREA ─ */
 .upload-area{padding:24px}
 .upload-row{display:grid;grid-template-columns:1fr 100px 1fr;gap:20px;align-items:center}
 .drop-zone{
@@ -292,20 +282,15 @@ body::after{
 .drop-title{font-family:var(--display);font-size:.88rem;font-weight:700;letter-spacing:.02em}
 .drop-sub{color:var(--text-3);font-size:.75rem;line-height:1.65;max-width:240px}
 .drop-file{color:var(--cyan);font-size:.7rem;font-family:var(--mono);word-break:break-all;max-width:240px}
-.btn-row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:10px;}
 .btn{
   font-family:var(--display);font-weight:700;letter-spacing:.04em;
   font-size:.78rem;cursor:pointer;border:none;transition:.15s ease;
   border-radius:8px;padding:9px 16px;
 }
-.btn-primary{
-  background:var(--cyan);color:#0a1628;
-}
+.btn-primary{background:var(--cyan);color:#0a1628;}
 .btn-primary:hover{background:var(--cyan-2);transform:translateY(-1px)}
-.btn-ghost{
-  background:var(--bg-3);color:var(--text-2);
-  border:1px solid var(--border);
-}
+.btn-ghost{background:var(--bg-3);color:var(--text-2);border:1px solid var(--border);}
 .btn-ghost:hover{border-color:rgba(255,255,255,.12);color:var(--text)}
 .btn:disabled{opacity:.35;cursor:not-allowed;transform:none!important}
 
@@ -326,10 +311,7 @@ body::after{
 .launch-btn:disabled{opacity:.25;cursor:not-allowed}
 
 .config-panel{display:flex;flex-direction:column;gap:14px}
-.field-label{
-  font-family:var(--display);font-size:.68rem;font-weight:700;
-  letter-spacing:.1em;color:var(--text-3);display:block;margin-bottom:6px;
-}
+.field-label{font-family:var(--display);font-size:.68rem;font-weight:700;letter-spacing:.1em;color:var(--text-3);display:block;margin-bottom:6px;}
 select{
   width:100%;background:var(--bg-2);color:var(--text);
   border:1px solid var(--border);border-radius:99px;
@@ -350,7 +332,6 @@ select:disabled{opacity:.4;cursor:not-allowed}
 .status-msg.ready{color:var(--green);border-color:rgba(104,211,145,.25)}
 .status-msg.warn{color:var(--yellow);border-color:rgba(246,224,94,.2)}
 
-/* ─ WORKSPACE ─ */
 .workspace{display:none;grid-template-columns:1fr 1fr;gap:16px;padding:0 24px 20px}
 .workspace.show{display:grid}
 .video-card{border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);background:var(--bg-2)}
@@ -360,16 +341,12 @@ select:disabled{opacity:.4;cursor:not-allowed}
 }
 .vid-header strong{font-family:var(--display);font-size:.72rem;font-weight:700;letter-spacing:.1em;color:var(--text-2)}
 .vid-header span{color:var(--text-3);font-size:.66rem;font-family:var(--mono)}
-.vid-frame{position:relative;aspect-ratio:16/9;background:#000}
-video{width:100%;height:100%;border:none;display:block}
-.overlay-video{position:absolute;inset:0;mix-blend-mode:screen;opacity:.3;display:none;pointer-events:none}
-.overlay-video.show{display:block}
+.vid-frame{position:relative;aspect-ratio:16/9;background:#000;display:flex;align-items:center;justify-content:center}
+.vid-placeholder{color:var(--text-3);font-family:var(--mono);font-size:.8rem;}
+.overlay-video{position:absolute;inset:0;mix-blend-mode:screen;opacity:.5;display:none;pointer-events:none;background:rgba(183,148,244,0.15);align-items:center;justify-content:center}
+.overlay-video.show{display:flex}
 
-/* ─ TOOLBAR ─ */
-.toolbar{
-  display:flex;gap:8px;flex-wrap:wrap;
-  padding:12px 24px 20px;
-}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;padding:12px 24px 20px;}
 .tool-btn{
   flex:1;min-width:100px;padding:10px 12px;border-radius:9px;
   background:var(--bg-2);border:1px solid var(--border);
@@ -381,122 +358,65 @@ video{width:100%;height:100%;border:none;display:block}
 .tool-btn:disabled{opacity:.3;cursor:not-allowed}
 .tool-btn.active{border-color:rgba(99,179,237,.4);background:var(--cyan-dim);color:var(--cyan)}
 
-/* ─ METRICS ─ */
-.metrics-grid{
-  display:grid;grid-template-columns:1fr 1fr;gap:12px;
-  padding:0 24px 16px;
-}
-.metric-tile{
-  border-radius:var(--radius);background:var(--bg-2);border:1px solid var(--border-soft);
-  padding:16px 18px;transition:.2s;
-}
+.metrics-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 24px 16px;}
+.metric-tile{border-radius:var(--radius);background:var(--bg-2);border:1px solid var(--border-soft);padding:16px 18px;transition:.2s;}
 .metric-tile:hover{border-color:var(--border)}
-.metric-tile-label{
-  font-family:var(--display);font-size:.64rem;font-weight:700;
-  letter-spacing:.12em;color:var(--text-3);margin-bottom:8px;
-}
-.metric-val{
-  font-family:var(--mono);font-size:1.8rem;font-weight:600;
-  line-height:1;margin-bottom:8px;color:var(--text);
-}
+.metric-tile-label{font-family:var(--display);font-size:.64rem;font-weight:700;letter-spacing:.12em;color:var(--text-3);margin-bottom:8px;}
+.metric-val{font-family:var(--mono);font-size:1.8rem;font-weight:600;line-height:1;margin-bottom:8px;color:var(--text);}
 .bar-track{height:5px;background:rgba(255,255,255,.07);border-radius:999px;overflow:hidden;margin-bottom:8px}
 .bar-fill{height:100%;width:0%;border-radius:999px;background:linear-gradient(90deg,var(--cyan),var(--cyan-2));transition:1s ease}
 .metric-note{font-size:.72rem;color:var(--text-3);line-height:1.6}
 
-/* ─ CHARTS ─ */
-.charts-row{
-  display:grid;grid-template-columns:1fr 1fr;gap:12px;
-  padding:0 24px 16px;
-}
-.chart-tile{
-  border-radius:var(--radius);background:var(--bg-2);border:1px solid var(--border-soft);
-  padding:18px;overflow:hidden;
-}
+.charts-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 24px 16px;}
+.chart-tile{border-radius:var(--radius);background:var(--bg-2);border:1px solid var(--border-soft);padding:18px;overflow:hidden;}
 .chart-tile-label{font-family:var(--display);font-size:.64rem;font-weight:700;letter-spacing:.12em;color:var(--text-3);margin-bottom:2px}
 .chart-tile-title{font-family:var(--display);font-size:.85rem;font-weight:700;color:var(--text);margin-bottom:14px}
+.chart-render{height:60px;display:flex;align-items:flex-end;gap:4px;border-bottom:1px solid var(--border);padding-bottom:4px;}
+.chart-bar{flex:1;background:var(--cyan);height:0%;min-height:2px;transition:0.5s ease;border-radius:2px 2px 0 0;}
+.chart-bar.p{background:var(--purple)}
 .chart-legend{display:flex;gap:14px;margin-top:10px;justify-content:center}
 .chart-leg{display:flex;align-items:center;gap:5px;font-size:.68rem;color:var(--text-3);font-family:var(--display);font-weight:600}
 .chart-leg-swatch{width:10px;height:3px;border-radius:2px;flex-shrink:0}
 
-/* ─ REPORT ─ */
-.report{
-  margin:0 24px 24px;border-radius:var(--radius-lg);
-  background:var(--bg-2);border:1px solid var(--border);
-  padding:24px;display:none;
-}
+.report{margin:0 24px 24px;border-radius:var(--radius-lg);background:var(--bg-2);border:1px solid var(--border);padding:24px;display:none;}
 .report.show{display:block}
-.report-top{
-  display:flex;justify-content:space-between;align-items:flex-start;
-  gap:20px;flex-wrap:wrap;margin-bottom:22px;
-  padding-bottom:22px;border-bottom:1px solid var(--border);
-}
+.report-top{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap;margin-bottom:22px;padding-bottom:22px;border-bottom:1px solid var(--border);}
 .score-group{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap}
 .score{
   font-family:var(--mono);font-size:3.5rem;font-weight:600;line-height:1;
   background:linear-gradient(90deg,var(--cyan-2),#c4b5fd);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;
 }
-.tier-pill{
-  padding:5px 13px;border-radius:999px;font-size:.68rem;font-weight:700;
-  font-family:var(--display);letter-spacing:.08em;margin-bottom:5px;align-self:flex-end;
-}
+.tier-pill{padding:5px 13px;border-radius:999px;font-size:.68rem;font-weight:700;font-family:var(--display);letter-spacing:.08em;margin-bottom:5px;align-self:flex-end;}
 .tier-pill.elite{background:rgba(246,224,94,.1);color:var(--yellow);border:1px solid rgba(246,224,94,.3)}
 .tier-pill.advanced{background:var(--cyan-dim);color:var(--cyan);border:1px solid rgba(99,179,237,.3)}
-.tier-pill.intermediate{background:var(--purple-dim);color:var(--purple);border:1px solid rgba(183,148,244,.3)}
-.tier-pill.developing{background:rgba(252,129,129,.08);color:var(--red);border:1px solid rgba(252,129,129,.25)}
-.report-sub-text{color:var(--text-3);font-size:.75rem;margin-top:4px;font-family:var(--display);font-weight:600;letter-spacing:.04em}
-.summary-box{
-  flex:1;min-width:240px;max-width:380px;
-  background:var(--bg-3);border:1px solid var(--border-soft);
-  border-radius:var(--radius);padding:16px;
-}
-.summary-box h5{
-  font-family:var(--display);font-size:.68rem;font-weight:700;
-  letter-spacing:.12em;color:var(--cyan);margin-bottom:8px;
-}
+
+.summary-box{flex:1;min-width:240px;max-width:380px;background:var(--bg-3);border:1px solid var(--border-soft);border-radius:var(--radius);padding:16px;}
+.summary-box h5{font-family:var(--display);font-size:.68rem;font-weight:700;letter-spacing:.12em;color:var(--cyan);margin-bottom:8px;}
 .summary-box p{color:var(--text-2);font-size:.78rem;line-height:1.75}
 
-/* Delta table */
 .delta-table{width:100%;border-collapse:collapse;margin-bottom:20px}
-.delta-table th{
-  font-family:var(--display);font-size:.64rem;font-weight:700;letter-spacing:.1em;
-  color:var(--text-3);padding:7px 10px;text-align:left;
-  border-bottom:1px solid var(--border);
-}
+.delta-table th{font-family:var(--display);font-size:.64rem;font-weight:700;letter-spacing:.1em;color:var(--text-3);padding:7px 10px;text-align:left;border-bottom:1px solid var(--border);}
 .delta-table td{padding:10px 10px;font-size:.78rem;border-bottom:1px solid rgba(255,255,255,.03)}
-.delta-table tr:last-child td{border-bottom:none}
 .delta-pos{color:var(--green);font-family:var(--mono);font-size:.75rem;font-weight:600}
 .delta-neg{color:var(--red);font-family:var(--mono);font-size:.75rem;font-weight:600}
-.delta-neutral{color:var(--yellow);font-family:var(--mono);font-size:.75rem;font-weight:600}
 .delta-bar-wrap{width:80px;height:4px;background:rgba(255,255,255,.06);border-radius:999px;overflow:hidden;display:inline-block;vertical-align:middle;margin-left:8px}
 .delta-bar-fill{height:100%;border-radius:999px}
 
 .insights-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
-.insight-card{
-  background:var(--bg-3);border:1px solid var(--border-soft);
-  border-radius:var(--radius);padding:16px;
-}
-.insight-card h5{
-  font-family:var(--display);font-size:.72rem;font-weight:700;
-  letter-spacing:.06em;color:var(--cyan);margin-bottom:7px;
-}
+.insight-card{background:var(--bg-3);border:1px solid var(--border-soft);border-radius:var(--radius);padding:16px;}
+.insight-card h5{font-family:var(--display);font-size:.72rem;font-weight:700;letter-spacing:.06em;color:var(--cyan);margin-bottom:7px;}
 .insight-card p{color:var(--text-2);font-size:.76rem;line-height:1.7}
 .report-actions{display:flex;gap:8px;flex-wrap:wrap}
 
-/* ─ SIDEBAR ─ */
 .sidebar{display:flex;flex-direction:column;gap:14px}
-.side-card{
-  background:var(--bg-1);border:1px solid var(--border);
-  border-radius:var(--radius-lg);padding:18px 20px;
-}
+.side-card{background:var(--bg-1);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 20px;}
 .side-title{
-  font-family:var(--display);font-size:.68rem;font-weight:700;
-  letter-spacing:.12em;color:var(--text-3);margin-bottom:16px;
+  font-family:var(--display);font-size:.68rem;font-weight:700;letter-spacing:.12em;color:var(--text-3);margin-bottom:16px;
   display:flex;align-items:center;gap:7px;
 }
 .side-title::before{content:"";width:3px;height:12px;border-radius:2px;background:var(--cyan);flex-shrink:0}
 .live-row{margin-bottom:12px}
-.live-row:last-child{margin-bottom:0}
 .live-meta{display:flex;justify-content:space-between;margin-bottom:5px;align-items:center}
 .live-meta span{font-size:.72rem;color:var(--text-3)}
 .live-meta strong{font-family:var(--mono);font-size:.74rem;color:var(--text-2)}
@@ -507,107 +427,47 @@ video{width:100%;height:100%;border:none;display:block}
 .fill.g{background:linear-gradient(90deg,var(--green),#9ae6b4)}
 
 .log-feed{max-height:240px;overflow-y:auto;display:flex;flex-direction:column;gap:4px}
-.log-feed::-webkit-scrollbar{width:3px}
-.log-feed::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
-.log-item{
-  padding:8px 10px;border-radius:7px;
-  background:var(--bg-2);border:1px solid var(--border-soft);
-  display:flex;gap:8px;align-items:flex-start;
-}
+.log-item{padding:8px 10px;border-radius:7px;background:var(--bg-2);border:1px solid var(--border-soft);display:flex;gap:8px;align-items:flex-start;}
 .log-time{font-family:var(--mono);font-size:.62rem;color:var(--cyan);flex-shrink:0}
 .log-msg{font-size:.72rem;color:var(--text-3);line-height:1.5}
-.session-item{
-  padding:12px;border-radius:9px;background:var(--bg-2);border:1px solid var(--border-soft);
-  margin-bottom:8px;cursor:pointer;transition:.15s;
-}
+.session-item{padding:12px;border-radius:9px;background:var(--bg-2);border:1px solid var(--border-soft);margin-bottom:8px;cursor:pointer;transition:.15s;}
 .session-item:hover{border-color:rgba(99,179,237,.2);transform:translateX(2px)}
-.session-item:last-child{margin-bottom:0}
 .session-item strong{display:block;font-family:var(--display);font-size:.8rem;font-weight:700;letter-spacing:.02em;margin-bottom:3px}
 .session-item span{display:block;font-size:.68rem;color:var(--text-3)}
-.session-score{
-  display:inline-block;margin-top:5px;padding:2px 8px;
-  background:var(--cyan-dim);color:var(--cyan);border-radius:999px;
-  font-size:.62rem;font-family:var(--mono);font-weight:600;
-}
+.session-score{display:inline-block;margin-top:5px;padding:2px 8px;background:var(--cyan-dim);color:var(--cyan);border-radius:999px;font-size:.62rem;font-family:var(--mono);font-weight:600;}
 .empty{color:var(--text-3);font-size:.75rem;text-align:center;padding:14px 0}
 
-/* ─ PROGRESS OVERLAY ─ */
 .progress-overlay{
-  position:fixed;inset:0;background:rgba(9,9,11,.9);
-  backdrop-filter:blur(12px);z-index:999;
+  position:fixed;inset:0;background:rgba(9,9,11,.9);backdrop-filter:blur(12px);z-index:999;
   display:none;align-items:center;justify-content:center;flex-direction:column;gap:18px;
 }
 .progress-overlay.show{display:flex}
-.progress-ring{
-  width:56px;height:56px;border-radius:50%;
-  border:2px solid rgba(99,179,237,.15);border-top-color:var(--cyan);
-  animation:spin .9s linear infinite;
-}
-.progress-label{
-  font-family:var(--display);font-size:.78rem;font-weight:700;
-  letter-spacing:.14em;color:var(--cyan);
-}
+.progress-ring{width:56px;height:56px;border-radius:50%;border:2px solid rgba(99,179,237,.15);border-top-color:var(--cyan);animation:spin .9s linear infinite;}
+.progress-label{font-family:var(--display);font-size:.78rem;font-weight:700;letter-spacing:.14em;color:var(--cyan);}
 .progress-desc{color:var(--text-3);font-size:.75rem;max-width:360px;text-align:center}
 .progress-track{width:240px;height:3px;background:rgba(255,255,255,.06);border-radius:999px;overflow:hidden}
 .progress-fill{height:100%;width:0%;border-radius:999px;background:linear-gradient(90deg,var(--cyan),var(--purple));transition:.35s ease}
 
-/* ─ MODAL ─ */
-.modal-backdrop{
-  position:fixed;inset:0;background:rgba(9,9,11,.75);
-  backdrop-filter:blur(8px);z-index:1100;
-  display:none;align-items:center;justify-content:center;padding:20px;
-}
+.modal-backdrop{position:fixed;inset:0;background:rgba(9,9,11,.75);backdrop-filter:blur(8px);z-index:1100;display:none;align-items:center;justify-content:center;padding:20px;}
 .modal-backdrop.show{display:flex;animation:fadeIn .18s ease}
-.modal{
-  background:var(--bg-1);border:1px solid var(--border);
-  border-radius:var(--radius-xl);padding:28px;max-width:460px;width:100%;
-  box-shadow:0 24px 64px rgba(0,0,0,.6);
-}
-.modal h3{
-  font-family:var(--display);font-size:1rem;font-weight:700;
-  letter-spacing:.06em;color:var(--text);margin-bottom:20px;
-  padding-bottom:14px;border-bottom:1px solid var(--border);
-}
+.modal{background:var(--bg-1);border:1px solid var(--border);border-radius:var(--radius-xl);padding:28px;max-width:460px;width:100%;box-shadow:0 24px 64px rgba(0,0,0,.6);}
+.modal h3{font-family:var(--display);font-size:1rem;font-weight:700;letter-spacing:.06em;color:var(--text);margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border);}
 .shortcuts-grid{display:grid;grid-template-columns:auto 1fr;gap:9px 14px;align-items:center}
-.key{
-  font-family:var(--mono);font-size:.72rem;font-weight:600;
-  background:var(--bg-2);border:1px solid var(--border);
-  border-radius:5px;padding:4px 9px;color:var(--text-2);
-  text-align:center;min-width:32px;display:inline-block;
-  box-shadow:0 2px 0 var(--border);
-}
+.key{font-family:var(--mono);font-size:.72rem;font-weight:600;background:var(--bg-2);border:1px solid var(--border);border-radius:5px;padding:4px 9px;color:var(--text-2);text-align:center;min-width:32px;display:inline-block;box-shadow:0 2px 0 var(--border);}
 .key-desc{font-size:.78rem;color:var(--text-3)}
-.modal-close{margin-top:20px;width:100%}
 
-/* ─ TOAST ─ */
 .toast{
-  position:fixed;bottom:22px;right:22px;
-  padding:11px 16px;border-radius:10px;
-  background:var(--bg-1);border:1px solid var(--border);
-  box-shadow:var(--shadow);color:var(--text-2);
-  transform:translateY(12px);opacity:0;pointer-events:none;
-  transition:.25s ease;z-index:1200;max-width:320px;
-  font-size:.78rem;line-height:1.5;
+  position:fixed;bottom:22px;right:22px;padding:11px 16px;border-radius:10px;background:var(--bg-1);border:1px solid var(--border);
+  box-shadow:var(--shadow);color:var(--text-2);transform:translateY(12px);opacity:0;pointer-events:none;transition:.25s ease;z-index:1200;max-width:320px;font-size:.78rem;
 }
 .toast.show{opacity:1;transform:none}
 .toast.ok{color:var(--green);border-color:rgba(104,211,145,.25)}
-.toast.warn{color:var(--yellow);border-color:rgba(246,224,94,.2)}
-.toast.err{color:var(--red);border-color:rgba(252,129,129,.2)}
 
-/* ─ CONFETTI ─ */
 #confettiCanvas{position:fixed;inset:0;pointer-events:none;z-index:1300;opacity:0;transition:opacity .25s}
 #confettiCanvas.show{opacity:1}
 
-/* ─ FOOTER ─ */
-.footer{
-  margin-top:20px;text-align:center;padding:16px;
-  border-top:1px solid var(--border);
-  font-size:.7rem;color:var(--text-3);
-}
-.footer a{color:var(--cyan);text-decoration:none;opacity:.7}
-.footer a:hover{opacity:1}
+.footer{margin-top:20px;text-align:center;padding:16px;border-top:1px solid var(--border);font-size:.7rem;color:var(--text-3);}
 
-/* ─ RESPONSIVE ─ */
 @media(max-width:1280px){
   .dashboard{grid-template-columns:1fr}
   .sidebar{display:grid;grid-template-columns:1fr 1fr}
@@ -616,21 +476,8 @@ video{width:100%;height:100%;border:none;display:block}
   .hero{grid-template-columns:1fr}
   .upload-row{grid-template-columns:1fr}
   .workspace.show{grid-template-columns:1fr}
-  .toolbar{flex-wrap:wrap}
   .metrics-grid,.charts-row,.insights-row{grid-template-columns:1fr}
-  .pipe-arrow{width:22px}
-  .pipe-sub{display:none}
 }
-@media(max-width:700px){
-  .container{padding:16px}
-  .hero-main h2{font-size:1.8rem}
-  .sidebar{grid-template-columns:1fr}
-  .pipeline-flow{flex-wrap:wrap;justify-content:center}
-  .pipe-arrow{display:none}
-  .delta-bar-wrap{display:none}
-  .nav{flex-direction:column;align-items:flex-start}
-}
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}}
 </style>
 </head>
 <body>
@@ -745,1109 +592,588 @@ video{width:100%;height:100%;border:none;display:block}
 <div class="dashboard fade-up d3">
   <div class="main-panel">
     <div class="panel-head">
-      <div class="panel-head-left">
+      <div>
         <div class="panel-label">WORKSPACE ENGINE</div>
-        <div class="panel-title" id="workspaceTitle">Session Instance: Idle</div>
+        <div class="panel-title" id="panelTitle">Active Processing Environment</div>
       </div>
     </div>
 
     <div class="upload-area" id="uploadArea">
       <div class="upload-row">
         <div class="drop-zone" id="dropZone">
-          <input type="file" id="fileInput" accept="video/mp4,video/webm,video/quicktime" style="display:none"/>
           <div class="drop-icon">📤</div>
-          <div class="drop-title" id="dropZoneTitle">Drag & Drop Gameplay Clip</div>
-          <div class="drop-sub" id="dropZoneSub">Supports MP4, MOV or WEBM. Max file size 150MB.</div>
-          <div class="drop-file" id="dropFileName" style="display:none"></div>
-          <div class="btn-row" style="margin-top:10px">
-            <button class="btn btn-ghost" id="browseBtn">Browse Files</button>
-          </div>
+          <div class="drop-title">Drag & drop gameplay footage</div>
+          <div class="drop-sub">Supports raw video formats up to 4K 60FPS</div>
+          <div class="drop-file" id="dropFileDisplay">No file chosen</div>
+          <input type="file" id="fileInput" accept="video/*" style="display:none" />
         </div>
-
-        <div style="text-align:center;font-family:var(--display);font-size:.7rem;font-weight:700;color:var(--text-3);letter-spacing:.1em">OR</div>
-
+        <div class="launch-wrap">
+          <button class="launch-btn" id="launchBtn" disabled>▶</button>
+        </div>
         <div class="config-panel">
           <div>
-            <label class="field-label">TARGET GAME TITLE</label>
-            <select id="gameSelect">
-              <option value="valorant">Valorant (FPS Model)</option>
-              <option value="cs2">Counter-Strike 2 (FPS Model)</option>
-              <option value="lol">League of Legends (MOBA Model)</option>
-              <option value="apex">Apex Legends (BR Model)</option>
+            <label class="field-label">BENCHMARK MODEL TARGET</label>
+            <select id="modelTarget">
+              <option value="vct_pro">VCT EMEA/NA Pro Average (Valorant)</option>
+              <option value="major_pro">CS2 Valve Major Top 16 Models</option>
+              <option value="lck_pro">LCK Challengers Data Pool (LoL)</option>
             </select>
           </div>
-          <div>
-            <label class="field-label">BENCHMARK SETTINGS</label>
-            <div class="status-msg ready" id="modelStatusMsg">✓ Neural weights loaded for selected pro template. Ready for analytical comparison engine execution.</div>
-          </div>
-          <div class="launch-wrap" style="margin-top:6px">
-            <button class="launch-btn" id="launchBtn" title="Launch Aegis analysis Engine">⚡</button>
+          <div class="status-msg ready">System status: Ready for neural pipeline extraction sequence.</div>
+          <div class="btn-row">
+             <button class="btn btn-ghost" id="demoSampleBtn" style="border-color: var(--cyan); color: var(--cyan);">⚡ Load Demo Sample Analysis</button>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="workspace" id="workspaceArea">
+    <div class="workspace" id="workspace">
       <div class="video-card">
         <div class="vid-header">
-          <strong>SOURCE FOOTAGE</strong>
-          <span id="playerVidTime">0.0s</span>
+          <strong>USER PLAYBACK SEGMENT</strong>
+          <span id="userVidTime">00:00:00 / FRAME 0</span>
         </div>
         <div class="vid-frame">
-          <video id="playerVideo" loop muted playsinline></video>
+          <div class="vid-placeholder">🎬 USER GAMEPLAY RAW FEED</div>
+          <div class="overlay-video" id="aiOverlay">
+            <span style="color:var(--purple); font-family:var(--mono); font-weight:600; font-size:.8rem;">[✦ NEURAL OVERLAY PATH ACTIVE]</span>
+          </div>
         </div>
       </div>
-
       <div class="video-card">
         <div class="vid-header">
-          <strong>PRO MODEL SYNC</strong>
-          <span id="proVidTime">0.0s</span>
+          <strong>PRO MATCH MATCHING PATTERN</strong>
+          <span>MODEL SYNCED TARGET</span>
         </div>
-        <div class="vid-frame">
-          <video id="proVideo" loop muted playsinline></video>
-          <div class="overlay-video" id="overlayContainer">
-             <video id="overlayVideo" loop muted playsinline></video>
-          </div>
+        <div class="vid-frame" style="background:#020205;">
+          <div class="vid-placeholder" style="color:var(--purple)">⚡ COMPILING COMPARATIVE DATA ENGINE...</div>
         </div>
       </div>
     </div>
 
-    <div class="toolbar" id="workspaceToolbar" style="display:none">
-      <button class="tool-btn active" id="toolPlay">⏸ Pause Sync</button>
-      <button class="tool-btn" id="toolOverlay">👥 Toggle Overlay</button>
-      <button class="tool-btn" id="toolRestart">🔄 Restart Loop</button>
-      <button class="tool-btn" id="toolReset" style="border-color:rgba(252,129,129,.25);color:var(--red)">🧹 Unload Session</button>
+    <div class="toolbar">
+      <button class="tool-btn" id="toolPlay" disabled>⏸ Pause Engine</button>
+      <button class="tool-btn active" id="toolOverlay" disabled>✦ Neural Overlay</button>
+      <button class="tool-btn" id="toolAdvance" disabled>⇾ Frame Advance</button>
+      <button class="tool-btn" id="toolRefresh" disabled>↻ Sync Metrics</button>
     </div>
 
-    <div class="metrics-grid" id="metricsGrid" style="display:none">
+    <div class="metrics-grid">
       <div class="metric-tile">
-        <div class="metric-tile-label">AI PATTERN MATCH RATING</div>
-        <div class="metric-val" id="mMatchVal">0.0%</div>
-        <div class="bar-track"><div class="bar-fill" id="mMatchBar"></div></div>
-        <div class="metric-note" id="mMatchNote">Initializing neural cross-checks...</div>
+        <div class="metric-tile-label">CROSSHAIR PLACEMENT ERROR</div>
+        <div class="metric-val" id="mPlacing">0.00°</div>
+        <div class="bar-track"><div class="bar-fill" id="bPlacing"></div></div>
+        <div class="metric-note">Degrees of variance from predicted expert headshot level framework plane vectors.</div>
       </div>
       <div class="metric-tile">
-        <div class="metric-tile-label">REACTION LATENCY GAIN</div>
-        <div class="metric-val" id="mLatencyVal">0ms</div>
-        <div class="bar-track"><div class="bar-fill" id="mLatencyBar"></div></div>
-        <div class="metric-note" id="mLatencyNote">Syncing internal timers...</div>
+        <div class="metric-tile-label">REACTION LATENCY SPEED</div>
+        <div class="metric-val" id="mLatency">0ms</div>
+        <div class="bar-track"><div class="bar-fill" id="bLatency"></div></div>
+        <div class="metric-note">Delta calculation score measuring spatial visual recognition changes to action frames.</div>
       </div>
     </div>
 
-    <div class="charts-row" id="chartsGrid" style="display:none">
+    <div class="charts-row">
       <div class="chart-tile">
-        <div class="chart-tile-label">SPATIAL PLACEMENT MATRIX</div>
-        <div class="chart-tile-title">Crosshair Alignment Vector Consistency</div>
-        <div style="height:110px;display:flex;align-items:flex-end;gap:5px;padding-bottom:10px" id="chartSpatialContainer">
-          </div>
+        <div class="chart-tile-label">POSITIONAL COHERENCE MODEL</div>
+        <div class="chart-tile-title">Spatial Positioning Confidence Scoring Index</div>
+        <div class="chart-render" id="cPos">
+          <div class="chart-bar" style="height: 10%"></div>
+          <div class="chart-bar" style="height: 30%"></div>
+          <div class="chart-bar" style="height: 65%"></div>
+          <div class="chart-bar" style="height: 85%"></div>
+        </div>
         <div class="chart-legend">
-          <div class="chart-leg"><div class="chart-leg-swatch" style="background:var(--cyan)"></div>Your Vector</div>
-          <div class="chart-leg"><div class="chart-leg-swatch" style="background:rgba(255,255,255,.15)"></div>Pro baseline</div>
+          <div class="chart-leg"><div class="chart-leg-swatch" style="background:var(--cyan)"></div>Your Pathway</div>
         </div>
       </div>
       <div class="chart-tile">
-        <div class="chart-tile-label">DECISION COMPLIANCE TREE</div>
-        <div class="chart-tile-title">Positional Pathing Distribution Index</div>
-        <div style="height:110px;display:flex;align-items:flex-end;gap:5px;padding-bottom:10px" id="chartPathingContainer">
-          </div>
+        <div class="chart-tile-label">VELOCITY STABILITY MATCH</div>
+        <div class="chart-tile-title">Kinematic Deadzone Correction Data Sync</div>
+        <div class="chart-render" id="cVel">
+          <div class="chart-bar p" style="height: 20%"></div>
+          <div class="chart-bar p" style="height: 45%"></div>
+          <div class="chart-bar p" style="height: 70%"></div>
+          <div class="chart-bar p" style="height: 90%"></div>
+        </div>
         <div class="chart-legend">
-          <div class="chart-leg"><div class="chart-leg-swatch" style="background:var(--purple)"></div>Match Ratio</div>
+          <div class="chart-leg"><div class="chart-leg-swatch" style="background:var(--purple)"></div>Target Benchmark</div>
         </div>
       </div>
     </div>
 
-    <div class="report" id="analysisReport">
+    <div class="report" id="reportArea">
       <div class="report-top">
         <div>
           <div class="score-group">
-            <div class="score" id="reportScore">00</div>
-            <div class="tier-pill elite" id="reportTier">ELITE PROFILE</div>
+            <span class="score" id="rScore">00</span>
+            <span class="tier-pill elite" id="rTier">EVALUATING</span>
           </div>
-          <div class="report-sub-text" id="reportMeta">PRO DATA SET OVERLAY COMPLIANCE MODEL</div>
+          <div class="report-sub-text">OVERALL PRO SYNCHRONIZATION INDEX</div>
         </div>
         <div class="summary-box">
-          <h5 id="reportSummaryTitle">AI CRITIQUE PROFILE</h5>
-          <p id="reportSummaryText">Loading platform synopsis calculations...</p>
+          <h5>EXECUTIVE AI INSIGHT SUMMARY</h5>
+          <p id="rSummary">No processing run has initialized. System operational thresholds normal.</p>
         </div>
       </div>
 
       <table class="delta-table">
         <thead>
           <tr>
-            <th>BENCHMARK CRITERIA</th>
-            <th>YOUR PROFILE</th>
-            <th>PRO baseline</th>
-            <th>DELTA TREND</th>
+            <th>METRIC DIMENSION CATEGORY</th>
+            <th>YOUR SCORES</th>
+            <th>TARGET BENCHMARK DELTA EVALUATION</th>
           </tr>
         </thead>
-        <tbody id="reportTableBody">
+        <tbody id="deltaTableBody">
           </tbody>
       </table>
 
-      <div class="insights-row">
-        <div class="insight-card">
-          <h5>⚡ MECHANICAL INEFFICIENCIES DETECTED</h5>
-          <p id="reportInsightNeg">Running micro-stutter tracking diagnostics calculations...</p>
+      <div class="insights-row" id="insightsContainer">
         </div>
-        <div class="insight-card">
-          <h5>🎯 TARGET ARCHETYPE ADVANTAGES</h5>
-          <p id="reportInsightPos">Evaluating statistical out-performance algorithms...</p>
-        </div>
-      </div>
 
       <div class="report-actions">
-        <button class="btn btn-primary" id="btnExportData">Export Analytics Dataset</button>
-        <button class="btn btn-ghost" id="btnPrintReport">Print Performance Briefing</button>
+        <button class="btn btn-primary" id="btnExport">📥 Export Full Intelligence Package</button>
+        <button class="btn btn-ghost" id="btnShare">🔗 Share Session Link</button>
       </div>
     </div>
-
   </div>
 
   <div class="sidebar">
     <div class="side-card">
-      <div class="side-title">LIVE PROCESS ENGINE TELEMETRY</div>
+      <div class="side-title">LIVE SUBSYSTEM MEMORY SYNCHRONICITY</div>
       <div class="live-row">
-        <div class="live-meta"><span>Neural Weight Memory</span><strong id="telemetryWeights">0.0GB</strong></div>
-        <div class="track"><div class="fill c" id="barWeights"></div></div>
+        <div class="live-meta"><span>Tensor Core Pipeline Array</span><strong id="trackCore">0%</strong></div>
+        <div class="track"><div class="fill c" id="barCore"></div></div>
       </div>
       <div class="live-row">
-        <div class="live-meta"><span>Frame Processing Sync</span><strong id="telemetryFps">0fps</strong></div>
-        <div class="track"><div class="fill p" id="barFps"></div></div>
+        <div class="live-meta"><span>Frame Processor Network Array</span><strong id="trackFrame">0%</strong></div>
+        <div class="track"><div class="fill p" id="barFrame"></div></div>
       </div>
       <div class="live-row">
-        <div class="live-meta"><span>inference Latency Clock</span><strong id="telemetryLatency">0.0ms</strong></div>
-        <div class="track"><div class="fill g" id="barLatency"></div></div>
+        <div class="live-meta"><span>Vector Delta Validation Unit</span><strong id="trackVector">0%</strong></div>
+        <div class="track"><div class="fill g" id="barVector"></div></div>
       </div>
     </div>
 
     <div class="side-card">
-      <div class="side-title">SYSTEM EVENT LOG STREAM</div>
+      <div class="side-title">NEURAL COMPILATION CONSOLE LOGGER</div>
       <div class="log-feed" id="logFeed">
-        </div>
+        <div class="log-item"><span class="log-time">[00:01]</span><span class="log-msg">Aegis Insight Neural System v4.8 loaded. Waiting for local assets...</span></div>
+      </div>
     </div>
 
     <div class="side-card">
-      <div class="side-title">ARCHIVED ANALYSIS HISTORY</div>
-      <div id="sessionHistoryContainer">
-        <div class="empty">No historic sessions recorded in local session state storage.</div>
+      <div class="side-title">YOUR RETRIEVED INTELLIGENCE SESSIONS</div>
+      <div id="sessionHistoryBox">
+        <div class="empty" id="historyEmpty">No analytical logs parsed locally in this workspace context.</div>
       </div>
     </div>
   </div>
 </div>
 
-<footer class="footer fade-up d4">
-  <p>&copy; 2026 Aegis Insight Inc. Powered by Neural Core Architecture Engine 4.8. For professional esports implementation blueprints.</p>
+<footer class="footer">
+  <p>&copy; 2026 Aegis Insight Systems Corp. All analytical vectors calibrated under open-access pro models framework pipelines.</p>
 </footer>
 
 </div>
 
 <div class="progress-overlay" id="progressOverlay">
   <div class="progress-ring"></div>
-  <div class="progress-label" id="progressLabel">PROCESSING INPUT STREAM</div>
-  <div class="progress-desc" id="progressDesc">Aegis AI framework executing multi-pass parsing tracking arrays over video data buffers...</div>
-  <div class="progress-track">
-    <div class="progress-fill" id="progressOverlayBar"></div>
-  </div>
+  <div class="progress-label" id="progressLabel">INITIALIZING PARSER LAYER</div>
+  <div class="progress-desc" id="progressDesc">Injecting framing segments parameters into operational localized neural core matrix...</div>
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
 </div>
 
 <div class="modal-backdrop" id="helpModal">
   <div class="modal">
-    <h3>AEGIS COMMAND SYSTEM SHORTCUTS</h3>
+    <h3>WORKSPACE OPERATOR SHORTCUT KEYMAP</h3>
     <div class="shortcuts-grid">
-      <span class="key">Space</span><span class="key-desc">Toggle workspace live playback/pause</span>
-      <span class="key">O</span><span class="key-desc">Toggle professional ghost structural overlay blending</span>
-      <span class="key">R</span><span class="key-desc">Restart runtime synchronized position timelines</span>
-      <span class="key">Esc</span><span class="key-desc">Dismiss open interaction dialogue components</span>
+      <div><span class="key">Space</span></div><div class="key-desc">Toggle pipeline execution processing pause alignment state.</div>
+      <div><span class="key">O</span></div><div class="key-desc">Toggle targeted crosshair placement vector engine tracing elements overlay.</div>
+      <div><span class="key">F</span></div><div class="key-desc">Step individual forward single frames sequences calculations.</div>
+      <div><span class="key">D</span></div><div class="key-desc">Instantly load comprehensive demo sample baseline model analysis data.</div>
+      <div><span class="key">Esc</span></div><div class="key-desc">Close informational workspace configuration utility overlays.</div>
     </div>
-    <button class="btn btn-ghost modal-close" id="helpModalClose">Close System Dialog</button>
+    <button class="btn btn-primary modal-close" id="modalCloseBtn" style="margin-top:24px;">Close Interface Help Panel</button>
   </div>
 </div>
 
-<div class="toast" id="toastNotification">Notification system initialization context template.</div>
+<div class="toast" id="toastContainer">Notification engine alert dispatched successfully.</div>
 
 <script>
-/**
- * AEGIS INSIGHT PLATFORM ARCHITECTURE CODEBASE
- * AUTHOR: SENIOR SOFTWARE ENGINEER
- */
-
-// Global System Configuration Registry Mapping Demo assets safely to abstract platform endpoints
-const ASSET_REGISTRY = {
-  valorant: {
-    title: "Valorant Competitive Match (Ascent - Duelist)",
-    playerSrc: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
-    proSrc: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-    score: 94,
-    tier: "ELITE MATCH",
-    tierClass: "elite",
-    summary: "Crosshair alignment optimization is sitting at a functional 98th percentile compared to professional benchmark indices. Minor micro-stutters detected during lateral spray patterns on tracking trajectories.",
-    insightsNeg: "Lateral recoil offset tracking displays sub-optimal counter-movement adjustments. Compensate 4% faster on horizontal shifts.",
-    insightsPos: "Exceptional pre-aim calculation patterns across high-traffic choke thresholds. Zero defensive positional exposure detected during entry mechanics.",
-    deltas: [
-      { name: "Crosshair Reticle Placement Accuracy", player: "94.2%", pro: "96.0%", diff: "-1.8%", type: "neg", pct: 94 },
-      { name: "Reaction Engagement Response Speed", player: "142ms", pro: "155ms", diff: "+13ms", type: "pos", pct: 100 },
-      { name: "Movement Counter-Strafing Cohesion", player: "88.7%", pro: "92.1%", diff: "-3.4%", type: "neg", pct: 88 },
-      { name: "Flick Targeting Convergence Efficiency", player: "91.4%", pro: "91.0%", diff: "+0.4%", type: "pos", pct: 91 }
-    ],
-    spatialChart: [85, 90, 78, 92, 94, 89, 95],
-    pathingChart: [70, 75, 82, 88, 91, 85, 94]
-  },
-  cs2: {
-    title: "Counter-Strike 2 Global Elite Execution (Mirage)",
-    playerSrc: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-    proSrc: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
-    score: 87,
-    tier: "ADVANCED PROFILE",
-    tierClass: "advanced",
-    summary: "Highly proficient structural routing matches standard default configurations closely. Rotational calculation loops are delayed by 400ms during compound execution triggers.",
-    insightsNeg: "Rotational transition vectors exhibit pacing dead-zones. Audio signal validation delays responsive rotations.",
-    insightsPos: "First-bullet hit registration calculations follow clean acceleration arcs. Pitch/yaw adjustments track perfectly within professional threshold models.",
-    deltas: [
-      { name: "Angle Clearing Structural Logic", player: "89.1%", pro: "94.5%", diff: "-5.4%", type: "neg", pct: 89 },
-      { name: "First-Shot Target Acquisition Window", player: "168ms", pro: "162ms", diff: "-6ms", type: "neg", pct: 90 },
-      { name: "Recoil Pattern Dampening Efficiency", player: "86.3%", pro: "85.0%", diff: "+1.3%", type: "pos", pct: 86 },
-      { name: "Utility Vector Deployment Precision", player: "93.0%", pro: "91.2%", diff: "+1.8%", type: "pos", pct: 93 }
-    ],
-    spatialChart: [72, 80, 85, 78, 88, 84, 87],
-    pathingChart: [60, 68, 74, 80, 85, 89, 86]
-  },
-  lol: {
-    title: "League of Legends Challenger Tier Scrim (Mid Lane)",
-    playerSrc: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
-    proSrc: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
-    score: 76,
-    tier: "INTERMEDIATE PROFILE",
-    tierClass: "intermediate",
-    summary: "Mechanical combat pathing is strong, but macro objective rotations reveal clear optimization deficits during late-game structural collapses.",
-    insightsNeg: "Flanking route convergence models reveal highly unsafe map exposures. Post-engagement retreat geometry is erratic.",
-    insightsPos: "Skillshot intercept trajectories display superior high-frequency tracking capabilities. Dynamic threat evasions remain solid.",
-    deltas: [
-      { name: "Target Selection Optimization Index", player: "79.2%", pro: "88.0%", diff: "-8.8%", type: "neg", pct: 79 },
-      { name: "APM Structural Distribution Density", player: "340", pro: "385", diff: "-45", type: "neg", pct: 72 },
-      { name: "Skillshot Evasion Trajectory Rating", player: "84.5%", pro: "81.2%", diff: "+3.3%", type: "pos", pct: 84 },
-      { name: "Macro Rotational Pathway Efficiency", player: "68.1%", pro: "84.0%", diff: "-15.9%", type: "neg", pct: 68 }
-    ],
-    spatialChart: [60, 65, 70, 72, 75, 78, 76],
-    pathingChart: [50, 55, 62, 66, 70, 73, 76]
-  },
-  apex: {
-    title: "Apex Legends Predator Drop Analysis (World's Edge)",
-    playerSrc: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4",
-    proSrc: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4",
-    score: 62,
-    tier: "DEVELOPING PROFILE",
-    tierClass: "developing",
-    summary: "Tracking mechanics over fast-moving vectors fall behind professional models. Slide-hop velocity conservation requires immediate operational attention.",
-    insightsNeg: "Velocity tracking indicators reveal recurrent speed drops during combat state slide adjustments.",
-    insightsPos: "High-ground tracking behaviors are exceptional. Positional priority mechanics mitigate incoming hit registers.",
-    deltas: [
-      { name: "Spatial Velocity Maintenance Profile", player: "64.2%", pro: "89.5%", diff: "-25.3%", type: "neg", pct: 64 },
-      { name: "Target Tracking Reticle Recoil Sync", player: "69.0%", pro: "84.1%", diff: "-15.1%", type: "neg", pct: 69 },
-      { name: "Vertical Engagement Route Selection", player: "81.4%", pro: "78.0%", diff: "+3.4%", type: "pos", pct: 81 },
-      { name: "Damage Trade Equilibrium Matrix", player: "58.0%", pro: "74.2%", diff: "-16.2%", type: "neg", pct: 58 }
-    ],
-    spatialChart: [50, 54, 58, 61, 60, 63, 62],
-    pathingChart: [40, 44, 49, 52, 55, 59, 62]
-  }
-};
-
-// Global App Runtime State Management Encapsulation
-const AppState = {
-  currentSession: null,
-  isProcessing: false,
-  isPlaying: false,
-  isOverlayActive: false,
-  historicalSessions: [],
-  telemetryTimerId: null,
-  activeVideoElement: null,
-  currentUploadedFile: null
-};
-
-// Component Element Registry Cache Mapping DOM Tree nodes
-const UI = {
-  // Navigation
-  helpBtn: document.getElementById("helpBtn"),
-  helpModal: document.getElementById("helpModal"),
-  helpModalClose: document.getElementById("helpModalClose"),
-  heroSessions: document.getElementById("heroSessions"),
-  
-  // Pipeline Cards
-  pipeStatus: [
-    document.getElementById("pipeStatus0"),
-    document.getElementById("pipeStatus1"),
-    document.getElementById("pipeStatus2"),
-    document.getElementById("pipeStatus3"),
-    document.getElementById("pipeStatus4")
+// Mock Core Data structures for standard dynamic pipelines
+const sampleDemoDataset = {
+  score: 89,
+  tier: "ADVANCED PRO SYNC",
+  summary: "Your combat execution matches elite competitive gameplay. Crosshair placement error vectors are exceptional, though tracking continuity displays structural drop-offs during vertical recoil displacement periods.",
+  metrics: { placing: "1.42°", latency: "148ms" },
+  bars: { placing: 88, latency: 91 },
+  deltas: [
+    { cat: "Horizontal Placement Accuracy", yours: "1.42° max error", target: "1.10° max error", diff: "+0.32° Deviation", state: "neg" },
+    { cat: "Visual Trigger Engagement Velocity", yours: "148ms latency", target: "155ms average", diff: "-7ms Faster Index", state: "pos" },
+    { cat: "Micro-Adjustment Path Variance", yours: "94.2% stability", target: "92.0% criteria", diff: "+2.2% Match Level", state: "pos" }
   ],
-  pipeSteps: [
-    document.getElementById("pipeStep0"),
-    document.getElementById("pipeStep1"),
-    document.getElementById("pipeStep2"),
-    document.getElementById("pipeStep3"),
-    document.getElementById("pipeStep4")
+  insights: [
+    { title: "RECOIL OVER-COMPENSATION DETECTED", text: "Your mouse counter-movements during the initial 4-round spray vectors are deeper than calculated professional baselines. Reduce vertical pull weights by 8.4%." },
+    { title: "ELEVATION PLANE STABILITY EXCELLENT", text: "Crosshair positioning tracking remains highly constant along primary movement planes while navigating structural corners, maintaining premium entry frag position thresholds." }
   ],
-
-  // Upload Context Control Layouts
-  uploadArea: document.getElementById("uploadArea"),
-  dropZone: document.getElementById("dropZone"),
-  dropZoneTitle: document.getElementById("dropZoneTitle"),
-  dropZoneSub: document.getElementById("dropZoneSub"),
-  dropFileName: document.getElementById("dropFileName"),
-  fileInput: document.getElementById("fileInput"),
-  browseBtn: document.getElementById("browseBtn"),
-  gameSelect: document.getElementById("gameSelect"),
-  launchBtn: document.getElementById("launchBtn"),
-
-  // Runtime View Workspace Context elements
-  workspaceArea: document.getElementById("workspaceArea"),
-  workspaceTitle: document.getElementById("workspaceTitle"),
-  playerVideo: document.getElementById("playerVideo"),
-  proVideo: document.getElementById("proVideo"),
-  overlayContainer: document.getElementById("overlayContainer"),
-  overlayVideo: document.getElementById("overlayVideo"),
-  
-  // Workspace Operational Controls Toolbar elements
-  workspaceToolbar: document.getElementById("workspaceToolbar"),
-  toolPlay: document.getElementById("toolPlay"),
-  toolOverlay: document.getElementById("toolOverlay"),
-  toolRestart: document.getElementById("toolRestart"),
-  toolReset: document.getElementById("toolReset"),
-
-  // Dynamic Telemetry Framework Outputs
-  metricsGrid: document.getElementById("metricsGrid"),
-  chartsGrid: document.getElementById("chartsGrid"),
-  mMatchVal: document.getElementById("mMatchVal"),
-  mMatchBar: document.getElementById("mMatchBar"),
-  mMatchNote: document.getElementById("mMatchNote"),
-  mLatencyVal: document.getElementById("mLatencyVal"),
-  mLatencyBar: document.getElementById("mLatencyBar"),
-  mLatencyNote: document.getElementById("mLatencyNote"),
-  chartSpatial: document.getElementById("chartSpatialContainer"),
-  chartPathing: document.getElementById("chartPathingContainer"),
-
-  // System Briefing Report Nodes
-  analysisReport: document.getElementById("analysisReport"),
-  reportScore: document.getElementById("reportScore"),
-  reportTier: document.getElementById("reportTier"),
-  reportMeta: document.getElementById("reportMeta"),
-  reportSummaryTitle: document.getElementById("reportSummaryTitle"),
-  reportSummaryText: document.getElementById("reportSummaryText"),
-  reportTableBody: document.getElementById("reportTableBody"),
-  reportInsightNeg: document.getElementById("reportInsightNeg"),
-  reportInsightPos: document.getElementById("reportInsightPos"),
-  btnExportData: document.getElementById("btnExportData"),
-  btnPrintReport: document.getElementById("btnPrintReport"),
-
-  // Sidebar Engine Display nodes
-  telemetryWeights: document.getElementById("telemetryWeights"),
-  telemetryFps: document.getElementById("telemetryFps"),
-  telemetryLatency: document.getElementById("telemetryLatency"),
-  barWeights: document.getElementById("barWeights"),
-  barFps: document.getElementById("barFps"),
-  barLatency: document.getElementById("barLatency"),
-  logFeed: document.getElementById("logFeed"),
-  sessionHistoryContainer: document.getElementById("sessionHistoryContainer"),
-
-  // Global Overlay UI structures
-  progressOverlay: document.getElementById("progressOverlay"),
-  progressOverlayBar: document.getElementById("progressOverlayBar"),
-  progressLabel: document.getElementById("progressLabel"),
-  progressDesc: document.getElementById("progressDesc"),
-  toastNotification: document.getElementById("toastNotification"),
-  confettiCanvas: document.getElementById("confettiCanvas")
+  logs: [
+    "Loaded sample binary profile context array.",
+    "Mapped spatial vector alignments to VCT Pro standard baseline configuration model successfully.",
+    "Synchronized telemetry arrays. Reporting completed data index parameters."
+  ]
 };
 
-/* ─ CORE RECOVERY ENGINE ARCHITECTURE SCRIPT OPERATIONS ─ */
+// State Variables
+let appSessionCount = 0;
+let overlayActive = true;
+let isPlaying = false;
+let currentFrameCount = 0;
 
-/**
- * Initializes Core system events, resets layouts, binds triggers
- */
-function initializeAegisPlatformCore() {
-  logSystemEvent("System core mapping sequence executing...", "cyan");
-  
-  // Bind Browse Interactions
-  UI.browseBtn.addEventListener("click", (e) => {
-    e.stopPropagation();
-    UI.fileInput.click();
-  });
-  
-  UI.fileInput.addEventListener("change", handleManualFileInputSelection);
+// DOM Elements Selection Setup
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+const dropFileDisplay = document.getElementById('dropFileDisplay');
+const launchBtn = document.getElementById('launchBtn');
+const demoSampleBtn = document.getElementById('demoSampleBtn');
+const progressOverlay = document.getElementById('progressOverlay');
+const progressFill = document.getElementById('progressFill');
+const progressLabel = document.getElementById('progressLabel');
+const progressDesc = document.getElementById('progressDesc');
+const logFeed = document.getElementById('logFeed');
+const heroSessions = document.getElementById('heroSessions');
+const workspace = document.getElementById('workspace');
+const uploadArea = document.getElementById('uploadArea');
+const panelTitle = document.getElementById('panelTitle');
+const reportArea = document.getElementById('reportArea');
 
-  // Bind Drag & Drop Events directly to layout boundaries
-  UI.dropZone.addEventListener("dragover", (e) => {
-    e.preventDefault();
-    UI.dropZone.classList.add("drag");
-  });
-  
-  UI.dropZone.addEventListener("dragleave", () => {
-    UI.dropZone.classList.remove("drag");
-  });
-  
-  UI.dropZone.addEventListener("drop", handleGameplayFileDropExtraction);
-  UI.dropZone.addEventListener("click", () => UI.fileInput.click());
+// Toolbar Elements
+const toolPlay = document.getElementById('toolPlay');
+const toolOverlay = document.getElementById('toolOverlay');
+const toolAdvance = document.getElementById('toolAdvance');
+const toolRefresh = document.getElementById('toolRefresh');
 
-  // Workspace controls bind execution anchors
-  UI.launchBtn.addEventListener("click", executeNeuralAnalysisSequencePipeline);
-  UI.toolPlay.addEventListener("click", toggleWorkspacePlaybackState);
-  UI.toolOverlay.addEventListener("click", toggleProGhostOverlayState);
-  UI.toolRestart.addEventListener("click", resetWorkspacePlaybackTimelines);
-  UI.toolReset.addEventListener("click", purgeWorkspaceSessionInstance);
+// Metrics and Charts elements
+const mPlacing = document.getElementById('mPlacing');
+const mLatency = document.getElementById('mLatency');
+const bPlacing = document.getElementById('bPlacing');
+const bLatency = document.getElementById('bLatency');
+const aiOverlay = document.getElementById('aiOverlay');
+const userVidTime = document.getElementById('userVidTime');
 
-  // Informative dialogue bindings
-  UI.helpBtn.addEventListener("click", () => toggleModalDialogVisibility(true));
-  UI.helpModalClose.addEventListener("click", () => toggleModalDialogVisibility(false));
-  UI.helpModal.addEventListener("click", (e) => {
-    if(e.target === UI.helpModal) toggleModalDialogVisibility(false);
-  });
-
-  // Action brief handlers
-  UI.btnExportData.addEventListener("click", () => renderToastNotification("Raw analytics data matrix exported to system clipboard.", "ok"));
-  UI.btnPrintReport.addEventListener("click", () => window.print());
-
-  // Global Keyboard Shortcuts Hotkey Engine Binder
-  window.addEventListener("keydown", handleGlobalHotkeyTriggers);
-
-  // Initialize Background Canvas Sizing Loop
-  window.addEventListener("resize", configureConfettiCanvasResolution);
-  configureConfettiCanvasResolution();
-
-  // Fire baseline heartbeat log cycles
-  startTelemetryRefreshLoop();
-  logSystemEvent("Aegis Platform ready. Load localized media or choose standard pro profiling templates.", "green");
+// Shared utility actions
+function createLog(msg) {
+  const now = new Date();
+  const timeStr = `[${now.toTimeString().split(' ')[0].substring(3)}]`;
+  const logItem = document.createElement('div');
+  logItem.className = 'log-item';
+  logItem.innerHTML = `<span class="log-time">${timeStr}</span><span class="log-msg">${msg}</span>`;
+  logFeed.prepend(logItem);
 }
 
-/**
- * Tracks and parses user file selection manually via standard interface
- */
-function handleManualFileInputSelection(e) {
-  if (e.target.files && e.target.files.length > 0) {
-    registerGameplayInputFile(e.target.files[0]);
-  }
+function triggerToast(text, status = 'ok') {
+  const toast = document.getElementById('toastContainer');
+  toast.innerText = text;
+  toast.className = `toast show ${status}`;
+  setTimeout(() => toast.classList.remove('show'), 3500);
 }
 
-/**
- * Extract dropped item structures safely inside browser viewport
- */
-function handleGameplayFileDropExtraction(e) {
+// Modal handling logic mechanics
+const helpBtn = document.getElementById('helpBtn');
+const helpModal = document.getElementById('helpModal');
+const modalCloseBtn = document.getElementById('modalCloseBtn');
+helpBtn.onclick = () => helpModal.classList.add('show');
+modalCloseBtn.onclick = () => helpModal.classList.remove('show');
+
+// File Upload Triggers Interactions
+dropZone.onclick = () => fileInput.click();
+fileInput.onchange = (e) => {
+  if(e.target.files.length > 0) {
+    dropFileDisplay.innerText = e.target.files[0].name;
+    launchBtn.removeAttribute('disabled');
+    createLog(`File asset targeted: ${e.target.files[0].name}. Extraction pipeline unblocked.`);
+  }
+};
+dropZone.ondragover = (e) => { e.preventDefault(); dropZone.classList.add('drag'); };
+dropZone.ondragleave = () => dropZone.classList.remove('drag');
+dropZone.ondrop = (e) => {
   e.preventDefault();
-  UI.dropZone.classList.remove("drag");
-  if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-    registerGameplayInputFile(e.dataTransfer.files[0]);
+  dropZone.classList.remove('drag');
+  if(e.dataTransfer.files.length > 0) {
+    fileInput.files = e.dataTransfer.files;
+    dropFileDisplay.innerText = e.dataTransfer.files[0].name;
+    launchBtn.removeAttribute('disabled');
+    createLog(`File dropped: ${e.dataTransfer.files[0].name}. Pipeline enabled.`);
   }
-}
+};
 
-/**
- * Commits the tracking item parameters into active platform scope memory
- */
-function registerGameplayInputFile(file) {
-  if (!file.type.startsWith("video/")) {
-    renderToastNotification("Invalid media object payload. Execution aborted.", "err");
-    logSystemEvent("Input registration rejected: MIME structure must be video type.", "red");
-    return;
-  }
+// Core RESTORED Functional Feature: Analysis Pipeline Executor Simulation Engine
+function executionSequence(dataset, sessionTitleName) {
+  uploadArea.style.display = 'none';
+  workspace.classList.add('show');
+  progressOverlay.classList.add('show');
+  isPlaying = false;
   
-  AppState.currentUploadedFile = file;
-  
-  // Transform name structure visually inside layout nodes without changing styles
-  UI.dropZoneTitle.textContent = "Gameplay Clip Loaded Successfully";
-  UI.dropZoneSub.style.display = "none";
-  UI.dropFileName.textContent = `${file.name} (${(file.size / (1024 * 1024)).toFixed(2)} MB)`;
-  UI.dropFileName.style.display = "block";
-  
-  // Advance initial baseline pipeline card visual progress states
-  updatePipelineCardVisualStatus(0, "READY", "done");
-  updatePipelineCardVisualStatus(1, "WAITING", "active");
-  
-  renderToastNotification("Input telemetry clip buffer parsed cleanly.", "ok");
-  logSystemEvent(`File committed to processing stream: ${file.name}`, "cyan");
-}
-
-/**
- * Master execution runner processing multi-pass analytical pipeline parsing operations
- */
-function executeNeuralAnalysisSequencePipeline() {
-  if (AppState.isProcessing) return;
-  
-  const selectedModelId = UI.gameSelect.value;
-  const configTemplate = ASSET_REGISTRY[selectedModelId];
-  
-  if (!configTemplate) {
-    renderToastNotification("Fatal mapping reference: requested model profile structure unavailable.", "err");
-    return;
-  }
-
-  AppState.isProcessing = true;
-  AppState.currentSession = JSON.parse(JSON.stringify(configTemplate)); // Deep clone immutable structure safely
-  
-  logSystemEvent(`Initializing comparison pipeline for pro template profile reference [${selectedModelId.toUpperCase()}]`, "cyan");
-  toggleProcessingScreenBlanker(true, "PARSING VIDEO MATRIX BUFFER", "Executing multi-pass asset tracking conversions over high-capacity arrays...", 0);
-
-  // Pipeline Step Time Progression Chaining Emulation Engine Loops
-  setTimeout(() => {
-    updatePipelineCardVisualStatus(0, "PARSED", "done");
-    updatePipelineCardVisualStatus(1, "STABILIZING", "active");
-    toggleProcessingScreenBlanker(true, "60FPS FRAME ALIGNMENT SYNC", "Executing phase tracking loops, normalizing hardware rendering drift deviations...", 25);
-    
-    setTimeout(() => {
-      updatePipelineCardVisualStatus(1, "ALIGNED", "done");
-      updatePipelineCardVisualStatus(2, "VECTORIZING", "active");
-      toggleProcessingScreenBlanker(true, "NEURAL VECTOR TRANSLATION", "Constructing mathematical positional arrays mapping trajectory geometry spatial variables...", 50);
-      
-      setTimeout(() => {
-        updatePipelineCardVisualStatus(2, "MAPPED", "done");
-        updatePipelineCardVisualStatus(3, "COMPARING", "active");
-        toggleProcessingScreenBlanker(true, "PRO CORE MODEL COMPLIANCE TESTING", "Running neural check assertions against 120 professional standard records...", 75);
-        
-        setTimeout(() => {
-          updatePipelineCardVisualStatus(3, "MATCHED", "done");
-          updatePipelineCardVisualStatus(4, "COMPILING", "active");
-          toggleProcessingScreenBlanker(true, "COMPILING PERFORMANCE SYNOPSIS", "Calculating delta offsets and writing performance criteria scoring arrays...", 95);
-          
-          setTimeout(() => {
-            updatePipelineCardVisualStatus(4, "COMPLETE", "done");
-            toggleProcessingScreenBlanker(false);
-            AppState.isProcessing = false;
-            
-            // Render workspace targets and push tracking variables forward
-            instantiateWorkspaceEnvironmentRuntime();
-          }, 600);
-        }, 800);
-      }, 900);
-    }, 700);
-  }, 800);
-}
-
-/**
- * Materializes processed dataset properties into localized views
- */
-function instantiateWorkspaceEnvironmentRuntime() {
-  const session = AppState.currentSession;
-  if (!session) return;
-
-  logSystemEvent("Compiling workspace analytics instance visualization parameters.", "cyan");
-  
-  // Set explicit instance headers
-  UI.workspaceTitle.textContent = `Session Instance Active: ${session.title}`;
-  
-  // Conditionally process data target paths based on uploaded vs placeholder context arrays
-  if (AppState.currentUploadedFile) {
-    const localVideoBlobUrl = URL.createObjectURL(AppState.currentUploadedFile);
-    UI.playerVideo.src = localVideoBlobUrl;
-  } else {
-    UI.playerVideo.src = session.playerSrc;
-  }
-  
-  UI.proVideo.src = session.proSrc;
-  UI.overlayVideo.src = session.proSrc;
-
-  // Swap out layout blocks visually without directly touching CSS
-  UI.uploadArea.style.display = "none";
-  UI.workspaceArea.classList.add("show");
-  UI.workspaceToolbar.style.display = "flex";
-  UI.metricsGrid.style.display = "grid";
-  UI.chartsGrid.style.display = "grid";
-
-  // Trigger explicit media asset initialization chains safely
-  let mediaLoadingPromises = [
-    UI.playerVideo.play(),
-    UI.proVideo.play(),
-    UI.overlayVideo.play()
+  const steps = [
+    { label: "PARSING GRAPHIC VIDEO LAYERS", desc: "Extracting frame sequences, compiling data sets and unpacking pixel grids...", progress: 20 },
+    { label: "FRAME SYNCHRONICITY SEGMENTATION", desc: "Analyzing 60fps tracking sequences against temporal alignment matrix profiles...", progress: 45 },
+    { label: "NEURAL VECTOR STRUCTURING", desc: "Generating mathematical modeling trajectories for velocity and placement profiles...", progress: 70 },
+    { label: "COMPILING PRO MODE COMPARISONS", desc: "Calculating absolute spatial error matrices against verified master databases...", progress: 95 },
+    { label: "INTELLIGENCE GENERATION COMPLETE", desc: "Mapping final delta scores, building analytics files and compiling interface reports...", progress: 100 }
   ];
 
-  Promise.all(mediaLoadingPromises.map(p => p.catch(e => e)))
-    .then(() => {
-      AppState.isPlaying = true;
-      UI.toolPlay.textContent = "⏸ Pause Sync";
-      logSystemEvent("Synchronized media feeds locked and running.", "green");
+  let currentStepIndex = 0;
+  
+  function advancePipeline() {
+    if(currentStepIndex < steps.length) {
+      const current = steps[currentStepIndex];
+      progressLabel.innerText = current.label;
+      progressDesc.innerText = current.desc;
+      progressFill.style.width = `${current.progress}%`;
       
-      // Bind live scrubbing data display feedback updates
-      UI.playerVideo.addEventListener("timeupdate", coordinateVideoPlaybackFeedbackMeters);
-    });
-
-  // Interpolate analytical criteria visualizations asynchronously
-  animateMetricTileValueCounters();
-  generatePlatformReportGraphs();
-  populateStatisticalReportDocument();
-  
-  // Insert newly registered complete calculations to historical listings cache data stacks
-  appendFinishedSessionToHistory(session);
-
-  renderToastNotification("Aegis analysis workspace initialized successfully.", "ok");
-  triggerConfettiSuccessCelebration();
-}
-
-/**
- * Tracks frame playback progress, outputting standard fractional runtime stamps
- */
-function coordinateVideoPlaybackFeedbackMeters() {
-  const currentTimeStamp = UI.playerVideo.currentTime.toFixed(1);
-  document.getElementById("playerVidTime").textContent = `${currentTimeStamp}s`;
-  document.getElementById("proVidTime").textContent = `${currentTimeStamp}s`;
-}
-
-/**
- * Toggles global operational layout play states running simultaneously
- */
-function toggleWorkspacePlaybackState() {
-  if (!AppState.currentSession) return;
-
-  if (AppState.isPlaying) {
-    UI.playerVideo.pause();
-    UI.proVideo.pause();
-    UI.overlayVideo.pause();
-    AppState.isPlaying = false;
-    UI.toolPlay.textContent = "▶ Resume Sync";
-    logSystemEvent("Workspace streams paused. Synchronized states intact.", "warn");
-  } else {
-    UI.playerVideo.play();
-    UI.proVideo.play();
-    UI.overlayVideo.play();
-    AppState.isPlaying = true;
-    UI.toolPlay.textContent = "⏸ Pause Sync";
-    logSystemEvent("Resuming coordinated playback arrays.", "cyan");
-  }
-  
-  UI.toolPlay.classList.toggle("active", !AppState.isPlaying);
-}
-
-/**
- * Toggles visibility modes for transparency video blend mapping channels
- */
-function toggleProGhostOverlayState() {
-  if (!AppState.currentSession) return;
-  
-  AppState.isOverlayActive = !AppState.isOverlayActive;
-  UI.overlayContainer.classList.toggle("show", AppState.isOverlayActive);
-  UI.toolOverlay.classList.toggle("active", AppState.isOverlayActive);
-  
-  // Realtime alignment calibration validation injection check
-  if (AppState.isOverlayActive) {
-    UI.overlayVideo.currentTime = UI.playerVideo.currentTime;
-  }
-
-  logSystemEvent(`Ghost blend matching structural mode visibility set to: ${AppState.isOverlayActive.toUpperCase()}`, "cyan");
-}
-
-/**
- * Rewinds active workspace structural components back to initial baseline bounds
- */
-function resetWorkspacePlaybackTimelines() {
-  if (!AppState.currentSession) return;
-  
-  UI.playerVideo.currentTime = 0;
-  UI.proVideo.currentTime = 0;
-  UI.overlayVideo.currentTime = 0;
-  
-  logSystemEvent("Playback synchronization coordinates reset to 0.00ms standard mark.", "cyan");
-  renderToastNotification("Timelines synchronized to base.", "ok");
-}
-
-/**
- * Flushes active configuration data states safely to allow fresh profile imports
- */
-function purgeWorkspaceSessionInstance() {
-  logSystemEvent("Tearing down running workspace structures and purging buffer caches.", "warn");
-  
-  // Direct tracking teardowns safely
-  UI.playerVideo.removeEventListener("timeupdate", coordinateVideoPlaybackFeedbackMeters);
-  UI.playerVideo.pause();
-  UI.proVideo.pause();
-  UI.overlayVideo.pause();
-  UI.playerVideo.src = "";
-  UI.proVideo.src = "";
-  UI.overlayVideo.src = "";
-
-  if (AppState.currentUploadedFile) {
-    AppState.currentUploadedFile = null;
-  }
-
-  // Restore Default Static Component text representations safely
-  UI.dropZoneTitle.textContent = "Drag & Drop Gameplay Clip";
-  UI.dropZoneSub.style.display = "block";
-  UI.dropFileName.style.display = "none";
-  UI.fileInput.value = "";
-
-  // Reset Pipeline Status Badges to default template configurations
-  for (let i = 0; i < UI.pipeStatus.length; i++) {
-    updatePipelineCardVisualStatus(i, i === 0 ? "WAITING" : "PENDING", i === 0 ? "active" : "wait");
-  }
-
-  // Clear workspace display states
-  UI.workspaceArea.classList.remove("show");
-  UI.workspaceToolbar.style.display = "none";
-  UI.metricsGrid.style.display = "none";
-  UI.chartsGrid.style.display = "none";
-  UI.analysisReport.classList.remove("show");
-  UI.uploadArea.style.display = "block";
-
-  AppState.currentSession = null;
-  AppState.isPlaying = false;
-  AppState.isOverlayActive = false;
-  UI.toolOverlay.classList.remove("active");
-
-  renderToastNotification("Workspace variables purged clean.", "ok");
-}
-
-/* ─ PROGRAMMATIC RENDERING DATA CORES ─ */
-
-/**
- * Animates analytical numerical tracking parameters forward sequentially
- */
-function animateMetricTileValueCounters() {
-  const session = AppState.currentSession;
-  if (!session) return;
-
-  // Match Rating processing mechanics
-  let currentMatchPercentageValue = 0;
-  const targetMatchPercentageValue = session.score;
-  UI.mMatchBar.style.width = "0%";
-  
-  const matchIntervalRunner = setInterval(() => {
-    if (currentMatchPercentageValue >= targetMatchPercentageValue) {
-      clearInterval(matchIntervalRunner);
-    } else {
-      currentMatchPercentageValue++;
-      UI.mMatchVal.textContent = `${currentMatchPercentageValue}.4%`;
-      UI.mMatchBar.style.width = `${currentMatchPercentageValue}%`;
-    }
-  }, 12);
-
-  UI.mMatchNote.textContent = `Structural similarity limits match professional compliance index targets.`;
-
-  // Latency optimization parameter updates
-  UI.mLatencyVal.textContent = `-${14 + Math.floor(Math.random() * 8)}ms`;
-  UI.mLatencyBar.style.width = "82%";
-  UI.mLatencyNote.textContent = "Frame conversion pipeline processing cleanly inside sub-threshold intervals.";
-}
-
-/**
- * Generates data visualizations programmatically matching style specifications perfectly
- */
-function generatePlatformReportGraphs() {
-  const session = AppState.currentSession;
-  if (!session) return;
-
-  // Build Spatial Chart Arrays 
-  UI.chartSpatial.innerHTML = "";
-  session.spatialChart.forEach(val => {
-    const compoundBarContainer = document.createElement("div");
-    compoundBarContainer.style.cssText = "flex:1;height:100%;display:flex;align-items:flex-end;gap:2px;position:relative";
-    
-    // User Bar Element
-    const userBarFill = document.createElement("div");
-    userBarFill.style.cssText = `flex:1;background:var(--cyan);border-radius:2px 2px 0 0;animation:barRise 0.8s ease forwards;height:${val}%`;
-    
-    // Base standard reference comparison block
-    const standardBaselineBar = document.createElement("div");
-    const structuralBaseReferenceHeight = Math.min(100, val + (Math.random() * 14 - 7));
-    standardBaselineBar.style.cssText = `flex:1;background:rgba(255,255,255,.12);border-radius:2px 2px 0 0;animation:barRise 1s ease forwards;height:${structuralBaseReferenceHeight}%`;
-    
-    compoundBarContainer.appendChild(userBarFill);
-    compoundBarContainer.appendChild(standardBaselineBar);
-    UI.chartSpatial.appendChild(compoundBarContainer);
-  });
-
-  // Build Pathing Distribution Index layout representation
-  UI.chartPathing.innerHTML = "";
-  session.pathingChart.forEach(val => {
-    const singleBarContainer = document.createElement("div");
-    singleBarContainer.style.cssText = "flex:1;height:100%;display:flex;align-items:flex-end;position:relative";
-    
-    const individualPathBarFill = document.createElement("div");
-    individualPathBarFill.style.cssText = `width:100%;background:var(--purple);border-radius:2px 2px 0 0;animation:barRise 0.9s cubic-bezier(.1, 1, .1, 1) forwards;height:${val}%`;
-    
-    singleBarContainer.appendChild(individualPathBarFill);
-    UI.chartPathing.appendChild(singleBarContainer);
-  });
-}
-
-/**
- * populates table criteria strings and diagnostic synopsis summaries
- */
-function populateStatisticalReportDocument() {
-  const session = AppState.currentSession;
-  if (!session) return;
-
-  UI.reportScore.textContent = session.score;
-  UI.reportTier.textContent = session.tier;
-  
-  // Normalize visual representation color tiering flags safely
-  UI.reportTier.className = `tier-pill ${session.tierClass}`;
-  
-  UI.reportMeta.textContent = `AEGIS VECTOR CROSS-MATCH OVERLAY CONFORMANCE MODEL STATUS: [VALIDATED]`;
-  UI.reportSummaryText.textContent = session.summary;
-  UI.reportInsightNeg.textContent = session.insightsNeg;
-  UI.reportInsightPos.textContent = session.insightsPos;
-
-  // Re-generate table structures dynamically without modifying HTML elements
-  UI.reportTableBody.innerHTML = "";
-  session.deltas.forEach(row => {
-    const dataRowNode = document.createElement("tr");
-    
-    const metricLabelCell = document.createElement("td");
-    metricLabelCell.style.fontWeight = "600";
-    metricLabelCell.textContent = row.name;
-    
-    const userValueCell = document.createElement("td");
-    userValueCell.style.fontFamily = "var(--mono)";
-    userValueCell.textContent = row.player;
-    
-    const proTargetBaselineCell = document.createElement("td");
-    proTargetBaselineCell.style.fontFamily = "var(--mono)";
-    proTargetBaselineCell.style.color = "var(--text-3)";
-    proTargetBaselineCell.textContent = row.pro;
-    
-    const varianceDeltaDisplayCell = document.createElement("td");
-    const trendClassIdentifier = row.type === "pos" ? "delta-pos" : "delta-neg";
-    
-    const dynamicTrendBadgeSpan = document.createElement("span");
-    dynamicTrendBadgeSpan.className = trendClassIdentifier;
-    dynamicTrendBadgeSpan.textContent = row.diff;
-    
-    const varianceIndicatorTrackElement = document.createElement("div");
-    varianceIndicatorTrackElement.className = "delta-bar-wrap";
-    
-    const varianceIndicatorFillElement = document.createElement("div");
-    varianceIndicatorFillElement.className = "delta-bar-fill";
-    varianceIndicatorFillElement.style.width = `${row.pct}%`;
-    varianceIndicatorFillElement.style.background = row.type === "pos" ? "var(--green)" : "var(--cyan)";
-    
-    varianceIndicatorTrackElement.appendChild(varianceIndicatorFillElement);
-    varianceDeltaDisplayCell.appendChild(dynamicTrendBadgeSpan);
-    varianceDeltaDisplayCell.appendChild(varianceIndicatorTrackElement);
-    
-    dataRowNode.appendChild(metricLabelCell);
-    dataRowNode.appendChild(userValueCell);
-    dataRowNode.appendChild(proTargetBaselineCell);
-    dataRowNode.appendChild(varianceDeltaDisplayCell);
-    
-    UI.reportTableBody.appendChild(dataRowNode);
-  });
-
-  UI.analysisReport.classList.add("show");
-}
-
-/**
- * Commits completed session objects to local archive representation caches
- */
-function appendFinishedSessionToHistory(session) {
-  AppState.historicalSessions.unshift({
-    title: session.title,
-    score: session.score,
-    timestamp: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'})
-  });
-
-  // Re-render local inventory displays
-  UI.sessionHistoryContainer.innerHTML = "";
-  UI.heroSessions.textContent = AppState.historicalSessions.length;
-
-  AppState.historicalSessions.forEach(item => {
-    const historicalSessionCardNode = document.createElement("div");
-    historicalSessionCardNode.className = "session-item fade-up";
-    
-    // Avoid re-running complex compilation layers; just pull warning contexts when requested
-    historicalSessionCardNode.addEventListener("click", () => {
-      renderToastNotification(`Reviewing historic session: Accuracy Score Rating: ${item.score}%`, "warn");
-    });
-
-    historicalSessionCardNode.innerHTML = `
-      <strong>${item.title}</strong>
-      <span>Processed index timestamp: ${item.timestamp}</span>
-      <div class="session-score">METRIC CORES SYNC: ${item.score}%</div>
-    `;
-    UI.sessionHistoryContainer.appendChild(historicalSessionCardNode);
-  });
-}
-
-/* ─ UTILITY PLATFORM INFRASTRUCTURE CONTROL OPERATIONS ─ */
-
-/**
- * Coordinates status parameters across pipeline elements
- */
-function updatePipelineCardVisualStatus(index, statusText, colorModeClass) {
-  const statusTargetNode = UI.pipeStatus[index];
-  const stepContainerCardNode = UI.pipeSteps[index];
-  
-  if (!statusTargetNode || !stepContainerCardNode) return;
-
-  statusTargetNode.textContent = statusText;
-  stepContainerCardNode.className = "pipe-box";
-  
-  if (colorModeClass === "active") stepContainerCardNode.classList.add("active");
-  if (colorModeClass === "done") stepContainerCardNode.classList.add("done");
-}
-
-/**
- * Toggles structural layout block blanker dimensions during system calculations
- */
-function toggleProcessingScreenBlanker(displayActiveState, primaryHeadingLabel = "", auxiliaryContextString = "", linearProgressPercentValue = 0) {
-  if (displayActiveState) {
-    UI.progressOverlay.classList.add("show");
-    UI.progressLabel.textContent = primaryHeadingLabel;
-    UI.progressDesc.textContent = auxiliaryContextString;
-    UI.progressOverlayBar.style.width = `${linearProgressPercentValue}%`;
-  } else {
-    UI.progressOverlay.classList.remove("show");
-    UI.progressOverlayBar.style.width = "0%";
-  }
-}
-
-/**
- * Safely visibility routes structural command interface help menus
- */
-function toggleModalDialogVisibility(isActive) {
-  UI.helpModal.classList.toggle("show", isActive);
-}
-
-/**
- * Universal keydown routing intercept system checking explicit command patterns
- */
-function handleGlobalHotkeyTriggers(e) {
-  // Safe validation check ensuring text field entries aren't intercepted accidentally
-  if (e.target.tagName === "SELECT" || e.target.tagName === "INPUT") return;
-
-  const standardKeyCodeValue = e.key.toLowerCase();
-  
-  if (e.key === "Escape") {
-    toggleModalDialogVisibility(false);
-  }
-  if (standardKeyCodeValue === " ") {
-    e.preventDefault();
-    toggleWorkspacePlaybackState();
-  }
-  if (standardKeyCodeValue === "o") {
-    e.preventDefault();
-    toggleProGhostOverlayState();
-  }
-  if (standardKeyCodeValue === "r") {
-    e.preventDefault();
-    resetWorkspacePlaybackTimelines();
-  }
-}
-
-/**
- * Dispatches short-lived notification parameters inside global viewport layout coordinates
- */
-function renderToastNotification(messageContentString, operationalStatusType = "ok") {
-  UI.toastNotification.textContent = messageContentString;
-  UI.toastNotification.className = `toast show ${operationalStatusType}`;
-  
-  // Clear lingering historical timers automatically via single allocation patterns
-  if (window.toastTimeoutTracker) clearTimeout(window.toastTimeoutTracker);
-  
-  window.toastTimeoutTracker = setTimeout(() => {
-    UI.toastNotification.classList.remove("show");
-  }, 3500);
-}
-
-/**
- * Generates safe sequential console-emulation logging entries directly into the UI view
- */
-function logSystemEvent(logMessageString, colorFormattingClass = "cyan") {
-  const currentSystemClockTimestampString = new Date().toLocaleTimeString([], {hour12:false, hour:'2-digit', minute:'2-digit', second:'2-digit'});
-  const discreteLogItemElementNode = document.createElement("div");
-  discreteLogItemElementNode.className = "log-item";
-  
-  discreteLogItemElementNode.innerHTML = `
-    <span class="log-time">[${currentSystemClockTimestampString}]</span>
-    <span class="log-msg" style="color: var(--${colorFormattingClass})">${logMessageString}</span>
-  `;
-  
-  UI.logFeed.appendChild(discreteLogItemElementNode);
-  UI.logFeed.scrollTop = UI.logFeed.scrollHeight;
-}
-
-/**
- * Simulates volatile fluctuation profiles for platform structural telemetry readouts
- */
-function startTelemetryRefreshLoop() {
-  if (AppState.telemetryTimerId) clearInterval(AppState.telemetryTimerId);
-
-  AppState.telemetryTimerId = setInterval(() => {
-    // Generate organic shifting numbers to demonstrate running monitoring framework
-    const baseMemoryLoadWeight = AppState.currentSession ? 2.4 + (Math.random() * 0.3) : 0.4;
-    const activeFrameRateOutput = AppState.isPlaying ? 58 + Math.floor(Math.random() * 4) : 0;
-    const localizedProcessingDelayClock = AppState.currentSession ? 11.2 + (Math.random() * 2.5) : 0.0;
-
-    UI.telemetryWeights.textContent = `${baseMemoryLoadWeight.toFixed(2)} GB`;
-    UI.telemetryFps.textContent = `${activeFrameRateOutput} fps`;
-    UI.telemetryLatency.textContent = `${localizedProcessingDelayClock.toFixed(1)} ms`;
-
-    // Map numeric profiles directly to structural horizontal gauge fill states
-    UI.barWeights.style.width = `${(baseMemoryLoadWeight / 4) * 100}%`;
-    UI.barFps.style.width = `${(activeFrameRateOutput / 60) * 100}%`;
-    UI.barLatency.style.width = `${(localizedProcessingDelayClock / 20) * 100}%`;
-
-  }, 1000);
-}
-
-/* ─ HIGH-EFFICIENCY CELEBRATORY VISUAL PARTICLE RENDERING CODE ─ */
-let confettiEngineArray = [];
-const confettiColorPaletteHexArray = ["#63b3ed", "#90cdf4", "#b794f4", "#68d391", "#f6e05e"];
-
-function configureConfettiCanvasResolution() {
-  UI.confettiCanvas.width = window.innerWidth;
-  UI.confettiCanvas.height = window.innerHeight;
-}
-
-function triggerConfettiSuccessCelebration() {
-  const canvasRenderContext = UI.confettiCanvas.getContext("2d");
-  UI.confettiCanvas.classList.add("show");
-  confettiEngineArray = [];
-
-  for (let i = 0; i < 110; i++) {
-    confettiEngineArray.push({
-      x: window.innerWidth / 2,
-      y: window.innerHeight / 2 - 40,
-      vx: (Math.random() - 0.5) * 14,
-      vy: (Math.random() - 0.7) * 12 - 4,
-      r: Math.random() * 4 + 3,
-      color: confettiColorPaletteHexArray[Math.floor(Math.random() * confettiColorPaletteHexArray.length)],
-      opacity: 1,
-      rotation: Math.random() * 360,
-      rotationSpeed: (Math.random() - 0.5) * 8
-    });
-  }
-
-  function executeConfettiRenderLoopFrame() {
-    if (confettiEngineArray.length === 0) {
-      UI.confettiCanvas.classList.remove("show");
-      return;
-    }
-
-    canvasRenderContext.clearRect(0, 0, UI.confettiCanvas.width, UI.confettiCanvas.height);
-
-    for (let i = confettiEngineArray.length - 1; i >= 0; i--) {
-      const p = confettiEngineArray[i];
-      p.x += p.vx;
-      p.y += p.vy;
-      p.vy += 0.22; // Gravity vector addition
-      p.vx *= 0.98; // Friction loss variables
-      p.opacity -= 0.012;
-      p.rotation += p.rotationSpeed;
-
-      if (p.opacity <= 0) {
-        confettiEngineArray.splice(i, 1);
-        continue;
+      // Update sidebar hardware simulator steps visually
+      document.getElementById('trackCore').innerText = `${Math.floor(current.progress * 0.9)}%`;
+      document.getElementById('barCore').style.width = `${current.progress * 0.9}%`;
+      document.getElementById('trackFrame').innerText = `${Math.floor(current.progress * 0.75)}%`;
+      document.getElementById('barFrame').style.width = `${current.progress * 0.75}%`;
+      document.getElementById('trackVector').innerText = `${current.progress}%`;
+      document.getElementById('barVector').style.width = `${current.progress}%`;
+      
+      // Step high pipeline boxes dynamically 
+      if(currentStepIndex < 5) {
+        const stepBox = document.getElementById(`pipeStep${currentStepIndex}`);
+        const stepBadge = document.getElementById(`pipeStatus${currentStepIndex}`);
+        if(stepBox && stepBadge) {
+          stepBox.className = "pipe-box active";
+          stepBadge.innerText = "RUNNING";
+        }
+      }
+      
+      if(currentStepIndex > 0) {
+        const prevBox = document.getElementById(`pipeStep${currentStepIndex - 1}`);
+        const prevBadge = document.getElementById(`pipeStatus${currentStepIndex - 1}`);
+        if(prevBox && prevBadge) {
+          prevBox.className = "pipe-box done";
+          prevBadge.innerText = "COMPLETE";
+        }
       }
 
-      canvasRenderContext.save();
-      canvasRenderContext.translate(p.x, p.y);
-      canvasRenderContext.rotate((p.rotation * Math.PI) / 180);
-      canvasRenderContext.globalAlpha = p.opacity;
-      canvasRenderContext.fillStyle = p.color;
-      canvasRenderContext.fillRect(-p.r, -p.r, p.r * 2, p.r * 2);
-      canvasRenderContext.restore();
+      currentStepIndex++;
+      setTimeout(advancePipeline, 900);
+    } else {
+      // Complete Sequence cleanly
+      progressOverlay.classList.remove('show');
+      finalizeUIAndRenderData(dataset, sessionTitleName);
     }
-
-    requestAnimationFrame(executeConfettiRenderLoopFrame);
   }
-
-  requestAnimationFrame(executeConfettiRenderLoopFrame);
+  
+  advancePipeline();
 }
 
-// Global System Architecture Initialization Trigger
-document.addEventListener("DOMContentLoaded", initializeAegisPlatformCore);
+function finalizeUIAndRenderData(data, title) {
+  panelTitle.innerText = `Analysis Workspace: ${title}`;
+  
+  // Enable working toolbars
+  toolPlay.removeAttribute('disabled');
+  toolOverlay.removeAttribute('disabled');
+  toolAdvance.removeAttribute('disabled');
+  toolRefresh.removeAttribute('disabled');
+  isPlaying = true;
+  toolPlay.innerText = "⏸ Pause Engine";
+  
+  // Fill text scoring fields
+  mPlacing.innerText = data.metrics.placing;
+  mLatency.innerText = data.metrics.latency;
+  bPlacing.style.width = `${data.bars.placing}%`;
+  bLatency.style.width = `${data.bars.latency}%`;
+  
+  // Dynamic Charts Animation
+  document.getElementById('cPos').querySelectorAll('.chart-bar').forEach(b => b.style.height = `${Math.floor(Math.random() * 75) + 25}%`);
+  document.getElementById('cVel').querySelectorAll('.chart-bar').forEach(b => b.style.height = `${Math.floor(Math.random() * 70) + 30}%`);
+
+  // Build Report Markup Elements
+  document.getElementById('rScore').innerText = data.score;
+  const tierPill = document.getElementById('rTier');
+  tierPill.innerText = data.tier;
+  document.getElementById('rSummary').innerText = data.summary;
+  
+  // Build delta data dynamic grid blocks
+  const tableBody = document.getElementById('deltaTableBody');
+  tableBody.innerHTML = "";
+  data.deltas.forEach(row => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><strong>${row.cat}</strong></td>
+      <td>${row.yours}</td>
+      <td><span class="${row.state === 'pos' ? 'delta-pos' : 'delta-neg'}">${row.diff}</span>
+      <div class="delta-bar-wrap"><div class="delta-bar-fill" style="width:75%; background:${row.state === 'pos' ? 'var(--green)' : 'var(--red)'}"></div></div></td>
+    `;
+    tableBody.appendChild(tr);
+  });
+
+  // Build recommendation cards layout elements
+  const insightsBox = document.getElementById('insightsContainer');
+  insightsBox.innerHTML = "";
+  data.insights.forEach(card => {
+    const div = document.createElement('div');
+    div.className = "insight-card";
+    div.innerHTML = `<h5>⚠️ ${card.title}</h5><p>${card.text}</p>`;
+    insightsBox.appendChild(div);
+  });
+  
+  reportArea.classList.add('show');
+  
+  // Clean pipeline states indicators to complete blocks values
+  for(let i=0; i<5; i++) {
+    document.getElementById(`pipeStep${i}`).className = "pipe-box done";
+    document.getElementById(`pipeStatus${i}`).innerText = "COMPLETE";
+  }
+  
+  // Push parsed logs
+  data.logs.forEach(logText => createLog(logText));
+  createLog(`Intelligence compiled package generated for context environment: ${title}.`);
+  
+  // Increment stats
+  appSessionCount++;
+  heroSessions.innerText = appSessionCount;
+  
+  // Append session selection item to sidebar block listing history element
+  const historyBox = document.getElementById('sessionHistoryBox');
+  const emptyNote = document.getElementById('historyEmpty');
+  if(emptyNote) emptyNote.style.display = 'none';
+  
+  const sessDiv = document.createElement('div');
+  sessDiv.className = "session-item";
+  sessDiv.innerHTML = `<strong>${title}</strong><span>Score Performance Index Matrix</span><span class="session-score">PRO RATIO: ${data.score}%</span>`;
+  historyBox.prepend(sessDiv);
+
+  // Confetti celebration trigger pipeline event handler
+  triggerConfettiAnimation();
+  triggerToast("Neural Analysis Complete! Core Report Generated.", "ok");
+}
+
+// RESTORED CORE CRITICAL SYSTEM TRIGGER: DEMO DATA RUN CLICK HANDLER
+demoSampleBtn.onclick = () => {
+  createLog("Direct override sequence initialized. Requesting baseline standard demo vector analysis profile dataset...");
+  executionSequence(sampleDemoDataset, "DEMO_RECON_SAMPLE_ALPHA");
+};
+
+launchBtn.onclick = () => {
+  const fileName = dropFileDisplay.innerText;
+  const targetModel = document.getElementById('modelTarget').options[document.getElementById('modelTarget').selectedIndex].text;
+  createLog(`Initializing full analysis sequence engine for tracking file: ${fileName}...`);
+  
+  // Generate processing package matching custom requirements parameters profiles
+  const customDataset = JSON.parse(JSON.stringify(sampleDemoDataset)); // Deep clone mock structures
+  customDataset.score = Math.floor(Math.random() * 20) + 75; // Generate dynamic scoring range variables values
+  customDataset.metrics.placing = `${(Math.random() * 2 + 1).toFixed(2)}°`;
+  customDataset.metrics.latency = `${Math.floor(Math.random() * 40) + 130}ms`;
+  
+  executionSequence(customDataset, `SESSION_${Math.floor(Math.random() * 9000) + 1000} (${fileName.substring(0,12)})`);
+};
+
+// Toolbar Active Interactivity Script Triggers Mechanics
+toolPlay.onclick = () => {
+  isPlaying = !isPlaying;
+  toolPlay.innerText = isPlaying ? "⏸ Pause Engine" : "▶ Resume Engine";
+  toolPlay.className = isPlaying ? "tool-btn" : "tool-btn active";
+  createLog(`Analysis playback processing sequence state changed. Running: ${isPlaying}`);
+};
+
+toolOverlay.onclick = () => {
+  overlayActive = !overlayActive;
+  aiOverlay.className = overlayActive ? "overlay-video show" : "overlay-video";
+  toolOverlay.className = overlayActive ? "tool-btn active" : "tool-btn";
+  createLog(`AI tracing layer element graphic draw state visibility visibility toggled: ${overlayActive}`);
+};
+
+toolAdvance.onclick = () => {
+  if(!isPlaying) {
+    currentFrameCount += 1;
+    userVidTime.innerText = `00:04:${String(Math.floor(currentFrameCount/60)).padStart(2,'0')}:${String(currentFrameCount%60).padStart(2,'0')} / FRAME ${currentFrameCount}`;
+    triggerToast(`Stepped analysis layer sequence forward 1 frame to index: ${currentFrameCount}.`, "ok");
+  } else {
+    triggerToast("Pause processing pipeline matrix execution context before manipulating individual step sequences.", "warn");
+  }
+};
+
+toolRefresh.onclick = () => {
+  triggerToast("Synchronizing matrix parameters elements weights values to server clusters nodes...", "ok");
+  createLog("Executed operational sync request query to central model parameters pool nodes.");
+};
+
+// Global Keypress Events listeners mapping logic structures shortcut rules
+window.onkeydown = (e) => {
+  if (e.key === "Escape") helpModal.classList.remove('show');
+  if (e.target.tagName === "SELECT" || e.target.tagName === "INPUT") return;
+  
+  if (e.key === " " || e.code === "Space") {
+    e.preventDefault();
+    if(!toolPlay.disabled) toolPlay.click();
+  }
+  if (e.key === "o" || e.key === "O") {
+    if(!toolOverlay.disabled) toolOverlay.click();
+  }
+  if (e.key === "f" || e.key === "F") {
+    if(!toolAdvance.disabled) toolAdvance.click();
+  }
+  if (e.key === "d" || e.key === "D") {
+    demoSampleBtn.click();
+  }
+};
+
+// Basic Visual Confetti Rendering Engine Canvas logic blocks tracking loops
+function triggerConfettiAnimation() {
+  const canvas = document.getElementById('confettiCanvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  canvas.classList.add('show');
+
+  const particles = [];
+  for (let i = 0; i < 90; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height - canvas.height,
+      r: Math.random() * 6 + 4,
+      d: Math.random() * canvas.height,
+      color: `rgba(${Math.floor(Math.random()*255)}, ${Math.floor(Math.random()*255)}, 255, 0.7)`,
+      tilt: Math.random() * 10 - 5
+    });
+  }
+
+  let animationFrameId;
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let active = false;
+    particles.forEach(p => {
+      p.y += Math.random() * 3 + 2;
+      p.tilt += 0.1;
+      if (p.y < canvas.height) active = true;
+      ctx.beginPath();
+      ctx.lineWidth = p.r;
+      ctx.strokeStyle = p.color;
+      ctx.moveTo(p.x + p.tilt + p.r / 2, p.y);
+      ctx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r / 2);
+      ctx.stroke();
+    });
+    if (active) {
+      animationFrameId = requestAnimationFrame(draw);
+    } else {
+      canvas.classList.remove('show');
+      cancelAnimationFrame(animationFrameId);
+    }
+  }
+  draw();
+}
+
+// Action Button Reporting attachments handles definitions
+document.getElementById('btnExport').onclick = () => triggerToast("Compiling compressed localized zip report asset folder bundle package... download initialized.", "ok");
+document.getElementById('btnShare').onclick = () => {
+  navigator.clipboard.writeText(window.location.href);
+  triggerToast("Workspace diagnostic reference address copied directly to clipboard memory successfully.", "ok");
+};
 </script>
 </body>
 </html>

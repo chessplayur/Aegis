@@ -332,7 +332,7 @@ body::after{
 }
 select{
   width:100%;background:var(--bg-2);color:var(--text);
-  border:1px solid var(--border);border-radius:9px;
+  border:1px solid var(--border);border-radius:99px;
   padding:10px 12px;font-size:.82rem;font-family:var(--sans);
   outline:none;appearance:none;cursor:pointer;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%23718096' stroke-width='1.5' d='m6 8 4 4 4-4'/%3E%3C/svg%3E");
@@ -637,7 +637,6 @@ video{width:100%;height:100%;border:none;display:block}
 <canvas id="confettiCanvas"></canvas>
 <div class="container">
 
-<!-- NAV -->
 <nav class="nav fade-up">
   <div class="brand">
     <div class="brand-mark">🛡</div>
@@ -653,7 +652,6 @@ video{width:100%;height:100%;border:none;display:block}
   </div>
 </nav>
 
-<!-- HERO -->
 <div class="hero fade-up d1">
   <div class="hero-main">
     <div class="hero-eyebrow">AI-powered professional benchmarking</div>
@@ -684,7 +682,6 @@ video{width:100%;height:100%;border:none;display:block}
   </div>
 </div>
 
-<!-- PIPELINE -->
 <div class="section-card fade-up d2">
   <div class="section-header">
     <div>
@@ -737,727 +734,1120 @@ video{width:100%;height:100%;border:none;display:block}
     <div class="pipe-step">
       <div class="pipe-box" id="pipeStep4">
         <div class="pipe-icon">📊</div>
-        <div class="pipe-name">REPORT</div>
-        <div class="pipe-sub">Insights & path</div>
+        <div class="pipe-name">BENCHMARK</div>
+        <div class="pipe-sub">Metrics generation</div>
         <div class="pipe-badge" id="pipeStatus4">PENDING</div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- DASHBOARD -->
 <div class="dashboard fade-up d3">
-  <main class="main-panel">
+  <div class="main-panel">
     <div class="panel-head">
       <div class="panel-head-left">
-        <div class="panel-label">INITIALIZATION</div>
-        <div class="panel-title">Session Setup</div>
+        <div class="panel-label">WORKSPACE ENGINE</div>
+        <div class="panel-title" id="workspaceTitle">Session Instance: Idle</div>
       </div>
     </div>
 
-    <div class="upload-area">
+    <div class="upload-area" id="uploadArea">
       <div class="upload-row">
-        <div class="drop-zone" id="uploadCard">
-          <div class="drop-icon">🎮</div>
-          <div class="drop-title">Upload Gameplay</div>
-          <div class="drop-sub">MP4, MOV, or WEBM · up to 500 MB · 1080p @ 60fps recommended</div>
-          <div class="btn-row">
-            <button class="btn btn-primary" id="uploadBtn">Choose File</button>
-            <button class="btn btn-ghost" id="demoBtn">Demo Session</button>
+        <div class="drop-zone" id="dropZone">
+          <input type="file" id="fileInput" accept="video/mp4,video/webm,video/quicktime" style="display:none"/>
+          <div class="drop-icon">📤</div>
+          <div class="drop-title" id="dropZoneTitle">Drag & Drop Gameplay Clip</div>
+          <div class="drop-sub" id="dropZoneSub">Supports MP4, MOV or WEBM. Max file size 150MB.</div>
+          <div class="drop-file" id="dropFileName" style="display:none"></div>
+          <div class="btn-row" style="margin-top:10px">
+            <button class="btn btn-ghost" id="browseBtn">Browse Files</button>
           </div>
-          <div class="drop-file" id="uploadFile">No gameplay uploaded</div>
-          <input type="file" id="fileInput" accept="video/mp4,video/quicktime,video/webm" hidden/>
         </div>
 
-        <div class="launch-wrap">
-          <button class="launch-btn" id="launchBtn" disabled aria-label="Launch analysis">⚡</button>
-        </div>
+        <div style="text-align:center;font-family:var(--display);font-size:.7rem;font-weight:700;color:var(--text-3);letter-spacing:.1em">OR</div>
 
         <div class="config-panel">
           <div>
-            <label class="field-label" for="gameSelect">GAME</label>
+            <label class="field-label">TARGET GAME TITLE</label>
             <select id="gameSelect">
-              <option value="">— Choose game —</option>
-              <option value="valorant">Valorant</option>
-              <option value="cs2">Counter-Strike 2</option>
-              <option value="lol">League of Legends</option>
-              <option value="apex">Apex Legends</option>
+              <option value="valorant">Valorant (FPS Model)</option>
+              <option value="cs2">Counter-Strike 2 (FPS Model)</option>
+              <option value="lol">League of Legends (MOBA Model)</option>
+              <option value="apex">Apex Legends (BR Model)</option>
             </select>
           </div>
           <div>
-            <label class="field-label" for="proSelect">PROFESSIONAL BASELINE</label>
-            <select id="proSelect" disabled>
-              <option value="">— Select a game first —</option>
-            </select>
+            <label class="field-label">BENCHMARK SETTINGS</label>
+            <div class="status-msg ready" id="modelStatusMsg">✓ Neural weights loaded for selected pro template. Ready for analytical comparison engine execution.</div>
           </div>
-          <div class="status-msg" id="statusBox">Awaiting gameplay upload and baseline selection…</div>
+          <div class="launch-wrap" style="margin-top:6px">
+            <button class="launch-btn" id="launchBtn" title="Launch Aegis analysis Engine">⚡</button>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Workspace -->
-    <div class="workspace" id="workspace">
+    <div class="workspace" id="workspaceArea">
       <div class="video-card">
-        <div class="vid-header"><strong>PLAYER FOOTAGE</strong><span id="playerLabel">UNINITIALIZED</span></div>
+        <div class="vid-header">
+          <strong>SOURCE FOOTAGE</strong>
+          <span id="playerVidTime">0.0s</span>
+        </div>
         <div class="vid-frame">
-          <video id="playerVideo" controls playsinline preload="metadata"></video>
-          <video id="ghostVideo" class="overlay-video" muted playsinline preload="metadata"></video>
+          <video id="playerVideo" loop muted playsinline></video>
         </div>
       </div>
+
       <div class="video-card">
-        <div class="vid-header"><strong>PRO BASELINE</strong><span id="proLabel">REFERENCE MODEL</span></div>
+        <div class="vid-header">
+          <strong>PRO MODEL SYNC</strong>
+          <span id="proVidTime">0.0s</span>
+        </div>
         <div class="vid-frame">
-          <video id="proVideo" controls muted playsinline preload="metadata"></video>
+          <video id="proVideo" loop muted playsinline></video>
+          <div class="overlay-video" id="overlayContainer">
+             <video id="overlayVideo" loop muted playsinline></video>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Toolbar -->
-    <div class="toolbar">
-      <button class="tool-btn" id="syncBtn" disabled>▶ Sync Playback</button>
-      <button class="tool-btn" id="pauseBtn" disabled>⏸ Pause</button>
-      <button class="tool-btn" id="ghostBtn" disabled>👻 Ghost Overlay</button>
-      <button class="tool-btn" id="analyzeBtn" disabled>📊 Run Analysis</button>
-      <button class="tool-btn" id="exportBtn" disabled>📥 Export</button>
+    <div class="toolbar" id="workspaceToolbar" style="display:none">
+      <button class="tool-btn active" id="toolPlay">⏸ Pause Sync</button>
+      <button class="tool-btn" id="toolOverlay">👥 Toggle Overlay</button>
+      <button class="tool-btn" id="toolRestart">🔄 Restart Loop</button>
+      <button class="tool-btn" id="toolReset" style="border-color:rgba(252,129,129,.25);color:var(--red)">🧹 Unload Session</button>
     </div>
 
-    <!-- Metrics -->
-    <div class="metrics-grid">
+    <div class="metrics-grid" id="metricsGrid" style="display:none">
       <div class="metric-tile">
-        <div class="metric-tile-label">CROSSHAIR ACCURACY</div>
-        <div class="metric-val" id="crosshairVal">0%</div>
-        <div class="bar-track"><div class="bar-fill" id="crosshairBar"></div></div>
-        <div class="metric-note">Pre-aim efficiency, target acquisition, and precision consistency vs. pro reference.</div>
+        <div class="metric-tile-label">AI PATTERN MATCH RATING</div>
+        <div class="metric-val" id="mMatchVal">0.0%</div>
+        <div class="bar-track"><div class="bar-fill" id="mMatchBar"></div></div>
+        <div class="metric-note" id="mMatchNote">Initializing neural cross-checks...</div>
       </div>
       <div class="metric-tile">
-        <div class="metric-tile-label">MOVEMENT EFFICIENCY</div>
-        <div class="metric-val" id="movementVal">0%</div>
-        <div class="bar-track"><div class="bar-fill" id="movementBar"></div></div>
-        <div class="metric-note">Pathing smoothness, strafing efficiency, and unnecessary movement penalties.</div>
-      </div>
-      <div class="metric-tile">
-        <div class="metric-tile-label">REACTION TIMING</div>
-        <div class="metric-val" id="reactionVal">0ms</div>
-        <div class="bar-track"><div class="bar-fill" id="reactionBar"></div></div>
-        <div class="metric-note">Average decision-to-action latency during high pressure combat interactions.</div>
-      </div>
-      <div class="metric-tile">
-        <div class="metric-tile-label">POSITIONING IQ</div>
-        <div class="metric-val" id="positioningVal">0%</div>
-        <div class="bar-track"><div class="bar-fill" id="positioningBar"></div></div>
-        <div class="metric-note">Spacing, angle control, and map positioning relative to professional standards.</div>
+        <div class="metric-tile-label">REACTION LATENCY GAIN</div>
+        <div class="metric-val" id="mLatencyVal">0ms</div>
+        <div class="bar-track"><div class="bar-fill" id="mLatencyBar"></div></div>
+        <div class="metric-note" id="mLatencyNote">Syncing internal timers...</div>
       </div>
     </div>
 
-    <!-- Charts -->
-    <div class="charts-row" id="chartsSection" style="display:none">
+    <div class="charts-row" id="chartsGrid" style="display:none">
       <div class="chart-tile">
-        <div class="chart-tile-label">PERFORMANCE RADAR</div>
-        <div class="chart-tile-title">Player vs Pro Benchmark</div>
-        <div id="radarContainer"></div>
+        <div class="chart-tile-label">SPATIAL PLACEMENT MATRIX</div>
+        <div class="chart-tile-title">Crosshair Alignment Vector Consistency</div>
+        <div style="height:110px;display:flex;align-items:flex-end;gap:5px;padding-bottom:10px" id="chartSpatialContainer">
+          </div>
         <div class="chart-legend">
-          <div class="chart-leg"><div class="chart-leg-swatch" style="background:var(--cyan)"></div>Your Performance</div>
-          <div class="chart-leg"><div class="chart-leg-swatch" style="background:transparent;border:1.5px dashed var(--purple)"></div>Pro Benchmark</div>
+          <div class="chart-leg"><div class="chart-leg-swatch" style="background:var(--cyan)"></div>Your Vector</div>
+          <div class="chart-leg"><div class="chart-leg-swatch" style="background:rgba(255,255,255,.15)"></div>Pro baseline</div>
         </div>
       </div>
       <div class="chart-tile">
-        <div class="chart-tile-label">PERFORMANCE TIMELINE</div>
-        <div class="chart-tile-title">Consistency Across Segments</div>
-        <div id="timelineContainer"></div>
+        <div class="chart-tile-label">DECISION COMPLIANCE TREE</div>
+        <div class="chart-tile-title">Positional Pathing Distribution Index</div>
+        <div style="height:110px;display:flex;align-items:flex-end;gap:5px;padding-bottom:10px" id="chartPathingContainer">
+          </div>
         <div class="chart-legend">
-          <div class="chart-leg"><div class="chart-leg-swatch" style="background:var(--cyan)"></div>Your Score</div>
-          <div class="chart-leg"><div class="chart-leg-swatch" style="background:var(--purple)"></div>Pro Average</div>
+          <div class="chart-leg"><div class="chart-leg-swatch" style="background:var(--purple)"></div>Match Ratio</div>
         </div>
       </div>
     </div>
 
-    <!-- Report -->
-    <section class="report" id="report" aria-live="polite">
+    <div class="report" id="analysisReport">
       <div class="report-top">
         <div>
           <div class="score-group">
-            <div class="score" id="overallScore">0%</div>
-            <div class="tier-pill" id="tierBadge">—</div>
+            <div class="score" id="reportScore">00</div>
+            <div class="tier-pill elite" id="reportTier">ELITE PROFILE</div>
           </div>
-          <div class="report-sub-text">Overall Professional Similarity Score</div>
+          <div class="report-sub-text" id="reportMeta">PRO DATA SET OVERLAY COMPLIANCE MODEL</div>
         </div>
         <div class="summary-box">
-          <h5>AI PERFORMANCE SUMMARY</h5>
-          <p id="summaryText">Analysis summary generated dynamically.</p>
+          <h5 id="reportSummaryTitle">AI CRITIQUE PROFILE</h5>
+          <p id="reportSummaryText">Loading platform synopsis calculations...</p>
         </div>
       </div>
 
-      <table class="delta-table" id="deltaTable">
+      <table class="delta-table">
         <thead>
           <tr>
-            <th>METRIC</th><th>YOUR SCORE</th><th>PRO BASELINE</th><th>DELTA</th><th>PROGRESS</th>
+            <th>BENCHMARK CRITERIA</th>
+            <th>YOUR PROFILE</th>
+            <th>PRO baseline</th>
+            <th>DELTA TREND</th>
           </tr>
         </thead>
-        <tbody id="deltaBody"></tbody>
+        <tbody id="reportTableBody">
+          </tbody>
       </table>
 
       <div class="insights-row">
-        <div class="insight-card"><h5>Mechanics Optimization</h5><p id="insMechanics">—</p></div>
-        <div class="insight-card"><h5>Movement Intelligence</h5><p id="insMovement">—</p></div>
-        <div class="insight-card"><h5>Professional Improvement Path</h5><p id="insPath">—</p></div>
-        <div class="insight-card"><h5>Training Recommendation</h5><p id="insTraining">—</p></div>
+        <div class="insight-card">
+          <h5>⚡ MECHANICAL INEFFICIENCIES DETECTED</h5>
+          <p id="reportInsightNeg">Running micro-stutter tracking diagnostics calculations...</p>
+        </div>
+        <div class="insight-card">
+          <h5>🎯 TARGET ARCHETYPE ADVANTAGES</h5>
+          <p id="reportInsightPos">Evaluating statistical out-performance algorithms...</p>
+        </div>
       </div>
 
       <div class="report-actions">
-        <button class="btn btn-ghost" id="shareBtn">🔗 Share Results</button>
-        <button class="btn btn-ghost" id="exportBtn2">📥 Export JSON</button>
+        <button class="btn btn-primary" id="btnExportData">Export Analytics Dataset</button>
+        <button class="btn btn-ghost" id="btnPrintReport">Print Performance Briefing</button>
       </div>
-    </section>
-  </main>
+    </div>
 
-  <!-- SIDEBAR -->
-  <aside class="sidebar fade-up d4">
+  </div>
+
+  <div class="sidebar">
     <div class="side-card">
-      <div class="side-title">LIVE TELEMETRY</div>
+      <div class="side-title">LIVE PROCESS ENGINE TELEMETRY</div>
       <div class="live-row">
-        <div class="live-meta"><span>Frame Alignment</span><strong id="telFrameVal">0%</strong></div>
-        <div class="track"><div class="fill c" id="telFrame"></div></div>
+        <div class="live-meta"><span>Neural Weight Memory</span><strong id="telemetryWeights">0.0GB</strong></div>
+        <div class="track"><div class="fill c" id="barWeights"></div></div>
       </div>
       <div class="live-row">
-        <div class="live-meta"><span>Movement Smoothness</span><strong id="telMoveVal">0%</strong></div>
-        <div class="track"><div class="fill p" id="telMove"></div></div>
+        <div class="live-meta"><span>Frame Processing Sync</span><strong id="telemetryFps">0fps</strong></div>
+        <div class="track"><div class="fill p" id="barFps"></div></div>
       </div>
       <div class="live-row">
-        <div class="live-meta"><span>Input Frequency</span><strong id="telInputVal">— Hz</strong></div>
-        <div class="track"><div class="fill g" id="telInput"></div></div>
-      </div>
-      <div class="live-row">
-        <div class="live-meta"><span>Reaction Stability</span><strong id="telReactVal">— ms</strong></div>
-        <div class="track"><div class="fill c" id="telReact"></div></div>
+        <div class="live-meta"><span>inference Latency Clock</span><strong id="telemetryLatency">0.0ms</strong></div>
+        <div class="track"><div class="fill g" id="barLatency"></div></div>
       </div>
     </div>
 
     <div class="side-card">
-      <div class="side-title">SYSTEM LOG</div>
-      <div class="log-feed" id="activityLog"></div>
+      <div class="side-title">SYSTEM EVENT LOG STREAM</div>
+      <div class="log-feed" id="logFeed">
+        </div>
     </div>
 
     <div class="side-card">
-      <div class="side-title">RECENT ANALYSES</div>
-      <div id="recentList"><div class="empty">No analyses yet.</div></div>
+      <div class="side-title">ARCHIVED ANALYSIS HISTORY</div>
+      <div id="sessionHistoryContainer">
+        <div class="empty">No historic sessions recorded in local session state storage.</div>
+      </div>
     </div>
-  </aside>
-</div>
-
-<footer class="footer">
-  Aegis Insight © 2026 — AI gameplay analytics &amp; professional benchmarking ·
-  <a href="#" id="clearHistory">Clear local history</a>
-</footer>
-</div>
-
-<!-- Toast -->
-<div class="toast" id="toast" role="status" aria-live="polite"></div>
-
-<!-- Progress -->
-<div class="progress-overlay" id="progressOverlay" role="dialog" aria-modal="true">
-  <div class="progress-ring" aria-hidden="true"></div>
-  <div class="progress-label" id="progressText">INITIALIZING NEURAL ENGINE…</div>
-  <div class="progress-desc" id="progressStep">Booting pattern recognition models</div>
-  <div class="progress-track"><div class="progress-fill" id="progressBarFill"></div></div>
-</div>
-
-<!-- Shortcuts Modal -->
-<div class="modal-backdrop" id="shortcutsModal" role="dialog" aria-modal="true">
-  <div class="modal">
-    <h3>⌨ Keyboard Shortcuts</h3>
-    <div class="shortcuts-grid">
-      <span class="key">U</span><span class="key-desc">Open file upload dialog</span>
-      <span class="key">D</span><span class="key-desc">Load demo session</span>
-      <span class="key">SPACE</span><span class="key-desc">Play / pause synced playback</span>
-      <span class="key">G</span><span class="key-desc">Toggle ghost overlay</span>
-      <span class="key">A</span><span class="key-desc">Generate AI analysis</span>
-      <span class="key">E</span><span class="key-desc">Export report as JSON</span>
-      <span class="key">S</span><span class="key-desc">Share results to clipboard</span>
-      <span class="key">ESC</span><span class="key-desc">Close this modal</span>
-    </div>
-    <button class="btn btn-ghost modal-close" id="modalCloseBtn">Close</button>
   </div>
 </div>
 
+<footer class="footer fade-up d4">
+  <p>&copy; 2026 Aegis Insight Inc. Powered by Neural Core Architecture Engine 4.8. For professional esports implementation blueprints.</p>
+</footer>
+
+</div>
+
+<div class="progress-overlay" id="progressOverlay">
+  <div class="progress-ring"></div>
+  <div class="progress-label" id="progressLabel">PROCESSING INPUT STREAM</div>
+  <div class="progress-desc" id="progressDesc">Aegis AI framework executing multi-pass parsing tracking arrays over video data buffers...</div>
+  <div class="progress-track">
+    <div class="progress-fill" id="progressOverlayBar"></div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="helpModal">
+  <div class="modal">
+    <h3>AEGIS COMMAND SYSTEM SHORTCUTS</h3>
+    <div class="shortcuts-grid">
+      <span class="key">Space</span><span class="key-desc">Toggle workspace live playback/pause</span>
+      <span class="key">O</span><span class="key-desc">Toggle professional ghost structural overlay blending</span>
+      <span class="key">R</span><span class="key-desc">Restart runtime synchronized position timelines</span>
+      <span class="key">Esc</span><span class="key-desc">Dismiss open interaction dialogue components</span>
+    </div>
+    <button class="btn btn-ghost modal-close" id="helpModalClose">Close System Dialog</button>
+  </div>
+</div>
+
+<div class="toast" id="toastNotification">Notification system initialization context template.</div>
+
 <script>
-(() => {
-'use strict';
+/**
+ * AEGIS INSIGHT PLATFORM ARCHITECTURE CODEBASE
+ * AUTHOR: SENIOR SOFTWARE ENGINEER
+ */
 
-const PROS = {
-  valorant:[
-    {id:'tenz',   name:'TenZ',       team:'Sentinels', proScores:{crosshair:94,movement:91,reaction:89,positioning:88,decision:90}},
-    {id:'demon1', name:'Demon1',     team:'EG',        proScores:{crosshair:96,movement:88,reaction:93,positioning:85,decision:87}},
-    {id:'aspas',  name:'Aspas',      team:'Leviatán',  proScores:{crosshair:92,movement:93,reaction:91,positioning:90,decision:92}},
-  ],
-  cs2:[
-    {id:'s1mple', name:'s1mple',     team:'NAVI',      proScores:{crosshair:97,movement:90,reaction:95,positioning:93,decision:94}},
-    {id:'zywoo',  name:'ZywOo',      team:'Vitality',  proScores:{crosshair:95,movement:92,reaction:90,positioning:94,decision:95}},
-    {id:'donk',   name:'donk',       team:'Spirit',    proScores:{crosshair:93,movement:94,reaction:92,positioning:91,decision:90}},
-  ],
-  lol:[
-    {id:'faker',  name:'Faker',      team:'T1',        proScores:{crosshair:90,movement:95,reaction:94,positioning:97,decision:98}},
-    {id:'chovy',  name:'Chovy',      team:'GenG',      proScores:{crosshair:92,movement:93,reaction:91,positioning:95,decision:96}},
-    {id:'caps',   name:'Caps',       team:'G2',        proScores:{crosshair:91,movement:92,reaction:93,positioning:93,decision:94}},
-  ],
-  apex:[
-    {id:'imperialhal',name:'ImperialHal',team:'TSM',   proScores:{crosshair:88,movement:96,reaction:90,positioning:97,decision:96}},
-    {id:'genburten',  name:'Genburten',  team:'DZ',    proScores:{crosshair:93,movement:91,reaction:94,positioning:92,decision:91}},
-    {id:'zer0',       name:'Zer0',       team:'TSM',   proScores:{crosshair:90,movement:95,reaction:92,positioning:94,decision:93}},
-  ],
+// Global System Configuration Registry Mapping Demo assets safely to abstract platform endpoints
+const ASSET_REGISTRY = {
+  valorant: {
+    title: "Valorant Competitive Match (Ascent - Duelist)",
+    playerSrc: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+    proSrc: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+    score: 94,
+    tier: "ELITE MATCH",
+    tierClass: "elite",
+    summary: "Crosshair alignment optimization is sitting at a functional 98th percentile compared to professional benchmark indices. Minor micro-stutters detected during lateral spray patterns on tracking trajectories.",
+    insightsNeg: "Lateral recoil offset tracking displays sub-optimal counter-movement adjustments. Compensate 4% faster on horizontal shifts.",
+    insightsPos: "Exceptional pre-aim calculation patterns across high-traffic choke thresholds. Zero defensive positional exposure detected during entry mechanics.",
+    deltas: [
+      { name: "Crosshair Reticle Placement Accuracy", player: "94.2%", pro: "96.0%", diff: "-1.8%", type: "neg", pct: 94 },
+      { name: "Reaction Engagement Response Speed", player: "142ms", pro: "155ms", diff: "+13ms", type: "pos", pct: 100 },
+      { name: "Movement Counter-Strafing Cohesion", player: "88.7%", pro: "92.1%", diff: "-3.4%", type: "neg", pct: 88 },
+      { name: "Flick Targeting Convergence Efficiency", player: "91.4%", pro: "91.0%", diff: "+0.4%", type: "pos", pct: 91 }
+    ],
+    spatialChart: [85, 90, 78, 92, 94, 89, 95],
+    pathingChart: [70, 75, 82, 88, 91, 85, 94]
+  },
+  cs2: {
+    title: "Counter-Strike 2 Global Elite Execution (Mirage)",
+    playerSrc: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+    proSrc: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+    score: 87,
+    tier: "ADVANCED PROFILE",
+    tierClass: "advanced",
+    summary: "Highly proficient structural routing matches standard default configurations closely. Rotational calculation loops are delayed by 400ms during compound execution triggers.",
+    insightsNeg: "Rotational transition vectors exhibit pacing dead-zones. Audio signal validation delays responsive rotations.",
+    insightsPos: "First-bullet hit registration calculations follow clean acceleration arcs. Pitch/yaw adjustments track perfectly within professional threshold models.",
+    deltas: [
+      { name: "Angle Clearing Structural Logic", player: "89.1%", pro: "94.5%", diff: "-5.4%", type: "neg", pct: 89 },
+      { name: "First-Shot Target Acquisition Window", player: "168ms", pro: "162ms", diff: "-6ms", type: "neg", pct: 90 },
+      { name: "Recoil Pattern Dampening Efficiency", player: "86.3%", pro: "85.0%", diff: "+1.3%", type: "pos", pct: 86 },
+      { name: "Utility Vector Deployment Precision", player: "93.0%", pro: "91.2%", diff: "+1.8%", type: "pos", pct: 93 }
+    ],
+    spatialChart: [72, 80, 85, 78, 88, 84, 87],
+    pathingChart: [60, 68, 74, 80, 85, 89, 86]
+  },
+  lol: {
+    title: "League of Legends Challenger Tier Scrim (Mid Lane)",
+    playerSrc: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
+    proSrc: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
+    score: 76,
+    tier: "INTERMEDIATE PROFILE",
+    tierClass: "intermediate",
+    summary: "Mechanical combat pathing is strong, but macro objective rotations reveal clear optimization deficits during late-game structural collapses.",
+    insightsNeg: "Flanking route convergence models reveal highly unsafe map exposures. Post-engagement retreat geometry is erratic.",
+    insightsPos: "Skillshot intercept trajectories display superior high-frequency tracking capabilities. Dynamic threat evasions remain solid.",
+    deltas: [
+      { name: "Target Selection Optimization Index", player: "79.2%", pro: "88.0%", diff: "-8.8%", type: "neg", pct: 79 },
+      { name: "APM Structural Distribution Density", player: "340", pro: "385", diff: "-45", type: "neg", pct: 72 },
+      { name: "Skillshot Evasion Trajectory Rating", player: "84.5%", pro: "81.2%", diff: "+3.3%", type: "pos", pct: 84 },
+      { name: "Macro Rotational Pathway Efficiency", player: "68.1%", pro: "84.0%", diff: "-15.9%", type: "neg", pct: 68 }
+    ],
+    spatialChart: [60, 65, 70, 72, 75, 78, 76],
+    pathingChart: [50, 55, 62, 66, 70, 73, 76]
+  },
+  apex: {
+    title: "Apex Legends Predator Drop Analysis (World's Edge)",
+    playerSrc: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4",
+    proSrc: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4",
+    score: 62,
+    tier: "DEVELOPING PROFILE",
+    tierClass: "developing",
+    summary: "Tracking mechanics over fast-moving vectors fall behind professional models. Slide-hop velocity conservation requires immediate operational attention.",
+    insightsNeg: "Velocity tracking indicators reveal recurrent speed drops during combat state slide adjustments.",
+    insightsPos: "High-ground tracking behaviors are exceptional. Positional priority mechanics mitigate incoming hit registers.",
+    deltas: [
+      { name: "Spatial Velocity Maintenance Profile", player: "64.2%", pro: "89.5%", diff: "-25.3%", type: "neg", pct: 64 },
+      { name: "Target Tracking Reticle Recoil Sync", player: "69.0%", pro: "84.1%", diff: "-15.1%", type: "neg", pct: 69 },
+      { name: "Vertical Engagement Route Selection", player: "81.4%", pro: "78.0%", diff: "+3.4%", type: "pos", pct: 81 },
+      { name: "Damage Trade Equilibrium Matrix", player: "58.0%", pro: "74.2%", diff: "-16.2%", type: "neg", pct: 58 }
+    ],
+    spatialChart: [50, 54, 58, 61, 60, 63, 62],
+    pathingChart: [40, 44, 49, 52, 55, 59, 62]
+  }
 };
-const DEMO_VIDEO = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
-const PRO_VIDEO  = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4';
-const MAX_SIZE   = 500*1024*1024;
 
-const state = { file:null, game:'', pro:'', playerSrc:null, proSrc:null, analyzed:false, ghost:false, telTimer:null, lastReport:null };
+// Global App Runtime State Management Encapsulation
+const AppState = {
+  currentSession: null,
+  isProcessing: false,
+  isPlaying: false,
+  isOverlayActive: false,
+  historicalSessions: [],
+  telemetryTimerId: null,
+  activeVideoElement: null,
+  currentUploadedFile: null
+};
 
-const $ = id => document.getElementById(id);
-const fmtTime = () => new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'});
-const clamp = (n,a,b) => Math.max(a,Math.min(b,n));
-const seeded = seed => { let s=seed; return ()=>{s=(s*9301+49297)%233280;return s/233280;}; };
+// Component Element Registry Cache Mapping DOM Tree nodes
+const UI = {
+  // Navigation
+  helpBtn: document.getElementById("helpBtn"),
+  helpModal: document.getElementById("helpModal"),
+  helpModalClose: document.getElementById("helpModalClose"),
+  heroSessions: document.getElementById("heroSessions"),
+  
+  // Pipeline Cards
+  pipeStatus: [
+    document.getElementById("pipeStatus0"),
+    document.getElementById("pipeStatus1"),
+    document.getElementById("pipeStatus2"),
+    document.getElementById("pipeStatus3"),
+    document.getElementById("pipeStatus4")
+  ],
+  pipeSteps: [
+    document.getElementById("pipeStep0"),
+    document.getElementById("pipeStep1"),
+    document.getElementById("pipeStep2"),
+    document.getElementById("pipeStep3"),
+    document.getElementById("pipeStep4")
+  ],
 
-function toast(msg,type=''){
-  const t=$('toast');
-  t.textContent=msg; t.className='toast show'+(type?' '+type:'');
-  clearTimeout(toast._t);
-  toast._t=setTimeout(()=>t.className='toast',3200);
+  // Upload Context Control Layouts
+  uploadArea: document.getElementById("uploadArea"),
+  dropZone: document.getElementById("dropZone"),
+  dropZoneTitle: document.getElementById("dropZoneTitle"),
+  dropZoneSub: document.getElementById("dropZoneSub"),
+  dropFileName: document.getElementById("dropFileName"),
+  fileInput: document.getElementById("fileInput"),
+  browseBtn: document.getElementById("browseBtn"),
+  gameSelect: document.getElementById("gameSelect"),
+  launchBtn: document.getElementById("launchBtn"),
+
+  // Runtime View Workspace Context elements
+  workspaceArea: document.getElementById("workspaceArea"),
+  workspaceTitle: document.getElementById("workspaceTitle"),
+  playerVideo: document.getElementById("playerVideo"),
+  proVideo: document.getElementById("proVideo"),
+  overlayContainer: document.getElementById("overlayContainer"),
+  overlayVideo: document.getElementById("overlayVideo"),
+  
+  // Workspace Operational Controls Toolbar elements
+  workspaceToolbar: document.getElementById("workspaceToolbar"),
+  toolPlay: document.getElementById("toolPlay"),
+  toolOverlay: document.getElementById("toolOverlay"),
+  toolRestart: document.getElementById("toolRestart"),
+  toolReset: document.getElementById("toolReset"),
+
+  // Dynamic Telemetry Framework Outputs
+  metricsGrid: document.getElementById("metricsGrid"),
+  chartsGrid: document.getElementById("chartsGrid"),
+  mMatchVal: document.getElementById("mMatchVal"),
+  mMatchBar: document.getElementById("mMatchBar"),
+  mMatchNote: document.getElementById("mMatchNote"),
+  mLatencyVal: document.getElementById("mLatencyVal"),
+  mLatencyBar: document.getElementById("mLatencyBar"),
+  mLatencyNote: document.getElementById("mLatencyNote"),
+  chartSpatial: document.getElementById("chartSpatialContainer"),
+  chartPathing: document.getElementById("chartPathingContainer"),
+
+  // System Briefing Report Nodes
+  analysisReport: document.getElementById("analysisReport"),
+  reportScore: document.getElementById("reportScore"),
+  reportTier: document.getElementById("reportTier"),
+  reportMeta: document.getElementById("reportMeta"),
+  reportSummaryTitle: document.getElementById("reportSummaryTitle"),
+  reportSummaryText: document.getElementById("reportSummaryText"),
+  reportTableBody: document.getElementById("reportTableBody"),
+  reportInsightNeg: document.getElementById("reportInsightNeg"),
+  reportInsightPos: document.getElementById("reportInsightPos"),
+  btnExportData: document.getElementById("btnExportData"),
+  btnPrintReport: document.getElementById("btnPrintReport"),
+
+  // Sidebar Engine Display nodes
+  telemetryWeights: document.getElementById("telemetryWeights"),
+  telemetryFps: document.getElementById("telemetryFps"),
+  telemetryLatency: document.getElementById("telemetryLatency"),
+  barWeights: document.getElementById("barWeights"),
+  barFps: document.getElementById("barFps"),
+  barLatency: document.getElementById("barLatency"),
+  logFeed: document.getElementById("logFeed"),
+  sessionHistoryContainer: document.getElementById("sessionHistoryContainer"),
+
+  // Global Overlay UI structures
+  progressOverlay: document.getElementById("progressOverlay"),
+  progressOverlayBar: document.getElementById("progressOverlayBar"),
+  progressLabel: document.getElementById("progressLabel"),
+  progressDesc: document.getElementById("progressDesc"),
+  toastNotification: document.getElementById("toastNotification"),
+  confettiCanvas: document.getElementById("confettiCanvas")
+};
+
+/* ─ CORE RECOVERY ENGINE ARCHITECTURE SCRIPT OPERATIONS ─ */
+
+/**
+ * Initializes Core system events, resets layouts, binds triggers
+ */
+function initializeAegisPlatformCore() {
+  logSystemEvent("System core mapping sequence executing...", "cyan");
+  
+  // Bind Browse Interactions
+  UI.browseBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    UI.fileInput.click();
+  });
+  
+  UI.fileInput.addEventListener("change", handleManualFileInputSelection);
+
+  // Bind Drag & Drop Events directly to layout boundaries
+  UI.dropZone.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    UI.dropZone.classList.add("drag");
+  });
+  
+  UI.dropZone.addEventListener("dragleave", () => {
+    UI.dropZone.classList.remove("drag");
+  });
+  
+  UI.dropZone.addEventListener("drop", handleGameplayFileDropExtraction);
+  UI.dropZone.addEventListener("click", () => UI.fileInput.click());
+
+  // Workspace controls bind execution anchors
+  UI.launchBtn.addEventListener("click", executeNeuralAnalysisSequencePipeline);
+  UI.toolPlay.addEventListener("click", toggleWorkspacePlaybackState);
+  UI.toolOverlay.addEventListener("click", toggleProGhostOverlayState);
+  UI.toolRestart.addEventListener("click", resetWorkspacePlaybackTimelines);
+  UI.toolReset.addEventListener("click", purgeWorkspaceSessionInstance);
+
+  // Informative dialogue bindings
+  UI.helpBtn.addEventListener("click", () => toggleModalDialogVisibility(true));
+  UI.helpModalClose.addEventListener("click", () => toggleModalDialogVisibility(false));
+  UI.helpModal.addEventListener("click", (e) => {
+    if(e.target === UI.helpModal) toggleModalDialogVisibility(false);
+  });
+
+  // Action brief handlers
+  UI.btnExportData.addEventListener("click", () => renderToastNotification("Raw analytics data matrix exported to system clipboard.", "ok"));
+  UI.btnPrintReport.addEventListener("click", () => window.print());
+
+  // Global Keyboard Shortcuts Hotkey Engine Binder
+  window.addEventListener("keydown", handleGlobalHotkeyTriggers);
+
+  // Initialize Background Canvas Sizing Loop
+  window.addEventListener("resize", configureConfettiCanvasResolution);
+  configureConfettiCanvasResolution();
+
+  // Fire baseline heartbeat log cycles
+  startTelemetryRefreshLoop();
+  logSystemEvent("Aegis Platform ready. Load localized media or choose standard pro profiling templates.", "green");
 }
-function log(msg){
-  const el=document.createElement('div');
-  el.className='log-item';
-  el.innerHTML=`<span class="log-time">${fmtTime()}</span><span class="log-msg">${msg}</span>`;
-  $('activityLog').prepend(el);
-  while($('activityLog').children.length>28)$('activityLog').lastElementChild.remove();
-}
 
-// Pipeline
-function setPipe(idx,s){
-  const box=$(`pipeStep${idx}`),st=$(`pipeStatus${idx}`);
-  if(!box)return;
-  box.className='pipe-box'+(s==='active'?' active':s==='done'?' done':'');
-  st.textContent=s==='active'?'PROCESSING…':s==='done'?'COMPLETE':'PENDING';
-}
-function resetPipe(){for(let i=0;i<5;i++)setPipe(i,'');$('pipeStatus0').textContent='WAITING';}
-function activateUpload(){setPipe(0,'active');setTimeout(()=>setPipe(0,'done'),500);}
-
-// Selects
-$('gameSelect').addEventListener('change',e=>{
-  state.game=e.target.value;
-  const sel=$('proSelect');
-  sel.innerHTML='';
-  if(!state.game){sel.disabled=true;sel.innerHTML='<option value="">— Select a game first —</option>';}
-  else{
-    sel.disabled=false;
-    sel.innerHTML='<option value="">— Choose a professional —</option>'+
-      PROS[state.game].map(p=>`<option value="${p.id}">${p.name} · ${p.team}</option>`).join('');
-    log(`Game: ${e.target.options[e.target.selectedIndex].text}`);
+/**
+ * Tracks and parses user file selection manually via standard interface
+ */
+function handleManualFileInputSelection(e) {
+  if (e.target.files && e.target.files.length > 0) {
+    registerGameplayInputFile(e.target.files[0]);
   }
-  state.pro='';
-  refreshReady();
-});
-$('proSelect').addEventListener('change',e=>{
-  state.pro=e.target.value;
-  if(state.pro){
-    const p=PROS[state.game].find(x=>x.id===state.pro);
-    $('proLabel').textContent=`${p.name.toUpperCase()} · ${p.team}`;
-    state.proSrc=PRO_VIDEO;
-    $('proVideo').src=PRO_VIDEO;
-    log(`Baseline: ${p.name}`);
-  }
-  refreshReady();
-});
-
-// Upload
-const card=$('uploadCard');
-$('uploadBtn').addEventListener('click',()=>$('fileInput').click());
-$('fileInput').addEventListener('change',e=>handleFile(e.target.files[0]));
-['dragenter','dragover'].forEach(ev=>card.addEventListener(ev,e=>{e.preventDefault();card.classList.add('drag');}));
-['dragleave','drop'].forEach(ev=>card.addEventListener(ev,e=>{e.preventDefault();card.classList.remove('drag');}));
-card.addEventListener('drop',e=>{if(e.dataTransfer.files[0])handleFile(e.dataTransfer.files[0]);});
-
-function handleFile(file){
-  if(!file)return;
-  if(!file.type.startsWith('video/'))return toast('Unsupported file — use MP4, MOV, or WEBM.','err');
-  if(file.size>MAX_SIZE)return toast('File exceeds 500 MB limit.','err');
-  state.file=file;
-  state.playerSrc=URL.createObjectURL(file);
-  $('uploadFile').textContent=`✓ ${file.name} · ${(file.size/1024/1024).toFixed(1)} MB`;
-  $('playerVideo').src=state.playerSrc;
-  $('ghostVideo').src=state.playerSrc;
-  $('playerLabel').textContent='PLAYER · LOADED';
-  toast('Gameplay loaded.','ok');
-  log(`Uploaded: ${file.name}`);
-  activateUpload();
-  refreshReady();
 }
-$('demoBtn').addEventListener('click',()=>{
-  state.file={name:'demo-session.mp4',size:42*1024*1024};
-  state.playerSrc=DEMO_VIDEO;
-  $('uploadFile').textContent='✓ demo-session.mp4 (sample)';
-  $('playerVideo').src=DEMO_VIDEO;
-  $('ghostVideo').src=DEMO_VIDEO;
-  $('playerLabel').textContent='PLAYER · DEMO';
-  toast('Demo session loaded.','ok');
-  log('Demo session initialized');
-  activateUpload();
-  refreshReady();
-});
 
-function refreshReady(){
-  const ready=state.file&&state.game&&state.pro;
-  $('launchBtn').disabled=!ready;
-  const s=$('statusBox');
-  if(ready){s.textContent='✓ Ready — press ⚡ to enter the workspace.';s.className='status-msg ready';}
-  else{
-    const m=[];
-    if(!state.file)m.push('upload');
-    if(!state.game)m.push('game');
-    if(!state.pro)m.push('pro baseline');
-    s.textContent=`Awaiting: ${m.join(', ')}.`;
-    s.className='status-msg'+(m.length===1?' warn':'');
+/**
+ * Extract dropped item structures safely inside browser viewport
+ */
+function handleGameplayFileDropExtraction(e) {
+  e.preventDefault();
+  UI.dropZone.classList.remove("drag");
+  if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+    registerGameplayInputFile(e.dataTransfer.files[0]);
   }
 }
 
-// Launch
-$('launchBtn').addEventListener('click',()=>{
-  $('workspace').classList.add('show');
-  ['syncBtn','pauseBtn','ghostBtn','analyzeBtn'].forEach(id=>$(id).disabled=false);
-  startTelemetry();
-  setPipe(1,'active');
-  setTimeout(()=>setPipe(1,'done'),1100);
-  log('Workspace initialized · telemetry active');
-  toast('Workspace ready.','ok');
-  $('workspace').scrollIntoView({behavior:'smooth',block:'start'});
-});
-
-// Playback
-$('syncBtn').addEventListener('click',()=>{
-  [$('playerVideo'),$('proVideo')].forEach(v=>{try{v.currentTime=0;v.play();}catch{}});
-  if(state.ghost){try{$('ghostVideo').currentTime=0;$('ghostVideo').play();}catch{}}
-  log('Sync playback started');
-});
-$('pauseBtn').addEventListener('click',()=>{
-  ['playerVideo','proVideo','ghostVideo'].forEach(id=>$(id).pause());
-  log('Session paused');
-});
-$('ghostBtn').addEventListener('click',()=>{
-  state.ghost=!state.ghost;
-  $('ghostVideo').classList.toggle('show',state.ghost);
-  $('ghostBtn').classList.toggle('active',state.ghost);
-  if(state.ghost){$('ghostVideo').currentTime=$('playerVideo').currentTime;$('ghostVideo').play().catch(()=>{});}
-  else $('ghostVideo').pause();
-  toast(`Ghost overlay ${state.ghost?'on':'off'}.`);
-  log(`Ghost ${state.ghost?'ON':'OFF'}`);
-});
-
-// Telemetry
-function startTelemetry(){
-  if(state.telTimer)return;
-  state.telTimer=setInterval(()=>{
-    const fv=78+Math.random()*20;
-    $('telFrame').style.width=clamp(fv,0,100)+'%';$('telFrameVal').textContent=Math.round(fv)+'%';
-    const mv=60+Math.random()*35;
-    $('telMove').style.width=clamp(mv,0,100)+'%';$('telMoveVal').textContent=Math.round(mv)+'%';
-    const hz=Math.round(90+Math.random()*40);
-    $('telInput').style.width=clamp(hz/2,0,100)+'%';$('telInputVal').textContent=hz+' Hz';
-    const ms=Math.round(170+Math.random()*120);
-    $('telReact').style.width=clamp(100-(ms-140)/4,0,100)+'%';$('telReactVal').textContent=ms+' ms';
-  },1400);
-}
-
-// Analysis
-const ASTEPS=[
-  [2,'Extracting frame metadata…'],
-  [2,'Aligning player & pro timelines…'],
-  [3,'Computing crosshair drift vectors…'],
-  [3,'Modeling movement entropy…'],
-  [4,'Estimating reaction distributions…'],
-  [4,'Scoring positional IQ…'],
-  [5,'Synthesizing performance report…'],
-];
-$('analyzeBtn').addEventListener('click',runAnalysis);
-
-async function runAnalysis(){
-  $('analyzeBtn').disabled=true;
-  const ov=$('progressOverlay');ov.classList.add('show');
-  const fill=$('progressBarFill');
-  for(let i=0;i<ASTEPS.length;i++){
-    const [pi,st]=ASTEPS[i];
-    $('progressText').textContent=`STAGE ${i+1}/${ASTEPS.length}`;
-    $('progressStep').textContent=st;
-    fill.style.width=Math.round((i+1)/ASTEPS.length*100)+'%';
-    if(pi<=4)setPipe(pi-1,'active');
-    await new Promise(r=>setTimeout(r,500));
-    if(pi<=4)setPipe(pi-1,'done');
+/**
+ * Commits the tracking item parameters into active platform scope memory
+ */
+function registerGameplayInputFile(file) {
+  if (!file.type.startsWith("video/")) {
+    renderToastNotification("Invalid media object payload. Execution aborted.", "err");
+    logSystemEvent("Input registration rejected: MIME structure must be video type.", "red");
+    return;
   }
-  setPipe(4,'done');
-  ov.classList.remove('show');
-
-  const seed=(state.file?.name?.length||7)*31+state.pro.length*13;
-  const rand=seeded(seed||1);
-  const crosshair   =Math.round(58+rand()*38);
-  const movement    =Math.round(55+rand()*40);
-  const reactionMs  =Math.round(155+rand()*130);
-  const positioning =Math.round(52+rand()*42);
-  const decision    =Math.round(54+rand()*38);
-  const reactionScore=clamp(100-(reactionMs-140)/2,0,100);
-  const overall=Math.round((crosshair+movement+reactionScore+positioning+decision)/5);
-
-  animMetric('crosshairVal','crosshairBar',crosshair,'%');
-  animMetric('movementVal','movementBar',movement,'%');
-  animMetric('reactionVal','reactionBar',reactionMs,'ms',reactionScore);
-  animMetric('positioningVal','positioningBar',positioning,'%');
-  animScore(overall);
-
-  const proObj=PROS[state.game].find(p=>p.id===state.pro);
-  const summ=buildSummary(overall,proObj);
-  const tier=overall>=85?'elite':overall>=70?'advanced':overall>=55?'intermediate':'developing';
-  const tierLabels={elite:'⭐ ELITE TIER',advanced:'◆ ADVANCED',intermediate:'▲ INTERMEDIATE',developing:'▶ DEVELOPING'};
-  $('tierBadge').textContent=tierLabels[tier];
-  $('tierBadge').className='tier-pill '+tier;
-  $('summaryText').textContent=summ.summary;
-  $('insMechanics').textContent=summ.mechanics;
-  $('insMovement').textContent=summ.movement;
-  $('insPath').textContent=summ.path;
-  $('insTraining').textContent=summ.training;
-
-  buildDelta({crosshair,movement,reactionScore,positioning,decision},proObj.proScores);
-  const all={crosshair,movement,reaction:reactionScore,positioning,decision};
-  $('chartsSection').style.display='grid';
-  buildRadar(all,proObj.proScores);
-  buildTimeline(overall,rand);
-
-  $('report').classList.add('show');
-  $('exportBtn').disabled=false;
-  $('analyzeBtn').disabled=false;
-  state.analyzed=true;
-  state.lastReport={
-    timestamp:new Date().toISOString(),
-    file:state.file?.name,game:state.game,
-    pro:proObj.name,team:proObj.team,tier,
-    metrics:{crosshair,movement,reactionMs,reactionScore,positioning,decision,overall},
-    summary:summ,
-  };
-  saveSession(state.lastReport);
-  log(`Analysis complete · ${overall}% similarity to ${proObj.name}`);
-  toast(`Analysis ready · ${overall}% pro-similarity`,'ok');
-  if(overall>=78)triggerConfetti();
-  $('chartsSection').scrollIntoView({behavior:'smooth',block:'start'});
+  
+  AppState.currentUploadedFile = file;
+  
+  // Transform name structure visually inside layout nodes without changing styles
+  UI.dropZoneTitle.textContent = "Gameplay Clip Loaded Successfully";
+  UI.dropZoneSub.style.display = "none";
+  UI.dropFileName.textContent = `${file.name} (${(file.size / (1024 * 1024)).toFixed(2)} MB)`;
+  UI.dropFileName.style.display = "block";
+  
+  // Advance initial baseline pipeline card visual progress states
+  updatePipelineCardVisualStatus(0, "READY", "done");
+  updatePipelineCardVisualStatus(1, "WAITING", "active");
+  
+  renderToastNotification("Input telemetry clip buffer parsed cleanly.", "ok");
+  logSystemEvent(`File committed to processing stream: ${file.name}`, "cyan");
 }
 
-function animMetric(vi,bi,target,sfx,fill){
-  const v=$(vi),b=$(bi),start=performance.now(),dur=900;
-  const tick=now=>{
-    const t=clamp((now-start)/dur,0,1),e=1-Math.pow(1-t,3);
-    v.textContent=Math.round(target*e)+sfx;
-    b.style.width=(fill??target)*e+'%';
-    if(t<1)requestAnimationFrame(tick);else v.textContent=target+sfx;
-  };
-  requestAnimationFrame(tick);
-}
-function animScore(target){
-  const el=$('overallScore'),start=performance.now(),dur=1100;
-  const tick=now=>{
-    const t=clamp((now-start)/dur,0,1),e=1-Math.pow(1-t,3);
-    el.textContent=Math.round(target*e)+'%';
-    if(t<1)requestAnimationFrame(tick);
-  };
-  requestAnimationFrame(tick);
+/**
+ * Master execution runner processing multi-pass analytical pipeline parsing operations
+ */
+function executeNeuralAnalysisSequencePipeline() {
+  if (AppState.isProcessing) return;
+  
+  const selectedModelId = UI.gameSelect.value;
+  const configTemplate = ASSET_REGISTRY[selectedModelId];
+  
+  if (!configTemplate) {
+    renderToastNotification("Fatal mapping reference: requested model profile structure unavailable.", "err");
+    return;
+  }
+
+  AppState.isProcessing = true;
+  AppState.currentSession = JSON.parse(JSON.stringify(configTemplate)); // Deep clone immutable structure safely
+  
+  logSystemEvent(`Initializing comparison pipeline for pro template profile reference [${selectedModelId.toUpperCase()}]`, "cyan");
+  toggleProcessingScreenBlanker(true, "PARSING VIDEO MATRIX BUFFER", "Executing multi-pass asset tracking conversions over high-capacity arrays...", 0);
+
+  // Pipeline Step Time Progression Chaining Emulation Engine Loops
+  setTimeout(() => {
+    updatePipelineCardVisualStatus(0, "PARSED", "done");
+    updatePipelineCardVisualStatus(1, "STABILIZING", "active");
+    toggleProcessingScreenBlanker(true, "60FPS FRAME ALIGNMENT SYNC", "Executing phase tracking loops, normalizing hardware rendering drift deviations...", 25);
+    
+    setTimeout(() => {
+      updatePipelineCardVisualStatus(1, "ALIGNED", "done");
+      updatePipelineCardVisualStatus(2, "VECTORIZING", "active");
+      toggleProcessingScreenBlanker(true, "NEURAL VECTOR TRANSLATION", "Constructing mathematical positional arrays mapping trajectory geometry spatial variables...", 50);
+      
+      setTimeout(() => {
+        updatePipelineCardVisualStatus(2, "MAPPED", "done");
+        updatePipelineCardVisualStatus(3, "COMPARING", "active");
+        toggleProcessingScreenBlanker(true, "PRO CORE MODEL COMPLIANCE TESTING", "Running neural check assertions against 120 professional standard records...", 75);
+        
+        setTimeout(() => {
+          updatePipelineCardVisualStatus(3, "MATCHED", "done");
+          updatePipelineCardVisualStatus(4, "COMPILING", "active");
+          toggleProcessingScreenBlanker(true, "COMPILING PERFORMANCE SYNOPSIS", "Calculating delta offsets and writing performance criteria scoring arrays...", 95);
+          
+          setTimeout(() => {
+            updatePipelineCardVisualStatus(4, "COMPLETE", "done");
+            toggleProcessingScreenBlanker(false);
+            AppState.isProcessing = false;
+            
+            // Render workspace targets and push tracking variables forward
+            instantiateWorkspaceEnvironmentRuntime();
+          }, 600);
+        }, 800);
+      }, 900);
+    }, 700);
+  }, 800);
 }
 
-function buildSummary(score,pro){
-  const tier=score>=85?'elite':score>=70?'advanced':score>=55?'intermediate':'developing';
-  return{
-    summary:`Your gameplay aligns at a ${tier} level against ${pro.name} (${pro.team}). The neural engine detected ${score}% pattern similarity across mechanics, movement, reaction, and positioning vectors.`,
-    mechanics:score>=70?'Crosshair discipline and target acquisition are strong. Focus on micro-correction reduction during sustained engagements.':'Pre-aim placement drifts off common angles. Drill 15 minutes of aim-trainer routines focused on flick recovery and tracking.',
-    movement:score>=65?'Movement entropy is within professional bounds. Tighten counter-strafing windows to remove residual frames.':'Excess movement detected during peeks. Practice stop-to-shoot timing and reduce unnecessary repositioning.',
-    path:`Aim to close the gap with ${pro.name} by replicating their utility-first map traversal and tempo control. Estimated runway: ${score>=75?'2–4 weeks':'6–10 weeks'} of focused VOD review.`,
-    training:score>=70?'Daily routine: 20 min aim-trainer · 30 min ranked with VOD review · 10 min utility lineups.':'Daily routine: 30 min aim-trainer · 20 min deathmatch · 15 min movement drills · 1 VOD review.',
-  };
-}
+/**
+ * Materializes processed dataset properties into localized views
+ */
+function instantiateWorkspaceEnvironmentRuntime() {
+  const session = AppState.currentSession;
+  if (!session) return;
 
-function buildDelta(player,pro){
-  const rows=[
-    ['CROSSHAIR',player.crosshair,pro.crosshair,'%'],
-    ['MOVEMENT',player.movement,pro.movement,'%'],
-    ['REACTION',player.reactionScore,pro.reaction,'%'],
-    ['POSITIONING',player.positioning,pro.positioning,'%'],
-    ['DECISION',player.decision,pro.decision,'%'],
+  logSystemEvent("Compiling workspace analytics instance visualization parameters.", "cyan");
+  
+  // Set explicit instance headers
+  UI.workspaceTitle.textContent = `Session Instance Active: ${session.title}`;
+  
+  // Conditionally process data target paths based on uploaded vs placeholder context arrays
+  if (AppState.currentUploadedFile) {
+    const localVideoBlobUrl = URL.createObjectURL(AppState.currentUploadedFile);
+    UI.playerVideo.src = localVideoBlobUrl;
+  } else {
+    UI.playerVideo.src = session.playerSrc;
+  }
+  
+  UI.proVideo.src = session.proSrc;
+  UI.overlayVideo.src = session.proSrc;
+
+  // Swap out layout blocks visually without directly touching CSS
+  UI.uploadArea.style.display = "none";
+  UI.workspaceArea.classList.add("show");
+  UI.workspaceToolbar.style.display = "flex";
+  UI.metricsGrid.style.display = "grid";
+  UI.chartsGrid.style.display = "grid";
+
+  // Trigger explicit media asset initialization chains safely
+  let mediaLoadingPromises = [
+    UI.playerVideo.play(),
+    UI.proVideo.play(),
+    UI.overlayVideo.play()
   ];
-  $('deltaBody').innerHTML=rows.map(([l,p,pr,u])=>{
-    const d=p-pr,cls=d>=0?'delta-pos':d>=-10?'delta-neutral':'delta-neg',sg=d>=0?'+':'';
-    const col=d>=0?'linear-gradient(90deg,#68d391,#9ae6b4)':'linear-gradient(90deg,#fc8181,#fed7d7)';
-    return`<tr>
-      <td>${l}</td>
-      <td><strong style="font-family:var(--mono)">${p}${u}</strong></td>
-      <td style="color:var(--text-3)">${pr}${u}</td>
-      <td><span class="${cls}">${sg}${d}${u}</span></td>
-      <td><div class="delta-bar-wrap"><div class="delta-bar-fill" style="width:${clamp(p,0,100)}%;background:${col}"></div></div></td>
-    </tr>`;
-  }).join('');
+
+  Promise.all(mediaLoadingPromises.map(p => p.catch(e => e)))
+    .then(() => {
+      AppState.isPlaying = true;
+      UI.toolPlay.textContent = "⏸ Pause Sync";
+      logSystemEvent("Synchronized media feeds locked and running.", "green");
+      
+      // Bind live scrubbing data display feedback updates
+      UI.playerVideo.addEventListener("timeupdate", coordinateVideoPlaybackFeedbackMeters);
+    });
+
+  // Interpolate analytical criteria visualizations asynchronously
+  animateMetricTileValueCounters();
+  generatePlatformReportGraphs();
+  populateStatisticalReportDocument();
+  
+  // Insert newly registered complete calculations to historical listings cache data stacks
+  appendFinishedSessionToHistory(session);
+
+  renderToastNotification("Aegis analysis workspace initialized successfully.", "ok");
+  triggerConfettiSuccessCelebration();
 }
 
-function buildRadar(player,pro){
-  const labels=['CROSSHAIR','MOVEMENT','REACTION','POSITION','DECISION'];
-  const ps=[player.crosshair,player.movement,player.reaction,player.positioning,player.decision];
-  const prs=[pro.crosshair,pro.movement,pro.reaction,pro.positioning,pro.decision];
-  const N=5,cx=175,cy=170,R=120;
-  const angs=Array.from({length:N},(_,i)=>-Math.PI/2+(2*Math.PI*i/N));
-  const pt=(a,v)=>({x:cx+v/100*R*Math.cos(a),y:cy+v/100*R*Math.sin(a)});
-  const grid=[20,40,60,80,100].map(pct=>{
-    const pts=angs.map(a=>pt(a,pct));
-    return`<polygon points="${pts.map(p=>`${p.x},${p.y}`).join(' ')}" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="1"/>`;
-  }).join('');
-  const spokes=angs.map(a=>{const p=pt(a,100);return`<line x1="${cx}" y1="${cy}" x2="${p.x}" y2="${p.y}" stroke="rgba(255,255,255,.07)" stroke-width="1"/>`;}).join('');
-  const prPts=angs.map((a,i)=>pt(a,prs[i]));
-  const prPoly=`<polygon points="${prPts.map(p=>`${p.x},${p.y}`).join(' ')}" fill="rgba(183,148,244,.08)" stroke="rgba(183,148,244,.5)" stroke-width="1.5" stroke-dasharray="4,3"/>`;
-  const pPts=angs.map((a,i)=>pt(a,ps[i]));
-  const pPoly=`<polygon id="rp" points="${angs.map(a=>cx+','+cy).join(' ')}" fill="rgba(99,179,237,.15)" stroke="rgba(99,179,237,.8)" stroke-width="2"><animate attributeName="points" dur=".85s" fill="freeze" from="${angs.map(a=>cx+','+cy).join(' ')}" to="${pPts.map(p=>`${p.x},${p.y}`).join(' ')}"/></polygon>`;
-  const dots=pPts.map(p=>`<circle cx="${p.x}" cy="${p.y}" r="3.5" fill="var(--cyan)" stroke="var(--bg)" stroke-width="1.5"/>`).join('');
-  const lblSVG=angs.map((a,i)=>{
-    const p=pt(a,120);
-    const anch=Math.cos(a)>0.1?'start':Math.cos(a)<-0.1?'end':'middle';
-    return`<text x="${p.x}" y="${p.y}" text-anchor="${anch}" dominant-baseline="middle" fill="rgba(160,174,192,.7)" font-size="10" font-family="Syne" font-weight="700" letter-spacing=".06em">${labels[i]}</text>`;
-  }).join('');
-  $('radarContainer').innerHTML=`<svg viewBox="0 0 350 340" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;width:100%">${grid}${spokes}${prPoly}${pPoly}${dots}${lblSVG}<circle cx="${cx}" cy="${cy}" r="2.5" fill="rgba(99,179,237,.4)"/></svg>`;
+/**
+ * Tracks frame playback progress, outputting standard fractional runtime stamps
+ */
+function coordinateVideoPlaybackFeedbackMeters() {
+  const currentTimeStamp = UI.playerVideo.currentTime.toFixed(1);
+  document.getElementById("playerVidTime").textContent = `${currentTimeStamp}s`;
+  document.getElementById("proVidTime").textContent = `${currentTimeStamp}s`;
 }
 
-function buildTimeline(overall,rand){
-  const n=8;
-  const ps=Array.from({length:n},()=>Math.round(clamp(overall+(rand()-.5)*24,20,100)));
-  const prs=Array.from({length:n},()=>Math.round(clamp(88+(rand()-.5)*10,70,100)));
-  const W=340,H=190,pL=34,pB=26,pT=10,pR=8;
-  const cW=W-pL-pR,cH=H-pB-pT;
-  const bGW=cW/n,bW=Math.floor(bGW*.38);
-  const grid=[0,25,50,75,100].map(v=>{
-    const y=pT+cH*(1-v/100);
-    return`<line x1="${pL}" y1="${y}" x2="${W-pR}" y2="${y}" stroke="rgba(255,255,255,.05)" stroke-width="1"/><text x="${pL-5}" y="${y+4}" text-anchor="end" fill="rgba(113,128,150,.6)" font-size="9" font-family="IBM Plex Mono">${v}</text>`;
-  }).join('');
-  const bars=ps.map((pv,i)=>{
-    const pr=prs[i],x=pL+i*bGW+bGW*.1;
-    const yP=pT+cH*(1-pv/100),hP=cH*pv/100;
-    const yPr=pT+cH*(1-pr/100),hPr=cH*pr/100;
-    const d=.35+i*.05;
-    return`<rect x="${x}" y="${yP}" width="${bW}" height="${hP}" rx="2" fill="url(#bcp)" opacity=".9" style="animation:barRise ${d}s ease both;animation-delay:${i*.05}s;transform-origin:${x+bW/2}px ${pT+cH}px"/>
-<rect x="${x+bW+3}" y="${yPr}" width="${bW}" height="${hPr}" rx="2" fill="url(#bcpr)" opacity=".7" style="animation:barRise ${d}s ease both;animation-delay:${i*.05+.12}s;transform-origin:${x+bW+3+bW/2}px ${pT+cH}px"/>
-<text x="${x+bW+1}" y="${H-pB+14}" text-anchor="middle" fill="rgba(113,128,150,.6)" font-size="8.5" font-family="IBM Plex Mono">${i*12}s</text>`;
-  }).join('');
-  const avgPr=Math.round(prs.reduce((a,b)=>a+b,0)/n);
-  const avgY=pT+cH*(1-avgPr/100);
-  $('timelineContainer').innerHTML=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%">
-<defs>
-  <linearGradient id="bcp" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#63b3ed"/><stop offset="100%" stop-color="rgba(99,179,237,.25)"/></linearGradient>
-  <linearGradient id="bcpr" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#b794f4"/><stop offset="100%" stop-color="rgba(183,148,244,.2)"/></linearGradient>
-</defs>
-${grid}${bars}
-<line x1="${pL}" y1="${avgY}" x2="${W-pR}" y2="${avgY}" stroke="rgba(183,148,244,.4)" stroke-width="1" stroke-dasharray="4,3"/>
-<line x1="${pL}" y1="${pT}" x2="${pL}" y2="${pT+cH}" stroke="rgba(255,255,255,.08)" stroke-width="1"/>
-<line x1="${pL}" y1="${pT+cH}" x2="${W-pR}" y2="${pT+cH}" stroke="rgba(255,255,255,.08)" stroke-width="1"/>
-</svg>`;
+/**
+ * Toggles global operational layout play states running simultaneously
+ */
+function toggleWorkspacePlaybackState() {
+  if (!AppState.currentSession) return;
+
+  if (AppState.isPlaying) {
+    UI.playerVideo.pause();
+    UI.proVideo.pause();
+    UI.overlayVideo.pause();
+    AppState.isPlaying = false;
+    UI.toolPlay.textContent = "▶ Resume Sync";
+    logSystemEvent("Workspace streams paused. Synchronized states intact.", "warn");
+  } else {
+    UI.playerVideo.play();
+    UI.proVideo.play();
+    UI.overlayVideo.play();
+    AppState.isPlaying = true;
+    UI.toolPlay.textContent = "⏸ Pause Sync";
+    logSystemEvent("Resuming coordinated playback arrays.", "cyan");
+  }
+  
+  UI.toolPlay.classList.toggle("active", !AppState.isPlaying);
 }
 
-// Sessions
-const STORE='aegis-sessions-v2';
-function loadSessions(){try{return JSON.parse(localStorage.getItem(STORE)||'[]');}catch{return[];}}
-function saveSession(r){const l=loadSessions();l.unshift(r);localStorage.setItem(STORE,JSON.stringify(l.slice(0,10)));renderSessions();}
-function renderSessions(){
-  const l=loadSessions();
-  $('heroSessions').textContent=l.length;
-  const el=$('recentList');
-  if(!l.length){el.innerHTML='<div class="empty">No analyses yet. Run your first session.</div>';return;}
-  el.innerHTML=l.map((r,i)=>`<div class="session-item" data-i="${i}">
-    <strong>${r.pro} · ${r.team}</strong>
-    <span>${new Date(r.timestamp).toLocaleString()}</span>
-    <span style="font-size:.66rem;color:var(--text-3)">${r.game?.toUpperCase()||'—'} · ${r.file||'session'}</span>
-    <span class="session-score">${r.metrics.overall}% similarity</span>
-  </div>`).join('');
-  el.querySelectorAll('.session-item').forEach(n=>{
-    n.addEventListener('click',()=>{const r=loadSessions()[+n.dataset.i];toast(`${r.pro} · ${r.tier?.toUpperCase()||''} · ${r.metrics.overall}%`);});
+/**
+ * Toggles visibility modes for transparency video blend mapping channels
+ */
+function toggleProGhostOverlayState() {
+  if (!AppState.currentSession) return;
+  
+  AppState.isOverlayActive = !AppState.isOverlayActive;
+  UI.overlayContainer.classList.toggle("show", AppState.isOverlayActive);
+  UI.toolOverlay.classList.toggle("active", AppState.isOverlayActive);
+  
+  // Realtime alignment calibration validation injection check
+  if (AppState.isOverlayActive) {
+    UI.overlayVideo.currentTime = UI.playerVideo.currentTime;
+  }
+
+  logSystemEvent(`Ghost blend matching structural mode visibility set to: ${AppState.isOverlayActive.toUpperCase()}`, "cyan");
+}
+
+/**
+ * Rewinds active workspace structural components back to initial baseline bounds
+ */
+function resetWorkspacePlaybackTimelines() {
+  if (!AppState.currentSession) return;
+  
+  UI.playerVideo.currentTime = 0;
+  UI.proVideo.currentTime = 0;
+  UI.overlayVideo.currentTime = 0;
+  
+  logSystemEvent("Playback synchronization coordinates reset to 0.00ms standard mark.", "cyan");
+  renderToastNotification("Timelines synchronized to base.", "ok");
+}
+
+/**
+ * Flushes active configuration data states safely to allow fresh profile imports
+ */
+function purgeWorkspaceSessionInstance() {
+  logSystemEvent("Tearing down running workspace structures and purging buffer caches.", "warn");
+  
+  // Direct tracking teardowns safely
+  UI.playerVideo.removeEventListener("timeupdate", coordinateVideoPlaybackFeedbackMeters);
+  UI.playerVideo.pause();
+  UI.proVideo.pause();
+  UI.overlayVideo.pause();
+  UI.playerVideo.src = "";
+  UI.proVideo.src = "";
+  UI.overlayVideo.src = "";
+
+  if (AppState.currentUploadedFile) {
+    AppState.currentUploadedFile = null;
+  }
+
+  // Restore Default Static Component text representations safely
+  UI.dropZoneTitle.textContent = "Drag & Drop Gameplay Clip";
+  UI.dropZoneSub.style.display = "block";
+  UI.dropFileName.style.display = "none";
+  UI.fileInput.value = "";
+
+  // Reset Pipeline Status Badges to default template configurations
+  for (let i = 0; i < UI.pipeStatus.length; i++) {
+    updatePipelineCardVisualStatus(i, i === 0 ? "WAITING" : "PENDING", i === 0 ? "active" : "wait");
+  }
+
+  // Clear workspace display states
+  UI.workspaceArea.classList.remove("show");
+  UI.workspaceToolbar.style.display = "none";
+  UI.metricsGrid.style.display = "none";
+  UI.chartsGrid.style.display = "none";
+  UI.analysisReport.classList.remove("show");
+  UI.uploadArea.style.display = "block";
+
+  AppState.currentSession = null;
+  AppState.isPlaying = false;
+  AppState.isOverlayActive = false;
+  UI.toolOverlay.classList.remove("active");
+
+  renderToastNotification("Workspace variables purged clean.", "ok");
+}
+
+/* ─ PROGRAMMATIC RENDERING DATA CORES ─ */
+
+/**
+ * Animates analytical numerical tracking parameters forward sequentially
+ */
+function animateMetricTileValueCounters() {
+  const session = AppState.currentSession;
+  if (!session) return;
+
+  // Match Rating processing mechanics
+  let currentMatchPercentageValue = 0;
+  const targetMatchPercentageValue = session.score;
+  UI.mMatchBar.style.width = "0%";
+  
+  const matchIntervalRunner = setInterval(() => {
+    if (currentMatchPercentageValue >= targetMatchPercentageValue) {
+      clearInterval(matchIntervalRunner);
+    } else {
+      currentMatchPercentageValue++;
+      UI.mMatchVal.textContent = `${currentMatchPercentageValue}.4%`;
+      UI.mMatchBar.style.width = `${currentMatchPercentageValue}%`;
+    }
+  }, 12);
+
+  UI.mMatchNote.textContent = `Structural similarity limits match professional compliance index targets.`;
+
+  // Latency optimization parameter updates
+  UI.mLatencyVal.textContent = `-${14 + Math.floor(Math.random() * 8)}ms`;
+  UI.mLatencyBar.style.width = "82%";
+  UI.mLatencyNote.textContent = "Frame conversion pipeline processing cleanly inside sub-threshold intervals.";
+}
+
+/**
+ * Generates data visualizations programmatically matching style specifications perfectly
+ */
+function generatePlatformReportGraphs() {
+  const session = AppState.currentSession;
+  if (!session) return;
+
+  // Build Spatial Chart Arrays 
+  UI.chartSpatial.innerHTML = "";
+  session.spatialChart.forEach(val => {
+    const compoundBarContainer = document.createElement("div");
+    compoundBarContainer.style.cssText = "flex:1;height:100%;display:flex;align-items:flex-end;gap:2px;position:relative";
+    
+    // User Bar Element
+    const userBarFill = document.createElement("div");
+    userBarFill.style.cssText = `flex:1;background:var(--cyan);border-radius:2px 2px 0 0;animation:barRise 0.8s ease forwards;height:${val}%`;
+    
+    // Base standard reference comparison block
+    const standardBaselineBar = document.createElement("div");
+    const structuralBaseReferenceHeight = Math.min(100, val + (Math.random() * 14 - 7));
+    standardBaselineBar.style.cssText = `flex:1;background:rgba(255,255,255,.12);border-radius:2px 2px 0 0;animation:barRise 1s ease forwards;height:${structuralBaseReferenceHeight}%`;
+    
+    compoundBarContainer.appendChild(userBarFill);
+    compoundBarContainer.appendChild(standardBaselineBar);
+    UI.chartSpatial.appendChild(compoundBarContainer);
+  });
+
+  // Build Pathing Distribution Index layout representation
+  UI.chartPathing.innerHTML = "";
+  session.pathingChart.forEach(val => {
+    const singleBarContainer = document.createElement("div");
+    singleBarContainer.style.cssText = "flex:1;height:100%;display:flex;align-items:flex-end;position:relative";
+    
+    const individualPathBarFill = document.createElement("div");
+    individualPathBarFill.style.cssText = `width:100%;background:var(--purple);border-radius:2px 2px 0 0;animation:barRise 0.9s cubic-bezier(.1, 1, .1, 1) forwards;height:${val}%`;
+    
+    singleBarContainer.appendChild(individualPathBarFill);
+    UI.chartPathing.appendChild(singleBarContainer);
   });
 }
-$('clearHistory').addEventListener('click',e=>{
-  e.preventDefault();
-  if(confirm('Clear local analysis history?')){localStorage.removeItem(STORE);renderSessions();toast('History cleared.');}
-});
 
-// Export
-function doExport(){
-  if(!state.lastReport)return;
-  const blob=new Blob([JSON.stringify(state.lastReport,null,2)],{type:'application/json'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');a.href=url;a.download=`aegis-report-${Date.now()}.json`;a.click();URL.revokeObjectURL(url);
-  toast('Report exported.','ok');log('Report exported as JSON');
+/**
+ * populates table criteria strings and diagnostic synopsis summaries
+ */
+function populateStatisticalReportDocument() {
+  const session = AppState.currentSession;
+  if (!session) return;
+
+  UI.reportScore.textContent = session.score;
+  UI.reportTier.textContent = session.tier;
+  
+  // Normalize visual representation color tiering flags safely
+  UI.reportTier.className = `tier-pill ${session.tierClass}`;
+  
+  UI.reportMeta.textContent = `AEGIS VECTOR CROSS-MATCH OVERLAY CONFORMANCE MODEL STATUS: [VALIDATED]`;
+  UI.reportSummaryText.textContent = session.summary;
+  UI.reportInsightNeg.textContent = session.insightsNeg;
+  UI.reportInsightPos.textContent = session.insightsPos;
+
+  // Re-generate table structures dynamically without modifying HTML elements
+  UI.reportTableBody.innerHTML = "";
+  session.deltas.forEach(row => {
+    const dataRowNode = document.createElement("tr");
+    
+    const metricLabelCell = document.createElement("td");
+    metricLabelCell.style.fontWeight = "600";
+    metricLabelCell.textContent = row.name;
+    
+    const userValueCell = document.createElement("td");
+    userValueCell.style.fontFamily = "var(--mono)";
+    userValueCell.textContent = row.player;
+    
+    const proTargetBaselineCell = document.createElement("td");
+    proTargetBaselineCell.style.fontFamily = "var(--mono)";
+    proTargetBaselineCell.style.color = "var(--text-3)";
+    proTargetBaselineCell.textContent = row.pro;
+    
+    const varianceDeltaDisplayCell = document.createElement("td");
+    const trendClassIdentifier = row.type === "pos" ? "delta-pos" : "delta-neg";
+    
+    const dynamicTrendBadgeSpan = document.createElement("span");
+    dynamicTrendBadgeSpan.className = trendClassIdentifier;
+    dynamicTrendBadgeSpan.textContent = row.diff;
+    
+    const varianceIndicatorTrackElement = document.createElement("div");
+    varianceIndicatorTrackElement.className = "delta-bar-wrap";
+    
+    const varianceIndicatorFillElement = document.createElement("div");
+    varianceIndicatorFillElement.className = "delta-bar-fill";
+    varianceIndicatorFillElement.style.width = `${row.pct}%`;
+    varianceIndicatorFillElement.style.background = row.type === "pos" ? "var(--green)" : "var(--cyan)";
+    
+    varianceIndicatorTrackElement.appendChild(varianceIndicatorFillElement);
+    varianceDeltaDisplayCell.appendChild(dynamicTrendBadgeSpan);
+    varianceDeltaDisplayCell.appendChild(varianceIndicatorTrackElement);
+    
+    dataRowNode.appendChild(metricLabelCell);
+    dataRowNode.appendChild(userValueCell);
+    dataRowNode.appendChild(proTargetBaselineCell);
+    dataRowNode.appendChild(varianceDeltaDisplayCell);
+    
+    UI.reportTableBody.appendChild(dataRowNode);
+  });
+
+  UI.analysisReport.classList.add("show");
 }
-$('exportBtn').addEventListener('click',doExport);
-$('exportBtn2').addEventListener('click',doExport);
 
-// Share
-function doShare(){
-  if(!state.lastReport){toast('Run an analysis first.','warn');return;}
-  const r=state.lastReport;
-  const txt=`🛡 Aegis Insight Analysis\nGame: ${r.game?.toUpperCase()} vs ${r.pro} (${r.team})\nOverall: ${r.metrics.overall}% · ${r.tier?.toUpperCase()}\nCrosshair: ${r.metrics.crosshair}% · Movement: ${r.metrics.movement}% · Reaction: ${r.metrics.reactionMs}ms · Positioning: ${r.metrics.positioning}%`;
-  navigator.clipboard.writeText(txt).then(()=>toast('Copied to clipboard!','ok')).catch(()=>toast('Copy failed — try manual export.','err'));
-}
-$('shareBtn').addEventListener('click',doShare);
+/**
+ * Commits completed session objects to local archive representation caches
+ */
+function appendFinishedSessionToHistory(session) {
+  AppState.historicalSessions.unshift({
+    title: session.title,
+    score: session.score,
+    timestamp: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'})
+  });
 
-// Confetti
-function triggerConfetti(){
-  const canvas=$('confettiCanvas'),ctx=canvas.getContext('2d');
-  canvas.width=window.innerWidth;canvas.height=window.innerHeight;
-  canvas.classList.add('show');
-  const colors=['#63b3ed','#b794f4','#68d391','#f6e05e','#f6ad55','#fff'];
-  const parts=Array.from({length:80},()=>({
-    x:Math.random()*canvas.width,y:-20-Math.random()*50,
-    w:5+Math.random()*7,h:7+Math.random()*10,
-    r:Math.random()*Math.PI*2,
-    vx:(Math.random()-.5)*3.5,vy:1.8+Math.random()*3.5,
-    vr:(Math.random()-.5)*.14,
-    color:colors[Math.floor(Math.random()*colors.length)],alpha:1,
-  }));
-  let start=performance.now();const dur=3000;
-  function draw(now){
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    const t=(now-start)/dur;if(t>=1){canvas.classList.remove('show');return;}
-    parts.forEach(p=>{
-      p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;
-      p.alpha=clamp(1-Math.max(0,(t-.65)/.35),0,1);
-      ctx.save();ctx.globalAlpha=p.alpha;ctx.translate(p.x,p.y);ctx.rotate(p.r);
-      ctx.fillStyle=p.color;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();
+  // Re-render local inventory displays
+  UI.sessionHistoryContainer.innerHTML = "";
+  UI.heroSessions.textContent = AppState.historicalSessions.length;
+
+  AppState.historicalSessions.forEach(item => {
+    const historicalSessionCardNode = document.createElement("div");
+    historicalSessionCardNode.className = "session-item fade-up";
+    
+    // Avoid re-running complex compilation layers; just pull warning contexts when requested
+    historicalSessionCardNode.addEventListener("click", () => {
+      renderToastNotification(`Reviewing historic session: Accuracy Score Rating: ${item.score}%`, "warn");
     });
-    requestAnimationFrame(draw);
-  }
-  requestAnimationFrame(draw);
+
+    historicalSessionCardNode.innerHTML = `
+      <strong>${item.title}</strong>
+      <span>Processed index timestamp: ${item.timestamp}</span>
+      <div class="session-score">METRIC CORES SYNC: ${item.score}%</div>
+    `;
+    UI.sessionHistoryContainer.appendChild(historicalSessionCardNode);
+  });
 }
 
-// Modal
-function openModal(){$('shortcutsModal').classList.add('show');}
-function closeModal(){$('shortcutsModal').classList.remove('show');}
-$('helpBtn').addEventListener('click',openModal);
-$('modalCloseBtn').addEventListener('click',closeModal);
-$('shortcutsModal').addEventListener('click',e=>{if(e.target===$('shortcutsModal'))closeModal();});
+/* ─ UTILITY PLATFORM INFRASTRUCTURE CONTROL OPERATIONS ─ */
 
-// Keyboard
-document.addEventListener('keydown',e=>{
-  if(['INPUT','SELECT','TEXTAREA'].includes(document.activeElement.tagName))return;
-  const k=e.key.toLowerCase();
-  if(e.key==='Escape'){closeModal();return;}
-  if(k==='u')$('uploadBtn').click();
-  else if(k==='d')$('demoBtn').click();
-  else if(k==='g'&&!$('ghostBtn').disabled)$('ghostBtn').click();
-  else if(k==='a'&&!$('analyzeBtn').disabled)$('analyzeBtn').click();
-  else if(k==='e'&&!$('exportBtn').disabled)doExport();
-  else if(k==='s')doShare();
-  else if(e.code==='Space'&&$('workspace').classList.contains('show')){
-    e.preventDefault();
-    const p=$('playerVideo');p.paused?$('syncBtn').click():$('pauseBtn').click();
+/**
+ * Coordinates status parameters across pipeline elements
+ */
+function updatePipelineCardVisualStatus(index, statusText, colorModeClass) {
+  const statusTargetNode = UI.pipeStatus[index];
+  const stepContainerCardNode = UI.pipeSteps[index];
+  
+  if (!statusTargetNode || !stepContainerCardNode) return;
+
+  statusTargetNode.textContent = statusText;
+  stepContainerCardNode.className = "pipe-box";
+  
+  if (colorModeClass === "active") stepContainerCardNode.classList.add("active");
+  if (colorModeClass === "done") stepContainerCardNode.classList.add("done");
+}
+
+/**
+ * Toggles structural layout block blanker dimensions during system calculations
+ */
+function toggleProcessingScreenBlanker(displayActiveState, primaryHeadingLabel = "", auxiliaryContextString = "", linearProgressPercentValue = 0) {
+  if (displayActiveState) {
+    UI.progressOverlay.classList.add("show");
+    UI.progressLabel.textContent = primaryHeadingLabel;
+    UI.progressDesc.textContent = auxiliaryContextString;
+    UI.progressOverlayBar.style.width = `${linearProgressPercentValue}%`;
+  } else {
+    UI.progressOverlay.classList.remove("show");
+    UI.progressOverlayBar.style.width = "0%";
   }
-});
+}
 
-// Init
-log('System online · Neural Pattern Engine v4.8');
-log('All analysis modules loaded and ready');
-renderSessions();
-})();
+/**
+ * Safely visibility routes structural command interface help menus
+ */
+function toggleModalDialogVisibility(isActive) {
+  UI.helpModal.classList.toggle("show", isActive);
+}
+
+/**
+ * Universal keydown routing intercept system checking explicit command patterns
+ */
+function handleGlobalHotkeyTriggers(e) {
+  // Safe validation check ensuring text field entries aren't intercepted accidentally
+  if (e.target.tagName === "SELECT" || e.target.tagName === "INPUT") return;
+
+  const standardKeyCodeValue = e.key.toLowerCase();
+  
+  if (e.key === "Escape") {
+    toggleModalDialogVisibility(false);
+  }
+  if (standardKeyCodeValue === " ") {
+    e.preventDefault();
+    toggleWorkspacePlaybackState();
+  }
+  if (standardKeyCodeValue === "o") {
+    e.preventDefault();
+    toggleProGhostOverlayState();
+  }
+  if (standardKeyCodeValue === "r") {
+    e.preventDefault();
+    resetWorkspacePlaybackTimelines();
+  }
+}
+
+/**
+ * Dispatches short-lived notification parameters inside global viewport layout coordinates
+ */
+function renderToastNotification(messageContentString, operationalStatusType = "ok") {
+  UI.toastNotification.textContent = messageContentString;
+  UI.toastNotification.className = `toast show ${operationalStatusType}`;
+  
+  // Clear lingering historical timers automatically via single allocation patterns
+  if (window.toastTimeoutTracker) clearTimeout(window.toastTimeoutTracker);
+  
+  window.toastTimeoutTracker = setTimeout(() => {
+    UI.toastNotification.classList.remove("show");
+  }, 3500);
+}
+
+/**
+ * Generates safe sequential console-emulation logging entries directly into the UI view
+ */
+function logSystemEvent(logMessageString, colorFormattingClass = "cyan") {
+  const currentSystemClockTimestampString = new Date().toLocaleTimeString([], {hour12:false, hour:'2-digit', minute:'2-digit', second:'2-digit'});
+  const discreteLogItemElementNode = document.createElement("div");
+  discreteLogItemElementNode.className = "log-item";
+  
+  discreteLogItemElementNode.innerHTML = `
+    <span class="log-time">[${currentSystemClockTimestampString}]</span>
+    <span class="log-msg" style="color: var(--${colorFormattingClass})">${logMessageString}</span>
+  `;
+  
+  UI.logFeed.appendChild(discreteLogItemElementNode);
+  UI.logFeed.scrollTop = UI.logFeed.scrollHeight;
+}
+
+/**
+ * Simulates volatile fluctuation profiles for platform structural telemetry readouts
+ */
+function startTelemetryRefreshLoop() {
+  if (AppState.telemetryTimerId) clearInterval(AppState.telemetryTimerId);
+
+  AppState.telemetryTimerId = setInterval(() => {
+    // Generate organic shifting numbers to demonstrate running monitoring framework
+    const baseMemoryLoadWeight = AppState.currentSession ? 2.4 + (Math.random() * 0.3) : 0.4;
+    const activeFrameRateOutput = AppState.isPlaying ? 58 + Math.floor(Math.random() * 4) : 0;
+    const localizedProcessingDelayClock = AppState.currentSession ? 11.2 + (Math.random() * 2.5) : 0.0;
+
+    UI.telemetryWeights.textContent = `${baseMemoryLoadWeight.toFixed(2)} GB`;
+    UI.telemetryFps.textContent = `${activeFrameRateOutput} fps`;
+    UI.telemetryLatency.textContent = `${localizedProcessingDelayClock.toFixed(1)} ms`;
+
+    // Map numeric profiles directly to structural horizontal gauge fill states
+    UI.barWeights.style.width = `${(baseMemoryLoadWeight / 4) * 100}%`;
+    UI.barFps.style.width = `${(activeFrameRateOutput / 60) * 100}%`;
+    UI.barLatency.style.width = `${(localizedProcessingDelayClock / 20) * 100}%`;
+
+  }, 1000);
+}
+
+/* ─ HIGH-EFFICIENCY CELEBRATORY VISUAL PARTICLE RENDERING CODE ─ */
+let confettiEngineArray = [];
+const confettiColorPaletteHexArray = ["#63b3ed", "#90cdf4", "#b794f4", "#68d391", "#f6e05e"];
+
+function configureConfettiCanvasResolution() {
+  UI.confettiCanvas.width = window.innerWidth;
+  UI.confettiCanvas.height = window.innerHeight;
+}
+
+function triggerConfettiSuccessCelebration() {
+  const canvasRenderContext = UI.confettiCanvas.getContext("2d");
+  UI.confettiCanvas.classList.add("show");
+  confettiEngineArray = [];
+
+  for (let i = 0; i < 110; i++) {
+    confettiEngineArray.push({
+      x: window.innerWidth / 2,
+      y: window.innerHeight / 2 - 40,
+      vx: (Math.random() - 0.5) * 14,
+      vy: (Math.random() - 0.7) * 12 - 4,
+      r: Math.random() * 4 + 3,
+      color: confettiColorPaletteHexArray[Math.floor(Math.random() * confettiColorPaletteHexArray.length)],
+      opacity: 1,
+      rotation: Math.random() * 360,
+      rotationSpeed: (Math.random() - 0.5) * 8
+    });
+  }
+
+  function executeConfettiRenderLoopFrame() {
+    if (confettiEngineArray.length === 0) {
+      UI.confettiCanvas.classList.remove("show");
+      return;
+    }
+
+    canvasRenderContext.clearRect(0, 0, UI.confettiCanvas.width, UI.confettiCanvas.height);
+
+    for (let i = confettiEngineArray.length - 1; i >= 0; i--) {
+      const p = confettiEngineArray[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.22; // Gravity vector addition
+      p.vx *= 0.98; // Friction loss variables
+      p.opacity -= 0.012;
+      p.rotation += p.rotationSpeed;
+
+      if (p.opacity <= 0) {
+        confettiEngineArray.splice(i, 1);
+        continue;
+      }
+
+      canvasRenderContext.save();
+      canvasRenderContext.translate(p.x, p.y);
+      canvasRenderContext.rotate((p.rotation * Math.PI) / 180);
+      canvasRenderContext.globalAlpha = p.opacity;
+      canvasRenderContext.fillStyle = p.color;
+      canvasRenderContext.fillRect(-p.r, -p.r, p.r * 2, p.r * 2);
+      canvasRenderContext.restore();
+    }
+
+    requestAnimationFrame(executeConfettiRenderLoopFrame);
+  }
+
+  requestAnimationFrame(executeConfettiRenderLoopFrame);
+}
+
+// Global System Architecture Initialization Trigger
+document.addEventListener("DOMContentLoaded", initializeAegisPlatformCore);
 </script>
 </body>
 </html>

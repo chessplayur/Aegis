@@ -361,7 +361,7 @@ select:disabled{opacity:.4;cursor:not-allowed}
 .vid-header strong{font-family:var(--display);font-size:.72rem;font-weight:700;letter-spacing:.1em;color:var(--text-2)}
 .vid-header span{color:var(--text-3);font-size:.66rem;font-family:var(--mono)}
 .vid-frame{position:relative;aspect-ratio:16/9;background:#000}
-video{width:100%;height:100%;border:none;display:block}
+video,iframe#proVideo{width:100%;height:100%;border:none;display:block}
 .overlay-video{position:absolute;inset:0;mix-blend-mode:screen;opacity:.3;display:none;pointer-events:none}
 .overlay-video.show{display:block}
 
@@ -807,7 +807,7 @@ video{width:100%;height:100%;border:none;display:block}
       <div class="video-card">
         <div class="vid-header"><strong>PRO BASELINE</strong><span id="proLabel">REFERENCE MODEL</span></div>
         <div class="vid-frame">
-          <video id="proVideo" controls muted playsinline preload="metadata"></video>
+          <div id="proVideo"></div>
         </div>
       </div>
     </div>
@@ -986,29 +986,45 @@ video{width:100%;height:100%;border:none;display:block}
 // ─── Data ────────────────────────────────────────────────────────
 const PROS = {
   valorant:[
-    {id:'tenz',   name:'TenZ',       team:'Sentinels', proScores:{crosshair:94,movement:91,reaction:89,positioning:88,decision:90}},
-    {id:'demon1', name:'Demon1',     team:'EG',        proScores:{crosshair:96,movement:88,reaction:93,positioning:85,decision:87}},
-    {id:'aspas',  name:'Aspas',      team:'Leviatán',  proScores:{crosshair:92,movement:93,reaction:91,positioning:90,decision:92}},
+    {id:'tenz',   name:'TenZ',       team:'Sentinels', yt:'mlTiB02-A8U', proScores:{crosshair:94,movement:91,reaction:89,positioning:88,decision:90}},
+    {id:'demon1', name:'Demon1',     team:'EG',        yt:'rQPZC93T8lQ', proScores:{crosshair:96,movement:88,reaction:93,positioning:85,decision:87}},
+    {id:'aspas',  name:'Aspas',      team:'Leviatán',  yt:'mlTiB02-A8U', proScores:{crosshair:92,movement:93,reaction:91,positioning:90,decision:92}},
   ],
   cs2:[
-    {id:'s1mple', name:'s1mple',     team:'NAVI',      proScores:{crosshair:97,movement:90,reaction:95,positioning:93,decision:94}},
-    {id:'zywoo',  name:'ZywOo',      team:'Vitality',  proScores:{crosshair:95,movement:92,reaction:90,positioning:94,decision:95}},
-    {id:'donk',   name:'donk',       team:'Spirit',    proScores:{crosshair:93,movement:94,reaction:92,positioning:91,decision:90}},
+    {id:'s1mple', name:'s1mple',     team:'NAVI',      yt:'mKHyVnPhFtA', proScores:{crosshair:97,movement:90,reaction:95,positioning:93,decision:94}},
+    {id:'zywoo',  name:'ZywOo',      team:'Vitality',  yt:'u12JTXDRodY', proScores:{crosshair:95,movement:92,reaction:90,positioning:94,decision:95}},
+    {id:'donk',   name:'donk',       team:'Spirit',    yt:'u12JTXDRodY', proScores:{crosshair:93,movement:94,reaction:92,positioning:91,decision:90}},
   ],
   lol:[
-    {id:'faker',  name:'Faker',      team:'T1',        proScores:{crosshair:90,movement:95,reaction:94,positioning:97,decision:98}},
-    {id:'chovy',  name:'Chovy',      team:'GenG',      proScores:{crosshair:92,movement:93,reaction:91,positioning:95,decision:96}},
-    {id:'caps',   name:'Caps',       team:'G2',        proScores:{crosshair:91,movement:92,reaction:93,positioning:93,decision:94}},
+    {id:'faker',  name:'Faker',      team:'T1',        yt:'a6p8fMBbL8w', proScores:{crosshair:90,movement:95,reaction:94,positioning:97,decision:98}},
+    {id:'chovy',  name:'Chovy',      team:'GenG',      yt:'a6p8fMBbL8w', proScores:{crosshair:92,movement:93,reaction:91,positioning:95,decision:96}},
+    {id:'caps',   name:'Caps',       team:'G2',        yt:'a6p8fMBbL8w', proScores:{crosshair:91,movement:92,reaction:93,positioning:93,decision:94}},
   ],
   apex:[
-    {id:'imperialhal',name:'ImperialHal',team:'TSM',   proScores:{crosshair:88,movement:96,reaction:90,positioning:97,decision:96}},
-    {id:'genburten',  name:'Genburten',  team:'DZ',    proScores:{crosshair:93,movement:91,reaction:94,positioning:92,decision:91}},
-    {id:'zer0',       name:'Zer0',       team:'TSM',   proScores:{crosshair:90,movement:95,reaction:92,positioning:94,decision:93}},
+    {id:'imperialhal',name:'ImperialHal',team:'TSM',   yt:'UpaoivubUXA', proScores:{crosshair:88,movement:96,reaction:90,positioning:97,decision:96}},
+    {id:'genburten',  name:'Genburten',  team:'DZ',    yt:'dr_3jbmrdFY', proScores:{crosshair:93,movement:91,reaction:94,positioning:92,decision:91}},
+    {id:'zer0',       name:'Zer0',       team:'TSM',   yt:'UpaoivubUXA', proScores:{crosshair:90,movement:95,reaction:92,positioning:94,decision:93}},
   ],
 };
 const DEMO_VIDEO = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
-const PRO_VIDEO  = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4';
 const MAX_SIZE   = 500*1024*1024;
+
+// ─── YouTube IFrame API (no API key required) ────────────────────
+let ytPlayer=null, ytReady=false, pendingProId=null;
+window.onYouTubeIframeAPIReady=function(){
+  ytPlayer=new YT.Player('proVideo',{
+    playerVars:{modestbranding:1,rel:0,playsinline:1,controls:1},
+    events:{onReady:()=>{ytReady=true; if(pendingProId){loadProVideo(pendingProId); pendingProId=null;}}}
+  });
+};
+(function loadYT(){const s=document.createElement('script');s.src='https://www.youtube.com/iframe_api';document.head.appendChild(s);})();
+function loadProVideo(videoId){
+  if(!ytReady){pendingProId=videoId;return;}
+  try{ytPlayer.loadVideoById({videoId,suggestedQuality:'hd720'});ytPlayer.mute();}catch{}
+}
+function proPlay(){try{ytPlayer&&ytPlayer.playVideo&&ytPlayer.playVideo();}catch{}}
+function proPause(){try{ytPlayer&&ytPlayer.pauseVideo&&ytPlayer.pauseVideo();}catch{}}
+function proSeek(t){try{ytPlayer&&ytPlayer.seekTo&&ytPlayer.seekTo(t,true);}catch{}}
 
 // ─── State ───────────────────────────────────────────────────────
 const state = {
@@ -1082,8 +1098,8 @@ $('proSelect').addEventListener('change',e=>{
   if(state.pro){
     const proObj=PROS[state.game].find(p=>p.id===state.pro);
     $('proLabel').textContent=`${proObj.name.toUpperCase()} · ${proObj.team}`;
-    state.proSrc=PRO_VIDEO;
-    $('proVideo').src=PRO_VIDEO;
+    state.proSrc=proObj.yt;
+    loadProVideo(proObj.yt);
     log(`Pro baseline loaded: ${proObj.name}`);
   }
   refreshReadiness();
@@ -1157,13 +1173,15 @@ function launch(){
 
 // ─── Playback ────────────────────────────────────────────────────
 $('syncBtn').addEventListener('click',()=>{
-  const p=$('playerVideo'),pr=$('proVideo'),g=$('ghostVideo');
-  [p,pr].forEach(v=>{try{v.currentTime=0;v.play();}catch{}});
+  const p=$('playerVideo'),g=$('ghostVideo');
+  try{p.currentTime=0;p.play();}catch{}
+  proSeek(0);proPlay();
   if(state.ghost){try{g.currentTime=0;g.play();}catch{}}
   log('Sync playback started');
 });
 $('pauseBtn').addEventListener('click',()=>{
-  ['playerVideo','proVideo','ghostVideo'].forEach(id=>$(id).pause());
+  ['playerVideo','ghostVideo'].forEach(id=>$(id).pause());
+  proPause();
   log('Session paused');
 });
 $('ghostBtn').addEventListener('click',()=>{

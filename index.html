@@ -1,428 +1,1220 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-    <meta name="description" content="Aegis Insight — AI-powered gameplay intelligence platform"/>
-    <meta name="theme-color" content="#09090b"/>
-    <title>Aegis Insight | AI Gameplay Intelligence</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Syne:wght@700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg: #09090b;
-            --sidebar: #0c0c0e;
-            --card: #121217;
-            --border: rgba(255, 255, 255, 0.08);
-            --border-hover: rgba(255, 255, 255, 0.15);
-            --accent: #63b3ed;
-            --accent-glow: rgba(99, 179, 237, 0.3);
-            --text-main: #f4f4f5;
-            --text-dim: #a1a1aa;
-            --text-dark: #52525b;
-            --success: #4ade80;
-            --font-sans: 'Inter', sans-serif;
-            --font-display: 'Syne', sans-serif;
-            --font-mono: 'IBM Plex Mono', monospace;
-        }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            background-color: var(--bg);
-            color: var(--text-main);
-            font-family: var(--font-sans);
-            height: 100vh;
-            display: flex;
-            overflow: hidden;
-        }
+<meta charset="UTF-8"/>
 
-        /* Sidebar Navigation */
-        nav {
-            width: 260px;
-            background: var(--sidebar);
-            border-right: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            padding: 24px;
-            flex-shrink: 0;
-        }
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-family: var(--font-display);
-            font-weight: 800;
-            font-size: 1.2rem;
-            letter-spacing: -0.02em;
-            margin-bottom: 40px;
-        }
+<meta name="description" content="Aegis Insight — AI-powered gameplay intelligence platform"/>
 
-        .logo-icon {
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(135deg, var(--accent), #b794f4);
-            border-radius: 8px;
-        }
+<meta name="theme-color" content="#09090b"/>
 
-        .nav-section { margin-bottom: 32px; }
-        .nav-label {
-            font-size: 0.65rem;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--text-dark);
-            margin-bottom: 12px;
-            font-weight: 700;
-        }
+<title>Aegis Insight | AI Gameplay Intelligence</title>
 
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px;
-            border-radius: 8px;
-            color: var(--text-dim);
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: 0.2s;
-            cursor: pointer;
-        }
+<link rel="preconnect" href="https://fonts.googleapis.com">
 
-        .nav-item:hover, .nav-item.active {
-            background: rgba(255,255,255,0.05);
-            color: var(--text-main);
-        }
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-        /* Main Workspace */
-        main {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-            position: relative;
-        }
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&display=swap" rel="stylesheet">
 
-        header {
-            padding: 20px 40px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(9, 9, 11, 0.8);
-            backdrop-filter: blur(10px);
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
+<style>
 
-        .content { padding: 40px; max-width: 1400px; margin: 0 auto; width: 100%; }
+:root {
 
-        /* Grid Layout */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 24px;
-        }
+--bg: #09090b;
 
-        .card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 24px;
-            position: relative;
-        }
+--bg-1: #111116;
 
-        /* Upload Area */
-        .upload-zone {
-            border: 2px dashed var(--border);
-            border-radius: 12px;
-            padding: 60px 20px;
-            text-align: center;
-            transition: 0.3s;
-            cursor: pointer;
-            background: rgba(255,255,255,0.02);
-        }
+--bg-2: #18181f;
 
-        .upload-zone:hover {
-            border-color: var(--accent);
-            background: rgba(99, 179, 237, 0.05);
-        }
+--bg-3: #1e1e28;
 
-        /* Video Players */
-        .video-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            margin-top: 24px;
-            display: none; /* Hidden until video loaded */
-        }
+--border: rgba(255,255,255,.07);
 
-        .video-wrapper {
-            background: #000;
-            border-radius: 12px;
-            overflow: hidden;
-            aspect-ratio: 16/9;
-            border: 1px solid var(--border);
-        }
+--border-soft: rgba(255,255,255,.04);
 
-        video, iframe { width: 100%; height: 100%; border: none; }
+--border-active: rgba(99,179,237,.3);
 
-        /* Controls */
-        .controls-bar {
-            margin-top: 24px;
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
+--cyan: #63b3ed;
 
-        select, .btn {
-            background: var(--card);
-            border: 1px solid var(--border);
-            color: var(--text-main);
-            padding: 10px 16px;
-            border-radius: 8px;
-            font-family: var(--font-sans);
-            font-weight: 500;
-            cursor: pointer;
-            transition: 0.2s;
-        }
+--cyan-2: #90cdf4;
 
-        .btn-primary {
-            background: var(--accent);
-            color: #000;
-            border: none;
-            font-weight: 700;
-        }
+--cyan-dim: rgba(99,179,237,.12);
 
-        .btn-primary:hover {
-            background: #90cdf4;
-            box-shadow: 0 0 20px var(--accent-glow);
-        }
+--purple: #b794f4;
 
-        /* Metrics */
-        .metrics-list {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
+--purple-dim: rgba(183,148,244,.12);
 
-        .metric-item {
-            background: rgba(255,255,255,0.03);
-            padding: 16px;
-            border-radius: 12px;
-            border-left: 3px solid var(--accent);
-        }
+--green: #68d391;
 
-        .metric-label { font-size: 0.75rem; color: var(--text-dim); margin-bottom: 4px; }
-        .metric-value { font-family: var(--font-mono); font-size: 1.2rem; font-weight: 600; }
+--green-dim: rgba(104,211,145,.1);
 
-        /* Hidden inputs */
-        #fileInput { display: none; }
+--red: #fc8181;
 
-        .status-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 4px 12px;
-            background: rgba(74, 222, 128, 0.1);
-            color: var(--success);
-            border-radius: 99px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
+--yellow: #f6e05e;
 
-        .live-pulse {
-            width: 8px;
-            height: 8px;
-            background: var(--success);
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
+--orange: #f6ad55;
 
-        @keyframes pulse {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7); }
-            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(74, 222, 128, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
-        }
-    </style>
-</head>
-<body>
+--text: #f7fafc;
 
-    <nav>
-        <div class="logo">
-            <div class="logo-icon"></div>
-            AEGIS
-        </div>
+--text-2: #a0aec0;
 
-        <div class="nav-section">
-            <div class="nav-label">Core Engine</div>
-            <a class="nav-item active">● Dashboard</a>
-            <a class="nav-item">◈ Pro Library</a>
-            <a class="nav-item">◮ Neural Assets</a>
-        </div>
+--text-3: #718096;
 
-        <div class="nav-section">
-            <div class="nav-label">Historical Data</div>
-            <div id="sessionHistory" class="nav-item" style="font-size: 0.8rem; color: var(--text-dark);">
-                No recent sessions
-            </div>
-        </div>
-    </nav>
+--mono: "IBM Plex Mono",monospace;
 
-    <main>
-        <header>
-            <div class="status-pill">
-                <div class="live-pulse"></div>
-                SYSTEMS OPERATIONAL
-            </div>
-            <div style="color: var(--text-dim); font-size: 0.85rem;">Neural Core v4.82</div>
-        </header>
+--sans: "DM Sans",sans-serif;
 
-        <div class="content">
-            <div class="dashboard-grid">
-                
-                <div class="workspace">
-                    <div class="card">
-                        <h2 style="font-family: var(--font-display); margin-bottom: 8px;">Analysis Studio</h2>
-                        <p style="color: var(--text-dim); font-size: 0.9rem; margin-bottom: 24px;">
-                            Upload your gameplay clip to compare against Radiant/S-Tier benchmarks.
-                        </p>
+--display: "Syne",sans-serif;
 
-                        <div class="upload-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
-                            <span style="font-size: 2rem;">📤</span>
-                            <h3 style="margin: 12px 0 4px;">Select Gameplay Clip</h3>
-                            <p style="color: var(--text-dark); font-size: 0.8rem;">Supports MP4, WebM up to 4K 60fps</p>
-                            <input type="file" id="fileInput" accept="video/*">
-                        </div>
+--radius: 12px;
 
-                        <div class="video-container" id="videoContainer">
-                            <div class="video-wrapper">
-                                <video id="userVideo" controls></video>
-                                <div style="padding:8px; font-size: 0.7rem; color: var(--text-dim)">LOCAL UPLOAD</div>
-                            </div>
-                            <div class="video-wrapper">
-                                <div id="youtubePlayer"></div>
-                                <div style="padding:8px; font-size: 0.7rem; color: var(--text-dim)">PRO REFERENCE</div>
-                            </div>
-                        </div>
+--radius-lg: 16px;
 
-                        <div class="controls-bar">
-                            <select id="gameSelect">
-                                <option value="valorant">Valorant (Radiant Pro)</option>
-                                <option value="cs2">CS2 (S-Tier Major)</option>
-                                <option value="apex">Apex Legends (ALGS)</option>
-                            </select>
-                            <button class="btn btn-primary" id="analyzeBtn" disabled>START AI ANALYSIS</button>
-                        </div>
-                    </div>
-                </div>
+--radius-xl: 20px;
 
-                <div class="sidebar-info">
-                    <div class="card" style="margin-bottom: 24px;">
-                        <h3 style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-dark); margin-bottom: 16px;">Live Telemetry</h3>
-                        <div class="metrics-list">
-                            <div class="metric-item">
-                                <div class="metric-label">Convergence Index</div>
-                                <div class="metric-value" id="convergenceVal">0.00%</div>
-                            </div>
-                            <div class="metric-item">
-                                <div class="metric-label">Reaction Latency</div>
-                                <div class="metric-value" id="latencyVal">-- ms</div>
-                            </div>
-                            <div class="metric-item">
-                                <div class="metric-label">Crosshair Stability</div>
-                                <div class="metric-value" id="stabilityVal">Ready</div>
-                            </div>
-                        </div>
-                    </div>
+--shadow: 0 1px 3px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.25);
 
-                    <div class="card">
-                        <h3 style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-dark); margin-bottom: 12px;">AI Insights</h3>
-                        <p id="aiLog" style="font-size: 0.85rem; color: var(--text-dim); line-height: 1.5;">
-                            Waiting for input stream... Select a video file to begin neural processing.
-                        </p>
-                    </div>
-                </div>
+--shadow-sm: 0 1px 2px rgba(0,0,0,.3);
 
-            </div>
-        </div>
-    </main>
+}
 
-    <script>
-        const fileInput = document.getElementById('fileInput');
-        const userVideo = document.getElementById('userVideo');
-        const videoContainer = document.getElementById('videoContainer');
-        const dropZone = document.getElementById('dropZone');
-        const analyzeBtn = document.getElementById('analyzeBtn');
-        const gameSelect = document.getElementById('gameSelect');
-        const youtubePlayer = document.getElementById('youtubePlayer');
+*{margin:0;padding:0;box-sizing:border-box}
 
-        // Reference Video Database (Simulated API Mapping)
-        const proClips = {
-            valorant: 'https://www.youtube.com/embed/S_8qjDkH9_M?autoplay=1&mute=1&controls=0',
-            cs2: 'https://www.youtube.com/embed/5-mZ0-G_9jY?autoplay=1&mute=1&controls=0',
-            apex: 'https://www.youtube.com/embed/v9i8qT8u0E0?autoplay=1&mute=1&controls=0'
-        };
+html{scroll-behavior:smooth}
 
-        // Handle File Selection
-        fileInput.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const url = URL.createObjectURL(file);
-                userVideo.src = url;
-                
-                // Show Interface
-                dropZone.style.display = 'none';
-                videoContainer.style.display = 'grid';
-                analyzeBtn.disabled = false;
-                
-                document.getElementById('aiLog').innerText = "File loaded. Ready for sync. AI models calibrated for " + gameSelect.options[gameSelect.selectedIndex].text;
-            }
-        });
+body{
 
-        // Run AI Analysis Simulation
-        analyzeBtn.addEventListener('click', function() {
-            analyzeBtn.innerText = "PROCESSING...";
-            analyzeBtn.disabled = true;
+min-height:100vh;overflow-x:hidden;
 
-            // Load Pro Reference based on game
-            const selectedGame = gameSelect.value;
-            youtubePlayer.innerHTML = `<iframe src="${proClips[selectedGame]}" allow="autoplay"></iframe>`;
+color:var(--text);font-family:var(--sans);
 
-            // Simulate Data Generation
-            let progress = 0;
-            const interval = setInterval(() => {
-                progress += Math.random() * 15;
-                
-                if (progress >= 100) {
-                    clearInterval(interval);
-                    finalizeAnalysis();
-                } else {
-                    document.getElementById('convergenceVal').innerText = progress.toFixed(2) + "%";
-                    document.getElementById('latencyVal').innerText = (140 + Math.random() * 20).toFixed(0) + "ms";
-                }
-            }, 300);
-        });
+background:var(--bg);
 
-        function finalizeAnalysis() {
-            analyzeBtn.innerText = "ANALYSIS COMPLETE";
-            document.getElementById('convergenceVal').style.color = "var(--success)";
-            document.getElementById('aiLog').innerHTML = "<strong>Result:</strong> Your movement patterns show a 84% correlation with Pro Tier positioning. Focus on 'Crosshair Micro-adjustments' during entry fragging.";
-            
-            // Log to sidebar
-            const history = document.getElementById('sessionHistory');
-            history.innerHTML = `<div style="color:var(--accent)">Session_${Math.floor(Math.random()*1000)} - 84% Score</div>`;
-        }
+font-size:14px;
 
-        // Drag and Drop support
-        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.style.borderColor = "var(--accent)"; });
-        dropZone.addEventListener('dragleave', () => { dropZone.style.borderColor = "var(--border)"; });
-        dropZone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            fileInput.files = e.dataTransfer.files;
-            fileInput.dispatchEvent(new Event('change'));
-        });
-    </script>
-</body>
-</html>
+line-height:1.6;
+
+}
+
+body::before{
+
+content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+
+opacity:.018;
+
+background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+
+background-size:256px 256px;
+
+}
+
+body::after{
+
+content:"";position:fixed;top:0;left:50%;transform:translateX(-50%);
+
+width:600px;height:1px;
+
+background:linear-gradient(90deg,transparent,rgba(99,179,237,.25),transparent);
+
+pointer-events:none;z-index:1;
+
+}
+
+.container{max-width:1600px;margin:auto;padding:24px 28px;position:relative;z-index:1}
+
+
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+@keyframes flow{0%{left:-40%;opacity:0}15%{opacity:1}85%{opacity:1}100%{left:110%;opacity:0}}
+
+.fade-up{animation:fadeUp .5s ease both}
+
+.d1{animation-delay:.06s}.d2{animation-delay:.12s}.d3{animation-delay:.18s}
+
+
+
+.nav{
+
+display:flex;align-items:center;justify-content:space-between;
+
+margin-bottom:28px;gap:16px;flex-wrap:wrap;
+
+padding-bottom:20px;
+
+border-bottom:1px solid var(--border);
+
+}
+
+.brand{display:flex;align-items:center;gap:14px}
+
+.brand-mark{
+
+width:36px;height:36px;border-radius:99px;
+
+background:var(--bg-2);border:1px solid var(--border);
+
+display:flex;align-items:center;justify-content:center;
+
+font-size:16px;flex-shrink:0;
+
+}
+
+.brand-text h1{
+
+font-family:var(--display);font-size:1.05rem;font-weight:700;
+
+letter-spacing:.08em;color:var(--text);line-height:1;
+
+}
+
+.brand-text p{color:var(--text-3);font-size:.72rem;margin-top:2px}
+
+.nav-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+
+.badge{
+
+display:inline-flex;align-items:center;gap:6px;
+
+padding:5px 11px;border-radius:999px;font-size:.7rem;
+
+background:var(--bg-2);border:1px solid var(--border);
+
+color:var(--text-2);letter-spacing:.04em;font-family:var(--display);font-weight:600;
+
+}
+
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+
+.btn-nav{
+
+padding:6px 14px;border-radius:8px;border:1px solid var(--border);
+
+background:var(--bg-2);color:var(--text-2);font-size:.75rem;
+
+font-family:var(--display);font-weight:600;cursor:pointer;transition:.15s;
+
+}
+
+.btn-nav:hover{border-color:rgba(255,255,255,.14);color:var(--text);background:var(--bg-3)}
+
+
+
+.hero{display:grid;grid-template-columns:1.3fr .7fr;gap:24px;margin-bottom:20px}
+
+.hero-main{
+
+background:var(--bg-1);border:1px solid var(--border);
+
+border-radius:var(--radius-lg);padding:36px 40px;position:relative;overflow:hidden;
+
+}
+
+.hero-eyebrow{
+
+display:inline-flex;align-items:center;gap:7px;
+
+font-size:.68rem;font-family:var(--display);font-weight:600;letter-spacing:.12em;
+
+color:var(--cyan);margin-bottom:18px;
+
+background:var(--cyan-dim);border:1px solid rgba(99,179,237,.2);
+
+padding:4px 11px;border-radius:999px;
+
+}
+
+.hero-eyebrow::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--cyan)}
+
+.hero-main h2{font-family:var(--display);font-size:2.6rem;font-weight:800;line-height:1.08;margin-bottom:14px}
+
+.hero-main h2 em{
+
+font-style:normal;background:linear-gradient(90deg,var(--cyan-2),var(--purple));
+
+-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+
+}
+
+.hero-main p{color:var(--text-2);line-height:1.75;font-size:.9rem;max-width:560px}
+
+.hero-kpis{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px}
+
+.kpi{padding:12px 16px;border-radius:10px;background:var(--bg-2);border:1px solid var(--border-soft);min-width:130px}
+
+.kpi-val{font-family:var(--mono);font-size:1.35rem;font-weight:600;color:var(--text);display:block;margin-bottom:4px}
+
+.kpi-lbl{color:var(--text-3);font-size:.68rem;font-family:var(--display);font-weight:600}
+
+.hero-aside{display:grid;gap:10px;align-content:start}
+
+.info-card{background:var(--bg-1);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 20px}
+
+.info-card-title{font-family:var(--display);font-size:.68rem;font-weight:700;letter-spacing:.12em;color:var(--text-3);margin-bottom:12px}
+
+.info-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border-soft);font-size:.8rem}
+
+.info-row:last-child{border-bottom:none;padding-bottom:0}
+
+.info-row span:first-child{color:var(--text-2)}
+
+.tag-badge{
+
+font-size:.62rem;padding:3px 8px;border-radius:999px;font-weight:700;
+
+font-family:var(--display);background:var(--green-dim);color:var(--green);border:1px solid rgba(104,211,145,.2);
+
+}
+
+
+
+.section-card{background:var(--bg-1);border:1px solid var(--border);border-radius:var(--radius-lg);margin-bottom:20px;box-shadow:var(--shadow)}
+
+.section-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding:20px 24px 0}
+
+.section-title{font-family:var(--display);font-size:.68rem;font-weight:700;letter-spacing:.14em;color:var(--text-3)}
+
+.section-sub{font-family:var(--display);font-size:.95rem;font-weight:700;color:var(--text);margin-top:3px}
+
+.pipeline-legend{display:flex;gap:16px;align-items:center}
+
+.leg{display:flex;align-items:center;gap:6px;font-size:.7rem;color:var(--text-3);font-family:var(--display);font-weight:600}
+
+.leg-dot{width:7px;height:7px;border-radius:50%}
+
+.leg-dot.active{background:var(--cyan)}
+
+.leg-dot.done{background:var(--green)}
+
+.leg-dot.wait{background:rgba(255,255,255,.15)}
+
+.pipeline-flow{display:flex;align-items:center;padding:24px;overflow-x:auto}
+
+.pipe-step{display:flex;flex-direction:column;align-items:center;gap:10px;min-width:140px;flex:1;max-width:180px}
+
+.pipe-box{
+
+width:100%;border-radius:var(--radius);background:var(--bg-2);border:1px solid var(--border);
+
+padding:18px 12px;display:flex;flex-direction:column;align-items:center;gap:8px;transition:.3s ease;
+
+}
+
+.pipe-box.active{border-color:var(--cyan);box-shadow:0 0 12px rgba(99,179,237,.15)}
+
+.pipe-box.done{border-color:var(--green)}
+
+.pipe-icon{font-size:1.6rem}
+
+.pipe-name{font-family:var(--display);font-size:.78rem;font-weight:700;text-align:center}
+
+.pipe-sub{font-size:.67rem;color:var(--text-3);text-align:center}
+
+.pipe-badge{
+
+font-size:.6rem;font-family:var(--display);font-weight:700;
+
+padding:2px 8px;border-radius:999px;background:var(--bg-3);border:1px solid var(--border);color:var(--text-3);
+
+}
+
+.pipe-box.active .pipe-badge{background:var(--cyan-dim);border-color:var(--cyan);color:var(--cyan)}
+
+.pipe-box.done .pipe-badge{background:var(--green-dim);border-color:var(--green);color:var(--green)}
+
+.pipe-arrow{width:40px;height:1px;background:var(--border);position:relative;margin-bottom:26px;flex-shrink:0}
+
+.pipe-arrow::after{content:"";position:absolute;top:0;left:0;height:1px;width:35%;background:linear-gradient(90deg,var(--cyan),transparent);animation:flow 2.2s linear infinite}
+
+
+
+.dashboard{display:grid;grid-template-columns:1fr 340px;gap:20px}
+
+.main-panel{background:var(--bg-1);border:1px solid var(--border);border-radius:var(--radius-lg)}
+
+.panel-head{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+
+.panel-label{font-family:var(--display);font-size:.66rem;font-weight:700;letter-spacing:.14em;color:var(--text-3)}
+
+.panel-title{font-family:var(--display);font-size:.92rem;font-weight:700;color:var(--text);margin-top:2px}
+
+
+
+.upload-area{padding:24px}
+
+.upload-row{display:grid;grid-template-columns:1fr 100px 1fr;gap:20px;align-items:center}
+
+.drop-zone{
+
+min-height:230px;border-radius:var(--radius-lg);border:1.5px dashed var(--border);
+
+background:var(--bg-2);display:flex;flex-direction:column;align-items:center;justify-content:center;
+
+padding:24px;text-align:center;gap:10px;transition:.2s ease;cursor:pointer;
+
+}
+
+.drop-zone:hover{border-color:var(--cyan);background:var(--bg-3)}
+
+.drop-icon{width:44px;height:44px;border-radius:11px;background:var(--bg-3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.3rem}
+
+.drop-title{font-family:var(--display);font-size:.88rem;font-weight:700}
+
+.drop-sub{color:var(--text-3);font-size:.75rem;max-width:240px}
+
+.btn-row{display:flex;gap:8px;margin-top:10px}
+
+.btn{font-family:var(--display);font-weight:700;font-size:.78rem;cursor:pointer;border:none;border-radius:8px;padding:9px 16px;transition:.15s}
+
+.btn-primary{background:var(--cyan);color:#0a1628}
+
+.btn-primary:hover{background:var(--cyan-2)}
+
+.btn-ghost{background:var(--bg-3);color:var(--text-2);border:1px solid var(--border)}
+
+.btn-ghost:hover{border-color:rgba(255,255,255,.12);color:var(--text)}
+
+
+
+.launch-wrap{display:flex;justify-content:center}
+
+.launch-btn{
+
+width:84px;height:84px;border-radius:50%;border:none;
+
+background:linear-gradient(135deg,var(--cyan),var(--purple));
+
+color:#fff;font-size:1.8rem;cursor:pointer;transition:.3s ease;
+
+display:flex;align-items:center;justify-content:center;
+
+}
+
+.launch-btn:hover:not(:disabled){transform:scale(1.08);box-shadow:0 0 24px rgba(99,179,237,.3)}
+
+.launch-btn:disabled{opacity:.25;cursor:not-allowed}
+
+
+
+.config-panel{display:flex;flex-direction:column;gap:14px}
+
+.field-label{font-family:var(--display);font-size:.68rem;font-weight:700;color:var(--text-3);margin-bottom:6px}
+
+select{
+
+width:100%;background:var(--bg-2);color:var(--text);border:1px solid var(--border);
+
+border-radius:9px;padding:10px 12px;outline:none;appearance:none;cursor:pointer;
+
+background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%23718096' stroke-width='1.5' d='m6 8 4 4 4-4'/%3E%3C/svg%3E");
+
+background-repeat:no-repeat;background-position:right 10px center;background-size:16px;padding-right:32px;
+
+}
+
+.status-msg{padding:10px 13px;border-radius:9px;font-size:.75rem;background:var(--bg-2);border:1px solid var(--border);color:var(--text-3)}
+
+.status-msg.ready{color:var(--green);border-color:rgba(104,211,145,.25)}
+
+
+
+.workspace{display:none;grid-template-columns:1fr;gap:16px;padding:0 24px 20px}
+
+.workspace.show{display:grid}
+
+.video-card{border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);background:var(--bg-2)}
+
+.vid-header{display:flex;justify-content:space-between;align-items:center;padding:11px 14px;border-bottom:1px solid var(--border)}
+
+.vid-header strong{font-family:var(--display);font-size:.72rem;color:var(--text-2)}
+
+.vid-frame{position:relative;aspect-ratio:16/9;background:#000}
+
+iframe#proVideo{width:100%;height:100%;border:none;display:block}
+
+
+
+.toolbar{display:flex;gap:8px;padding:12px 24px 20px}
+
+.tool-btn{
+
+flex:1;padding:10px 12px;border-radius:9px;background:var(--bg-2);border:1px solid var(--border);
+
+color:var(--text-2);cursor:pointer;font-family:var(--display);font-size:.72rem;font-weight:700;
+
+display:flex;align-items:center;justify-content:center;gap:6px;transition:.15s;
+
+}
+
+.tool-btn:hover:not(:disabled){background:var(--bg-3);color:var(--text)}
+
+.tool-btn.active{border-color:var(--cyan);background:var(--cyan-dim);color:var(--cyan)}
+
+
+
+.metrics-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 24px 16px}
+
+.metric-tile{border-radius:var(--radius);background:var(--bg-2);border:1px solid var(--border-soft);padding:16px 18px}
+
+.metric-tile-label{font-family:var(--display);font-size:.64rem;font-weight:700;color:var(--text-3);margin-bottom:8px}
+
+.metric-val{font-family:var(--mono);font-size:1.8rem;font-weight:600;color:var(--text);margin-bottom:8px;line-height:1}
+
+.bar-track{height:5px;background:rgba(255,255,255,.07);border-radius:999px;overflow:hidden;margin-bottom:8px}
+
+.bar-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--cyan),var(--cyan-2));transition:1s ease}
+
+.metric-note{font-size:.72rem;color:var(--text-3)}
+
+
+
+.report{margin:0 24px 24px;border-radius:var(--radius-lg);background:var(--bg-2);border:1px solid var(--border);padding:24px;display:none}
+
+.report.show{display:block}
+
+.report-top{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap;margin-bottom:22px;padding-bottom:22px;border-bottom:1px solid var(--border)}
+
+.score{font-family:var(--mono);font-size:3.5rem;font-weight:600;line-height:1;background:linear-gradient(90deg,var(--cyan-2),#c4b5fd);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+
+.tier-pill{padding:5px 13px;border-radius:999px;font-size:.68rem;font-weight:700;font-family:var(--display);background:var(--cyan-dim);color:var(--cyan);border:1px solid rgba(99,179,237,.3)}
+
+.summary-box{flex:1;min-width:240px;max-width:380px;background:var(--bg-3);border:1px solid var(--border-soft);border-radius:var(--radius);padding:16px}
+
+.summary-box h5{font-family:var(--display);font-size:.68rem;color:var(--cyan);margin-bottom:8px}
+
+.summary-box p{color:var(--text-2);font-size:.78rem}
+
+
+
+.delta-table{width:100%;border-collapse:collapse;margin-bottom:20px}
+
+.delta-table th{font-family:var(--display);font-size:.64rem;color:var(--text-3);padding:7px 10px;text-align:left;border-bottom:1px solid var(--border)}
+
+.delta-table td{padding:10px 10px;font-size:.78rem;border-bottom:1px solid rgba(255,255,255,.03)}
+
+.delta-pos{color:var(--green);font-family:var(--mono)}
+
+
+
+.sidebar{display:flex;flex-direction:column;gap:14px}
+
+.side-card{background:var(--bg-1);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 20px}
+
+.side-title{font-family:var(--display);font-size:.68rem;font-weight:700;color:var(--text-3);margin-bottom:16px;display:flex;align-items:center;gap:7px}
+
+.side-title::before{content:"";width:3px;height:12px;background:var(--cyan);border-radius:2px}
+
+.session-item{padding:12px;border-radius:9px;background:var(--bg-2);border:1px solid var(--border-soft);margin-bottom:8px;cursor:pointer;transition:.15s}
+
+.session-item:hover{border-color:var(--cyan);transform:translateX(2px)}
+
+.session-item strong{display:block;font-size:.8rem;color:var(--text-2)}
+
+.session-score{display:inline-block;margin-top:5px;padding:2px 8px;background:var(--cyan-dim);color:var(--cyan);border-radius:999px;font-size:.62rem;font-family:var(--mono)}
+
+.empty{color:var(--text-3);font-size:.75rem;text-align:center;padding:14px 0}
+
+
+
+.progress-overlay{
+
+position:fixed;inset:0;background:rgba(9,9,11,.9);backdrop-filter:blur(12px);z-index:999;
+
+display:none;align-items:center;justify-content:center;flex-direction:column;gap:18px;
+
+}
+
+.progress-overlay.show{display:flex}
+
+.progress-ring{width:56px;height:56px;border-radius:50%;border:2px solid rgba(99,179,237,.15);border-top-color:var(--cyan);animation:spin .9s linear infinite}
+
+.progress-label{font-family:var(--display);font-size:.78rem;font-weight:700;color:var(--cyan)}
+
+.progress-track{width:240px;height:3px;background:rgba(255,255,255,.06);border-radius:999px;overflow:hidden}
+
+.progress-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--cyan),var(--purple));transition:.35s ease}
+
+
+
+.modal-backdrop{position:fixed;inset:0;background:rgba(9,9,11,.75);backdrop-filter:blur(8px);z-index:1100;display:none;align-items:center;justify-content:center;padding:20px}
+
+.modal-backdrop.show{display:flex}
+
+.modal{background:var(--bg-1);border:1px solid var(--border);border-radius:var(--radius-xl);padding:28px;max-width:460px;width:100%}
+
+.modal h3{font-family:var(--display);font-size:1rem;color:var(--text);margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+
+.shortcuts-grid{display:grid;grid-template-columns:auto 1fr;gap:9px 14px;align-items:center}
+
+.key{font-family:var(--mono);font-size:.72rem;background:var(--bg-2);border:1px solid var(--border);border-radius:5px;padding:4px 9px}
+
+
+
+.toast{
+
+position:fixed;bottom:22px;right:22px;padding:11px 16px;border-radius:10px;background:var(--bg-1);border:1px solid var(--border);
+
+color:var(--text-2);transform:translateY(12px);opacity:0;pointer-events:none;transition:.25s;z-index:1200;font-size:.78rem;
+
+}
+
+.toast.show{opacity:1;transform:none}
+
+.toast.ok{color:var(--green);border-color:rgba(104,211,145,.25)}
+
+
+
+#confettiCanvas{position:fixed;inset:0;pointer-events:none;z-index:1300;opacity:0;transition:opacity .25s}
+
+#confettiCanvas.show{opacity:1}
+
+.footer{margin-top:20px;text-align:center;padding:16px;border-top:1px solid var(--border);font-size:.7rem;color:var(--text-3)}
+
+
+
+@media(max-width:1000px){
+
+.hero,.upload-row,.workspace.show,.metrics-grid{grid-template-columns:1fr}
+
+}
+
+
+
+
+
+
+🛡
+
+
+
+
+
+
+
+AEGIS INSIGHT
+
+
+
+
+AI gameplay intelligence platform
+
+
+
+
+
+
+
+LIVE ANALYTICS
+
+
+
+
+Neural Engine v4.8
+
+
+
+⌨ Shortcuts
+
+
+
+
+
+
+AI-powered professional benchmarking
+
+
+
+
+Analyze your gameplay against professional players
+
+
+
+
+Aegis Insight compares player mechanics, movement patterns, positioning, reaction timing, and combat efficiency against professional-level gameplay footage.
+
+
+
+
+
+
+
+97.2%Pattern Accuracy
+
+
+
+
+14msFrame Sync Latency
+
+
+
+
+120+Pro Data Models
+
+
+
+
+0Your Sessions
+
+
+
+
+
+
+
+
+
+
+AI ANALYSIS ENGINE
+
+
+
+
+Crosshair Placement ModelACTIVE
+
+
+
+
+Reaction Timing AnalyzerACTIVE
+
+
+
+
+
+
+
+
+
+
+SUPPORTED TITLES
+
+
+
+
+ValorantPRO READY
+
+
+
+
+Counter-Strike 2PRO READY
+
+
+
+
+
+
+
+
+
+
+
+
+NEURAL ANALYSIS PIPELINE
+
+
+
+
+How Aegis Insight processes your gameplay
+
+
+
+
+
+
+
+
+
+
+Processing
+
+
+
+
+Complete
+
+
+
+
+Pending
+
+
+
+
+
+
+
+
+
+
+
+
+
+📁
+
+
+
+
+VIDEO INPUT
+
+
+
+
+MP4 · MOV · WEBM
+
+
+
+
+WAITING
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+🎬
+
+
+
+
+FRAME SYNC
+
+
+
+
+60fps alignment
+
+
+
+
+PENDING
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+🧠
+
+
+
+
+AI PATTERN
+
+
+
+
+Neural vectors
+
+
+
+
+PENDING
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+⚡
+
+
+
+
+PRO COMPARE
+
+
+
+
+120+ models
+
+
+
+
+PENDING
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+WORKSPACE CONTROLS
+
+
+
+
+Video Telemetry Processing Studio
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+📤
+
+
+
+
+Click to browse or drop video files here
+
+
+
+
+Supports high framerate competitive captures up to 4K resolution
+
+
+
+
+
+
+⚡ Run Live Sample Session
+
+
+
+
+
+
+
+
+
+
+▶
+
+
+
+
+
+
+
+
+
+
+BENCHMARK MODEL TARGET
+
+
+Valorant (Radiant Pro Dataset)
+
+Counter-Strike 2 (S-Tier Major Dataset)
+
+
+
+
+
+
+Neural engine calibrated and optimized for active profiles.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+WORKSPACE ACTIVE
+
+SYNCHRONIZED DEEPSTREAM
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+📊 Realtime Vector Feed
+
+🎯 Placement Mapping
+
+
+
+
+
+
+
+
+
+
+
+
+
+AI PRO CONVERGENCE INDEX
+
+
+
+
+0.0%
+
+
+
+
+
+
+
+Measures macro movement path delta against professional positioning indexes.
+
+
+
+
+
+
+
+
+
+
+REACTION LATENCY RATIO
+
+
+
+
+0ms
+
+
+
+
+
+
+
+Dynamic frame interval timestamp calculation from event trigger to input registration.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+0
+
+
+
+
+OVERALL MECHANICAL SCORE
+
+
+
+
+
+
+
+PROCESSING
+
+
+
+
+
+
+
+AI COGNITIVE INSIGHT
+
+
+
+
+Session data indicates excellent recovery control loops but systemic crosshair placement layout variance.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+METRIC SYSTEM
+
+YOUR METRIC
+
+PRO PERFORMANCE BASELINE
+
+VARIANCE DELTA
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+HISTORICAL REPORT SESSIONS
+
+
+
+
+
+
+
+No historical data recorded in local workspace cache.
+
+
+
+
+
+
+
+
+
+© 2026 Aegis Insight Systems Inc. Powered by Neural Core Engine v4.8.
+
+
+
+PROCESSING INPUT
+
+Syncing timeline frames with global telemetry data tables...
+
+
+
+
+
+
+WORKFLOW ENVIRONMENT SHORTCUTS
+
+
+
+
+
+
+DInstantly load profile demo streams
+
+SpaceInitialize system vector computations
+
+EscDismiss open modal dialog menus
+
+
+
+
+Close Shortcuts View
+
+
+
+Engine update notification registered successfully. 
+

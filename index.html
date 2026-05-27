@@ -12,249 +12,477 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
 <style>
 :root{
-  --bg:#050816; --bg2:#0b1026;
-  --surface:rgba(14,19,45,.82); --surface-solid:#101735; --card:#121935;
-  --border:rgba(0,247,255,.12);
-  --cyan:#00f7ff; --cyan-soft:rgba(0,247,255,.15);
-  --purple:#8f5cff; --purple-soft:rgba(143,92,255,.15);
-  --green:#35ff88; --red:#ff5370; --yellow:#ffc857;
-  --text:#ecf3ff; --muted:#95a2c7;
-  --shadow:0 20px 60px rgba(0,0,0,.45);
-  --radius:18px;
+  --bg:#050816; --bg2:#0b1026; --bg3:#0d1330;
+  --surface:rgba(14,19,45,.88); --surface-solid:#101735; --card:#121935;
+  --border:rgba(0,247,255,.12); --border-glow:rgba(0,247,255,.25);
+  --cyan:#00f7ff; --cyan-bright:#5cf8ff; --cyan-soft:rgba(0,247,255,.15);
+  --turquoise:#00d4aa; --turquoise-soft:rgba(0,212,170,.15);
+  --amber:#ffc857; --amber-soft:rgba(255,200,87,.15);
+  --green:#35ff88; --green-soft:rgba(53,255,136,.12);
+  --red:#ff5370; --red-soft:rgba(255,83,112,.12);
+  --orange:#ff9f43; --orange-soft:rgba(255,159,67,.12);
+  --text:#ecf3ff; --muted:#95a2c7; --muted-dark:#6b7a9e;
+  --shadow:0 20px 60px rgba(0,0,0,.5); --shadow-lg:0 30px 80px rgba(0,0,0,.6);
+  --radius:18px; --radius-sm:12px; --radius-lg:24px;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{
   min-height:100vh; overflow-x:hidden; color:var(--text);
-  font-family:"Inter",sans-serif;
+  font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   background:
-    radial-gradient(circle at top left, rgba(0,247,255,.12), transparent 35%),
-    radial-gradient(circle at top right, rgba(143,92,255,.12), transparent 35%),
-    linear-gradient(180deg,#040611 0%,#090d1d 100%);
+    radial-gradient(ellipse 80% 60% at 10% 5%, rgba(0,247,255,.08), transparent 50%),
+    radial-gradient(ellipse 60% 50% at 90% 10%, rgba(0,212,170,.06), transparent 50%),
+    linear-gradient(180deg,#040611 0%,#080c1a 50%,#0a0f22 100%);
 }
 body::before{
   content:""; position:fixed; inset:0; pointer-events:none; z-index:-1;
   background-image:
-    linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);
-  background-size:40px 40px;
+    linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+  background-size:48px 48px;
+  mask-image:radial-gradient(ellipse 100% 100% at 50% 0%, black 0%, transparent 70%);
 }
-.mono{font-family:"JetBrains Mono",monospace}
-.container{max-width:1600px;margin:auto;padding:28px}
+body::after{
+  content:""; position:fixed; bottom:0; left:0; right:0; height:400px;
+  pointer-events:none; z-index:-1;
+  background:linear-gradient(to top, rgba(0,247,255,.03), transparent);
+}
+.mono{font-family:"JetBrains Mono","SF Mono",monospace}
+.container{max-width:1680px;margin:auto;padding:24px}
 
-/* NAV */
-.navbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;gap:20px;flex-wrap:wrap}
+/* === NAVBAR === */
+.navbar{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:24px;gap:16px;flex-wrap:wrap;
+  padding:16px 24px;
+  background:rgba(10,15,35,.6);
+  border:1px solid rgba(255,255,255,.05);
+  border-radius:var(--radius-lg);
+  backdrop-filter:blur(20px);
+}
 .brand{display:flex;align-items:center;gap:16px}
 .brand-logo{
-  width:52px;height:52px;border-radius:14px;
-  background:linear-gradient(135deg,rgba(0,247,255,.25),rgba(143,92,255,.25));
-  border:1px solid rgba(255,255,255,.08);
+  width:54px;height:54px;border-radius:16px;
+  background:linear-gradient(135deg,rgba(0,247,255,.2),rgba(0,212,170,.15));
+  border:1px solid rgba(0,247,255,.2);
   display:flex;align-items:center;justify-content:center;
-  box-shadow:0 0 35px rgba(0,247,255,.15);
+  box-shadow:0 0 40px rgba(0,247,255,.12), inset 0 0 20px rgba(0,247,255,.08);
+  position:relative;overflow:hidden;
+  transition:transform .3s ease, box-shadow .3s ease;
+}
+.brand-logo:hover{transform:scale(1.05);box-shadow:0 0 50px rgba(0,247,255,.18)}
+.brand-logo::before{
+  content:"";position:absolute;inset:-25%;
+  background:conic-gradient(from 0deg,transparent 0% 40%,rgba(0,247,255,.5) 50%,transparent 60%);
+  animation:logoSpin 6s linear infinite;
+}
+.brand-logo span{position:relative;z-index:2;font-size:1.4rem}
+@keyframes logoSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.brand-text h1{font-size:1.5rem;font-weight:800;letter-spacing:.12em;color:var(--cyan);text-shadow:0 0 20px rgba(0,247,255,.3)}
+.brand-text p{color:var(--muted);font-size:.8rem;margin-top:2px;letter-spacing:.02em}
+.nav-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.nav-pill{
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);
+  color:var(--muted);padding:10px 16px;border-radius:999px;font-size:.75rem;
+  display:flex;align-items:center;gap:8px;backdrop-filter:blur(10px);
+  transition:all .2s ease;font-weight:500;
+}
+.nav-pill:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.12)}
+.live-dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 12px var(--green);animation:pulse 2s infinite}
+.nav-btn{
+  background:transparent;border:1px solid rgba(255,255,255,.1);color:var(--muted);
+  padding:10px 18px;border-radius:10px;font-size:.8rem;font-weight:600;
+  cursor:pointer;transition:all .2s ease;font-family:inherit;
+}
+.nav-btn:hover{background:rgba(255,255,255,.06);border-color:rgba(0,247,255,.3);color:var(--cyan)}
+
+/* === HERO === */
+.hero{
+  position:relative;overflow:hidden;border-radius:var(--radius-lg);
+  background:linear-gradient(145deg,rgba(0,247,255,.06),rgba(0,212,170,.04),rgba(255,200,87,.03));
+  border:1px solid rgba(255,255,255,.06);
+  padding:36px;margin-bottom:24px;box-shadow:var(--shadow-lg);
+}
+.hero::before{
+  content:"";position:absolute;top:0;left:0;right:40%;height:100%;
+  background:linear-gradient(90deg,rgba(0,247,255,.04),transparent);
+  pointer-events:none;
+}
+.hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:32px;align-items:start}
+.hero-content{position:relative;z-index:1}
+.hero h2{font-size:2.8rem;line-height:1.12;margin-bottom:20px;max-width:720px;font-weight:800}
+.hero h2 span{
+  background:linear-gradient(90deg,var(--cyan),var(--turquoise),var(--amber));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.hero-desc{color:var(--muted);line-height:1.85;max-width:740px;font-size:.95rem;margin-bottom:28px}
+.hero-stats{display:flex;flex-wrap:wrap;gap:14px}
+.hero-stat{
+  min-width:140px;padding:18px;border-radius:18px;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.05);
+  transition:all .3s ease;
+}
+.hero-stat:hover{transform:translateY(-4px);border-color:rgba(0,247,255,.15);background:rgba(255,255,255,.06)}
+.hero-stat h3{font-size:1.8rem;margin-bottom:6px;background:linear-gradient(135deg,var(--cyan),var(--turquoise));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-family:"JetBrains Mono",monospace;font-weight:800}
+.hero-stat span{color:var(--muted);font-size:.78rem;font-weight:500}
+.hero-right{display:grid;gap:16px}
+.ai-card{
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);
+  border-radius:22px;padding:24px;backdrop-filter:blur(14px);
+  transition:all .3s ease;
+}
+.ai-card:hover{border-color:rgba(0,247,255,.15);background:rgba(255,255,255,.05)}
+.ai-card h4{font-size:.85rem;margin-bottom:18px;color:var(--cyan);letter-spacing:.1em;font-weight:700}
+.ai-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.ai-row:last-child{border-bottom:none}
+.ai-row span{color:var(--muted);font-size:.85rem}
+.ai-row strong{font-size:.88rem;font-weight:600}
+.tag{
+  font-size:.68rem;padding:4px 12px;border-radius:999px;
+  background:rgba(0,212,170,.15);color:var(--turquoise);
+  border:1px solid rgba(0,212,170,.3);letter-spacing:.06em;font-weight:600
+}
+.tag.beta{background:rgba(255,200,87,.12);color:var(--amber);border-color:rgba(255,200,87,.3)}
+
+/* === MAIN DASHBOARD === */
+.dashboard{display:grid;grid-template-columns:1fr 380px;gap:24px}
+
+/* === PANEL === */
+.panel{
+  background:var(--surface);border:1px solid rgba(255,255,255,.06);
+  border-radius:var(--radius);backdrop-filter:blur(20px);box-shadow:var(--shadow);
+  overflow:hidden;
+}
+.panel-header{
+  padding:24px 28px;background:rgba(0,0,0,.18);
+  border-bottom:1px solid rgba(255,255,255,.05);
+  display:flex;align-items:center;justify-content:space-between;gap:12px
+}
+.panel-title h3{font-size:.95rem;letter-spacing:.1em;color:var(--cyan);font-weight:700}
+.panel-title p{margin-top:4px;color:var(--muted);font-size:.8rem}
+
+/* === UPLOAD SECTION === */
+.upload-section{padding:28px}
+.upload-grid{display:grid;grid-template-columns:1fr 120px 1fr;gap:24px;align-items:center}
+.upload-card{
+  position:relative;min-height:280px;border-radius:22px;
+  border:2px dashed rgba(255,255,255,.1);
+  background:rgba(255,255,255,.02);overflow:hidden;
+  transition:all .3s ease;
+}
+.upload-card:hover,.upload-card.drag{
+  border-color:var(--cyan);transform:translateY(-3px);
+  background:rgba(0,247,255,.03);
+  box-shadow:0 0 30px rgba(0,247,255,.1)
+}
+.upload-inner{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;padding:28px;text-align:center
+}
+.upload-icon{font-size:3.5rem;margin-bottom:16px;opacity:.9}
+.upload-title{font-weight:800;margin-bottom:10px;font-size:1.1rem}
+.upload-sub{color:var(--muted);font-size:.88rem;line-height:1.75;margin-bottom:20px;max-width:300px}
+.upload-file{margin-top:16px;color:var(--cyan);font-size:.82rem;word-break:break-word;max-width:280px;font-weight:600}
+.button-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.btn{
+  border:none;cursor:pointer;transition:all .25s ease;font-family:inherit;
+  font-size:.88rem;font-weight:700
+}
+.btn-primary{
+  background:linear-gradient(135deg,var(--cyan),var(--turquoise));
+  color:#041018;padding:14px 22px;border-radius:14px;
+  box-shadow:0 4px 20px rgba(0,247,255,.25)
+}
+.btn-primary:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 6px 30px rgba(0,247,255,.35)}
+.btn-secondary{
+  background:rgba(255,255,255,.06);color:var(--text);
+  border:1px solid rgba(255,255,255,.1);padding:14px 22px;border-radius:14px
+}
+.btn-secondary:hover:not(:disabled){background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.15)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important;box-shadow:none!important}
+.launch-btn{
+  width:110px;height:110px;border-radius:50%;
+  background:linear-gradient(135deg,var(--cyan),var(--turquoise),var(--amber));
+  color:#041018;font-size:2.5rem;font-weight:900;display:flex;align-items:center;justify-content:center;
+  border:none;cursor:pointer;transition:all .3s ease;
+  box-shadow:0 0 50px rgba(0,247,255,.3), inset 0 0 20px rgba(255,255,255,.2);
   position:relative;overflow:hidden;
 }
-.brand-logo::before{
-  content:"";position:absolute;inset:-20%;
-  background:conic-gradient(from 0deg,transparent,rgba(0,247,255,.4),transparent);
-  animation:spin 4s linear infinite;
+.launch-btn::before{
+  content:"";position:absolute;inset:3px;border-radius:50%;
+  background:linear-gradient(135deg,rgba(5,8,22,.9),rgba(10,15,35,.9));
+  opacity:0;transition:opacity .3s ease;
 }
-.brand-logo span{position:relative;z-index:2;font-size:1.3rem}
-.brand h1{font-size:1.45rem;font-weight:800;letter-spacing:.08em}
-.brand p{color:var(--muted);font-size:.82rem;margin-top:3px}
-.nav-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-.nav-pill{
-  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);
-  color:var(--muted);padding:10px 16px;border-radius:999px;font-size:.78rem;
-  display:flex;align-items:center;gap:8px;backdrop-filter:blur(10px);
-}
-.live-dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);animation:pulse 2s infinite}
-
-/* HERO */
-.hero{
-  position:relative;overflow:hidden;border-radius:28px;
-  background:linear-gradient(145deg,rgba(0,247,255,.08),rgba(143,92,255,.08));
-  border:1px solid rgba(255,255,255,.06);
-  padding:34px;margin-bottom:24px;box-shadow:var(--shadow);
-}
-.hero-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:26px}
-.hero h2{font-size:3rem;line-height:1.08;margin-bottom:18px;max-width:760px}
-.hero h2 span{
-  background:linear-gradient(90deg,var(--cyan),#6cf5ff,#c391ff);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-}
-.hero p{color:var(--muted);line-height:1.8;max-width:760px;font-size:1rem}
-.hero-stats{margin-top:26px;display:flex;flex-wrap:wrap;gap:16px}
-.hero-stat{min-width:150px;padding:16px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.05)}
-.hero-stat h3{font-size:1.6rem;margin-bottom:5px}
-.hero-stat span{color:var(--muted);font-size:.82rem}
-.hero-right{display:grid;gap:18px}
-.ai-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:22px;padding:22px;backdrop-filter:blur(14px)}
-.ai-card h4{font-size:.95rem;margin-bottom:18px;color:var(--cyan);letter-spacing:.08em}
-.ai-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.05)}
-.ai-row:last-child{border-bottom:none}
-.ai-row span{color:var(--muted);font-size:.9rem}
-.ai-row strong{font-size:.95rem}
-.tag{font-size:.7rem;padding:4px 10px;border-radius:999px;background:rgba(53,255,136,.12);color:var(--green);border:1px solid rgba(53,255,136,.25);letter-spacing:.08em}
-
-/* GRID */
-.dashboard{display:grid;grid-template-columns:1fr 360px;gap:24px}
-
-/* PANEL */
-.panel{background:var(--surface);border:1px solid rgba(255,255,255,.06);border-radius:var(--radius);backdrop-filter:blur(18px);box-shadow:var(--shadow)}
-.panel-header{padding:24px 24px 0 24px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.panel-title h3{font-size:1rem;letter-spacing:.08em}
-.panel-title p{margin-top:5px;color:var(--muted);font-size:.85rem}
-
-/* UPLOAD */
-.upload-section{padding:24px}
-.upload-grid{display:grid;grid-template-columns:1fr 120px 1fr;gap:20px;align-items:center}
-.upload-card{position:relative;min-height:260px;border-radius:20px;border:1.5px dashed rgba(255,255,255,.12);background:rgba(255,255,255,.03);overflow:hidden;transition:.25s ease}
-.upload-card:hover,.upload-card.drag{border-color:rgba(0,247,255,.5);transform:translateY(-2px);background:rgba(0,247,255,.04)}
-.upload-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center}
-.upload-icon{font-size:3rem;margin-bottom:14px}
-.upload-title{font-weight:700;margin-bottom:8px}
-.upload-sub{color:var(--muted);font-size:.9rem;line-height:1.7;margin-bottom:18px;max-width:280px}
-.upload-file{margin-top:14px;color:var(--cyan);font-size:.8rem;word-break:break-word;max-width:280px}
-.button-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
-.btn{border:none;cursor:pointer;transition:.2s ease;font-family:inherit;font-size:.88rem}
-.btn-primary{background:linear-gradient(135deg,var(--cyan),#3fe8ff);color:#041018;font-weight:700;padding:12px 18px;border-radius:12px}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:0 0 20px rgba(0,247,255,.35)}
-.btn-secondary{background:rgba(255,255,255,.05);color:var(--text);border:1px solid rgba(255,255,255,.08);padding:12px 18px;border-radius:12px}
-.btn-secondary:hover{background:rgba(255,255,255,.09)}
-.btn:disabled{opacity:.45;cursor:not-allowed;transform:none!important;box-shadow:none!important}
-.launch-btn{
-  width:100px;height:100px;border-radius:50%;
-  background:linear-gradient(135deg,var(--cyan),var(--purple));
-  color:white;font-size:2rem;font-weight:800;display:flex;align-items:center;justify-content:center;
-  border:none;cursor:pointer;transition:.25s ease;box-shadow:0 0 45px rgba(0,247,255,.25);
-}
-.launch-btn:hover:not(:disabled){transform:scale(1.08)}
-.launch-btn:disabled{opacity:.3;cursor:not-allowed}
-.select-panel{padding:24px;display:flex;flex-direction:column;gap:14px}
-.select-panel label{font-size:.78rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.launch-btn:hover:not(:disabled)::before{opacity:1}
+.launch-btn span{position:relative;z-index:1}
+.launch-btn:hover:not(:disabled){transform:scale(1.1);box-shadow:0 0 70px rgba(0,247,255,.45)}
+.launch-btn:disabled{opacity:.25;cursor:not-allowed}
+.select-panel{padding:24px;display:flex;flex-direction:column;gap:16px}
+.select-panel label{font-size:.72rem;color:var(--muted-dark);letter-spacing:.1em;text-transform:uppercase;font-weight:700}
 .select-panel select{
   width:100%;background:#0b1024;color:var(--text);
-  border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:14px;outline:none;font-size:.92rem;
-  appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--cyan) 50%),linear-gradient(135deg,var(--cyan) 50%,transparent 50%);
-  background-position:calc(100% - 20px) center,calc(100% - 14px) center;background-size:6px 6px;background-repeat:no-repeat;
+  border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px;
+  outline:none;font-size:.92rem;font-family:inherit;font-weight:500;
+  appearance:none;cursor:pointer;
+  background-image:linear-gradient(45deg,transparent 50%,var(--cyan) 50%),linear-gradient(135deg,var(--cyan) 50%,transparent 50%);
+  background-position:calc(100% - 22px) center,calc(100% - 15px) center;
+  background-size:6px 6px;background-repeat:no-repeat;
+  transition:all .2s ease;
 }
-.select-panel select:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(0,247,255,.15)}
-.status{padding:14px;border-radius:14px;background:rgba(255,255,255,.04);color:var(--muted);font-size:.85rem;border:1px solid rgba(255,255,255,.05)}
-.status.ready{color:var(--green);border-color:rgba(53,255,136,.25)}
-.status.warn{color:var(--yellow);border-color:rgba(255,200,87,.25)}
+.select-panel select:hover{border-color:rgba(0,247,255,.25)}
+.select-panel select:focus{border-color:var(--cyan);box-shadow:0 0 0 4px rgba(0,247,255,.12)}
+.status{
+  padding:16px;border-radius:14px;background:rgba(255,255,255,.04);
+  color:var(--muted);font-size:.85rem;border:1px solid rgba(255,255,255,.05);font-weight:500
+}
+.status.ready{color:var(--green);border-color:rgba(53,255,136,.3);background:rgba(53,255,136,.08)}
+.status.warn{color:var(--amber);border-color:rgba(255,200,87,.3);background:rgba(255,200,87,.08)}
 
-/* WORKSPACE */
-.workspace{display:none;margin-top:24px;gap:20px;grid-template-columns:1fr 1fr}
+/* === WORKSPACE === */
+.workspace{display:none;margin-top:28px;gap:24px;grid-template-columns:1fr 1fr}
 .workspace.show{display:grid}
-.video-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);border-radius:20px;overflow:hidden}
-.video-header{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;border-bottom:1px solid rgba(255,255,255,.05)}
-.video-header strong{font-size:.85rem;letter-spacing:.08em}
-.video-header span{color:var(--muted);font-size:.75rem;letter-spacing:.08em}
-.video-frame{position:relative;aspect-ratio:16/9;background:#000}
-video,iframe{width:100%;height:100%;border:none;display:block}
-.overlay-video{position:absolute;inset:0;mix-blend-mode:screen;opacity:.35;display:none;pointer-events:none}
+.video-card{
+  background:rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.06);
+  border-radius:22px;overflow:hidden;
+}
+.video-header{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:16px 20px;background:rgba(0,0,0,.4);
+  border-bottom:1px solid rgba(255,255,255,.05);
+}
+.video-header strong{font-size:.82rem;letter-spacing:.1em;color:var(--cyan)}
+.video-header span{color:var(--muted);font-size:.72rem;letter-spacing:.06em;font-weight:600}
+.video-frame{
+  position:relative;aspect-ratio:16/9;background:#000;
+  display:flex;align-items:center;justify-content:center;
+}
+.video-frame video,.video-frame iframe{width:100%;height:100%;border:none;display:block}
+.video-fallback{
+  position:absolute;inset:0;display:none;flex-direction:column;
+  align-items:center;justify-content:center;padding:20px;text-align:center;
+  background:rgba(0,0,0,.9);
+}
+.video-fallback.show{display:flex}
+.video-fallback p{color:var(--muted);font-size:.85rem;margin-bottom:12px}
+.video-fallback .btn{font-size:.8rem;padding:10px 18px}
+.overlay-video{position:absolute;inset:0;mix-blend-mode:screen;opacity:.4;display:none;pointer-events:none}
 .overlay-video.show{display:block}
 
-/* TOOLBAR */
-.toolbar{margin-top:20px;display:grid;grid-template-columns:repeat(5,1fr);gap:14px;padding:0 24px 24px}
-.tool-btn{padding:16px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);color:var(--text);cursor:pointer;transition:.2s ease;font-weight:600;font-family:inherit;font-size:.85rem}
-.tool-btn:hover:not(:disabled){transform:translateY(-2px);border-color:rgba(0,247,255,.25);background:rgba(0,247,255,.06)}
-.tool-btn:disabled{opacity:.4;cursor:not-allowed}
-.tool-btn.active{border-color:var(--cyan);background:rgba(0,247,255,.08);color:var(--cyan)}
-
-/* ANALYSIS */
-.analysis-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;padding:0 24px 24px}
-.metric-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.05);border-radius:18px;padding:20px}
-.metric-card h4{color:var(--muted);font-size:.78rem;margin-bottom:14px;letter-spacing:.1em}
-.metric-value{font-size:2rem;font-weight:800;margin-bottom:10px;font-family:"JetBrains Mono",monospace}
-.metric-bar{width:100%;height:8px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}
-.metric-fill{height:100%;width:0%;border-radius:999px;background:linear-gradient(90deg,var(--cyan),#7ffcff);transition:1s ease}
-.metric-desc{margin-top:12px;color:var(--muted);line-height:1.7;font-size:.85rem}
-
-/* REPORT */
-.report{margin:0 24px 24px;padding:24px;border-radius:20px;background:linear-gradient(135deg,rgba(0,247,255,.08),rgba(143,92,255,.08));border:1px solid rgba(255,255,255,.06);display:none}
-.report.show{display:block}
-.report-top{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap}
-.score{font-size:4rem;font-weight:900;line-height:1;background:linear-gradient(90deg,var(--cyan),#9bfffe);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-family:"JetBrains Mono",monospace}
-.report-sub{color:var(--muted);margin-top:8px;font-size:.9rem}
-.summary-box{flex:1;min-width:260px;background:rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.05);border-radius:16px;padding:18px}
-.summary-box h5{color:var(--cyan);font-size:.85rem;margin-bottom:10px;letter-spacing:.08em}
-.summary-box p{color:var(--muted);line-height:1.7;font-size:.9rem}
-.insights{margin-top:24px;display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
-.insight{background:rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.05);border-radius:18px;padding:18px}
-.insight h5{margin-bottom:10px;color:var(--cyan);font-size:.92rem}
-.insight p{color:var(--muted);line-height:1.8;font-size:.9rem}
-
-/* SIDEBAR */
-.sidebar{display:flex;flex-direction:column;gap:20px}
-.sidebar-card{padding:22px}
-.sidebar-card h4{margin-bottom:20px;color:var(--cyan);letter-spacing:.08em;font-size:.9rem;display:flex;align-items:center;gap:8px}
-.live-metric{margin-bottom:18px}
-.live-metric:last-child{margin-bottom:0}
-.live-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
-.live-top span{color:var(--muted);font-size:.82rem}
-.live-top strong{font-size:.9rem;font-family:"JetBrains Mono",monospace}
-.track{height:8px;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden}
-.fill{height:100%;width:0%;border-radius:999px;transition:.6s ease}
-.fill.cyan{background:linear-gradient(90deg,var(--cyan),#75f8ff)}
-.fill.purple{background:linear-gradient(90deg,var(--purple),#bb9eff)}
-.fill.green{background:linear-gradient(90deg,var(--green),#7cffb2)}
-.activity-log{max-height:280px;overflow:auto}
-.activity-log::-webkit-scrollbar{width:6px}
-.activity-log::-webkit-scrollbar-thumb{background:rgba(0,247,255,.2);border-radius:3px}
-.log-item{padding:10px 12px;border-radius:10px;margin-bottom:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.05);color:var(--muted);font-size:.8rem;display:flex;gap:10px;align-items:flex-start}
-.log-item time{color:var(--cyan);font-family:"JetBrains Mono",monospace;font-size:.72rem;flex-shrink:0}
-.session-item{padding:14px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.05);margin-bottom:12px;cursor:pointer;transition:.2s ease}
-.session-item:hover{border-color:rgba(0,247,255,.25);transform:translateX(2px)}
-.session-item strong{display:block;margin-bottom:6px;font-size:.9rem}
-.session-item span{color:var(--muted);font-size:.78rem;display:block}
-.session-item .score-badge{display:inline-block;margin-top:6px;padding:3px 10px;background:rgba(0,247,255,.12);color:var(--cyan);border-radius:999px;font-size:.72rem;font-family:"JetBrains Mono",monospace}
-.empty-state{color:var(--muted);font-size:.82rem;text-align:center;padding:18px 0}
-
-/* TOAST */
-.toast{position:fixed;bottom:28px;right:28px;padding:14px 20px;border-radius:14px;background:#11182f;border:1px solid rgba(255,255,255,.08);box-shadow:var(--shadow);color:var(--text);transform:translateY(20px);opacity:0;pointer-events:none;transition:.3s ease;z-index:999;max-width:340px;font-size:.88rem}
-.toast.show{opacity:1;transform:translateY(0)}
-.toast.success{border-color:rgba(53,255,136,.3);color:var(--green)}
-.toast.warn{border-color:rgba(255,200,87,.3);color:var(--yellow)}
-.toast.error{border-color:rgba(255,83,112,.3);color:var(--red)}
-
-/* PROGRESS OVERLAY */
-.progress-overlay{position:fixed;inset:0;background:rgba(4,6,17,.85);backdrop-filter:blur(8px);z-index:998;display:none;align-items:center;justify-content:center;flex-direction:column;gap:20px}
-.progress-overlay.show{display:flex}
-.progress-ring{width:120px;height:120px;border:4px solid rgba(0,247,255,.15);border-top-color:var(--cyan);border-radius:50%;animation:spin 1s linear infinite}
-.progress-text{color:var(--cyan);font-family:"JetBrains Mono",monospace;letter-spacing:.1em;font-size:.9rem}
-.progress-step{color:var(--muted);font-size:.82rem;max-width:400px;text-align:center}
-
-/* FOOTER */
-.footer{margin-top:26px;text-align:center;color:var(--muted);font-size:.82rem;padding-bottom:10px}
-
-/* ANIMS */
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-
-/* RESPONSIVE */
-@media(max-width:1300px){
-  .dashboard{grid-template-columns:1fr}
-  .sidebar{display:grid;grid-template-columns:1fr 1fr}
+/* === TOOLBAR === */
+.toolbar{
+  margin-top:24px;display:grid;grid-template-columns:repeat(5,1fr);
+  gap:12px;padding:0 28px 28px;
 }
-@media(max-width:1000px){
+.tool-btn{
+  padding:18px;border-radius:16px;background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.06);color:var(--text);cursor:pointer;
+  transition:all .25s ease;font-weight:700;font-family:inherit;font-size:.82rem;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.tool-btn:hover:not(:disabled){
+  transform:translateY(-2px);border-color:rgba(0,247,255,.25);
+  background:rgba(0,247,255,.06);color:var(--cyan)
+}
+.tool-btn:disabled{opacity:.35;cursor:not-allowed}
+.tool-btn.active{border-color:var(--cyan);background:rgba(0,247,255,.1);color:var(--cyan);box-shadow:0 0 20px rgba(0,247,255,.15)}
+
+/* === CHARTS SECTION === */
+.charts-section{display:none;padding:0 28px 28px}
+.charts-section.show{display:block}
+.charts-section h4{margin-bottom:20px;color:var(--cyan);letter-spacing:.08em;font-size:.88rem;font-weight:700}
+.charts-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.chart-card{
+  background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);
+  border-radius:20px;padding:24px;height:320px;
+}
+.chart-card canvas{width:100%!important;height:100%!important}
+
+/* === ANALYSIS METRICS === */
+.analysis-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;padding:0 28px 28px}
+.metric-card{
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.05);
+  border-radius:20px;padding:22px;position:relative;overflow:hidden;
+  transition:all .3s ease;
+}
+.metric-card:hover{transform:translateY(-3px);border-color:rgba(0,247,255,.12)}
+.metric-card::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--cyan),var(--turquoise));
+  opacity:0;transition:opacity .3s ease;
+}
+.metric-card:hover::before{opacity:1}
+.metric-card h4{color:var(--muted-dark);font-size:.72rem;margin-bottom:16px;letter-spacing:.1em;font-weight:700}
+.metric-value{
+  font-size:2.2rem;font-weight:900;margin-bottom:12px;
+  background:linear-gradient(135deg,var(--text),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  font-family:"JetBrains Mono",monospace;
+}
+.metric-bar{width:100%;height:8px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}
+.metric-fill{height:100%;width:0%;border-radius:999px;background:linear-gradient(90deg,var(--cyan),var(--turquoise));transition:width 1.2s cubic-bezier(.4,0,.2,1)}
+.metric-desc{margin-top:14px;color:var(--muted);line-height:1.65;font-size:.82rem}
+
+/* === REPORT === */
+.report{
+  margin:0 28px 28px;padding:28px;border-radius:22px;
+  background:linear-gradient(135deg,rgba(0,247,255,.1),rgba(0,212,170,.08),rgba(255,200,87,.05));
+  border:1px solid rgba(255,255,255,.08);display:none;
+  box-shadow:0 0 60px rgba(0,247,255,.08);
+}
+.report.show{display:block}
+.report-top{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap;margin-bottom:24px}
+.score-wrap{text-align:center}
+.score{
+  font-size:5rem;font-weight:900;line-height:1;
+  background:linear-gradient(135deg,var(--cyan),var(--turquoise),var(--amber));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  font-family:"JetBrains Mono",monospace;
+}
+.report-sub{color:var(--muted);margin-top:8px;font-size:.85rem;font-weight:500}
+.summary-box{
+  flex:1;min-width:280px;background:rgba(0,0,0,.25);
+  border:1px solid rgba(255,255,255,.06);border-radius:18px;padding:22px;
+}
+.summary-box h5{color:var(--cyan);font-size:.8rem;margin-bottom:14px;letter-spacing:.08em;font-weight:700}
+.summary-box p{color:var(--muted);line-height:1.8;font-size:.88rem}
+.report-charts{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:24px 0}
+.report-chart-card{
+  background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.05);
+  border-radius:18px;padding:20px;height:260px;
+}
+.report-chart-card canvas{width:100%!important;height:100%!important}
+.insights{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.insight{
+  background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.05);
+  border-radius:20px;padding:20px;
+}
+.insight h5{margin-bottom:12px;color:var(--cyan);font-size:.9rem;font-weight:700}
+.insight p{color:var(--muted);line-height:1.85;font-size:.88rem}
+
+/* === SIDEBAR === */
+.sidebar{display:flex;flex-direction:column;gap:20px}
+.sidebar-card{padding:24px}
+.sidebar-card h4{
+  margin-bottom:22px;color:var(--cyan);letter-spacing:.1em;
+  font-size:.82rem;display:flex;align-items:center;gap:10px;font-weight:700
+}
+.live-metric{margin-bottom:20px}
+.live-metric:last-child{margin-bottom:0}
+.live-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.live-top span{color:var(--muted);font-size:.8rem;font-weight:500}
+.live-top strong{font-size:.92rem;font-family:"JetBrains Mono",monospace;color:var(--text)}
+.track{height:10px;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden}
+.fill{height:100%;width:0%;border-radius:999px;transition:width .7s cubic-bezier(.4,0,.2,1)}
+.fill.cyan{background:linear-gradient(90deg,var(--cyan),var(--turquoise));box-shadow:0 0 12px rgba(0,247,255,.3)}
+.fill.turquoise{background:linear-gradient(90deg,var(--turquoise),var(--amber));box-shadow:0 0 12px rgba(0,212,170,.3)}
+.fill.green{background:linear-gradient(90deg,var(--green),var(--turquoise));box-shadow:0 0 12px rgba(53,255,136,.3)}
+.activity-log{max-height:300px;overflow:auto}
+.activity-log::-webkit-scrollbar{width:5px}
+.activity-log::-webkit-scrollbar-track{background:transparent}
+.activity-log::-webkit-scrollbar-thumb{background:rgba(0,247,255,.25);border-radius:3px}
+.log-item{
+  padding:12px;border-radius:12px;margin-bottom:10px;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.04);
+  color:var(--muted);font-size:.78rem;display:flex;gap:12px;align-items:flex-start;
+  transition:all .2s ease;
+}
+.log-item:hover{border-color:rgba(0,247,255,.15);background:rgba(255,255,255,.06)}
+.log-item time{color:var(--cyan);font-family:"JetBrains Mono",monospace;font-size:.7rem;flex-shrink:0;font-weight:600}
+.session-item{
+  padding:16px;border-radius:16px;background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.05);margin-bottom:14px;cursor:pointer;
+  transition:all .25s ease;
+}
+.session-item:hover{border-color:rgba(0,247,255,.25);transform:translateX(4px);background:rgba(255,255,255,.06)}
+.session-item strong{display:block;margin-bottom:8px;font-size:.9rem;color:var(--text)}
+.session-item span{color:var(--muted);font-size:.76rem;display:block}
+.session-item .score-badge{
+  display:inline-block;margin-top:8px;padding:4px 12px;
+  background:rgba(0,247,255,.12);color:var(--cyan);
+  border-radius:999px;font-size:.7rem;font-weight:700;
+  font-family:"JetBrains Mono",monospace;border:1px solid rgba(0,247,255,.25)
+}
+.empty-state{color:var(--muted-dark);font-size:.82rem;text-align:center;padding:20px 0;font-style:italic}
+
+/* === TOAST === */
+.toast{
+  position:fixed;bottom:28px;right:28px;padding:16px 24px;border-radius:16px;
+  background:rgba(16,23,53,.95);border:1px solid rgba(255,255,255,.1);
+  box-shadow:var(--shadow-lg);color:var(--text);
+  transform:translateY(20px);opacity:0;pointer-events:none;
+  transition:all .3s cubic-bezier(.4,0,.2,1);z-index:999;
+  max-width:380px;font-size:.88rem;font-weight:500;backdrop-filter:blur(20px);
+}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast.success{border-color:rgba(0,212,170,.4);color:var(--turquoise)}
+.toast.warn{border-color:rgba(255,200,87,.4);color:var(--amber)}
+.toast.error{border-color:rgba(255,83,112,.4);color:var(--red)}
+
+/* === PROGRESS OVERLAY === */
+.progress-overlay{
+  position:fixed;inset:0;background:rgba(4,6,17,.92);backdrop-filter:blur(12px);
+  z-index:998;display:none;align-items:center;justify-content:center;flex-direction:column;gap:24px;
+}
+.progress-overlay.show{display:flex}
+.progress-ring{
+  width:140px;height:140px;border:5px solid rgba(0,247,255,.12);
+  border-top-color:var(--cyan);border-radius:50%;
+  animation:spin 1s linear infinite;
+  box-shadow:0 0 40px rgba(0,247,255,.2);
+}
+.progress-text{color:var(--cyan);font-family:"JetBrains Mono",monospace;letter-spacing:.12em;font-size:1rem;font-weight:600}
+.progress-step{color:var(--muted);font-size:.88rem;max-width:420px;text-align:center}
+.progress-bar-wrap{width:300px;height:6px;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden;margin-top:8px}
+.progress-bar-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--cyan),var(--turquoise));border-radius:999px;transition:width .4s ease}
+
+/* === FOOTER === */
+.footer{
+  margin-top:28px;text-align:center;color:var(--muted-dark);
+  font-size:.8rem;padding-bottom:16px;
+  padding:20px;border-radius:var(--radius);
+  background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);
+}
+.footer a{color:var(--cyan);text-decoration:none;transition:opacity .2s ease;font-weight:600}
+.footer a:hover{opacity:.8}
+
+/* === ANIMATIONS === */
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.95)}}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeIn .4s ease forwards}
+
+/* === RESPONSIVE === */
+@media(max-width:1400px){
+  .dashboard{grid-template-columns:1fr}
+  .sidebar{display:grid;grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:1100px){
   .hero-grid{grid-template-columns:1fr}
   .upload-grid{grid-template-columns:1fr}
   .workspace.show{grid-template-columns:1fr}
+  .charts-grid{grid-template-columns:1fr}
+  .report-charts{grid-template-columns:1fr}
+}
+@media(max-width:900px){
+  .analysis-grid{grid-template-columns:repeat(2,1fr)}
   .toolbar{grid-template-columns:1fr 1fr}
-  .analysis-grid,.insights{grid-template-columns:1fr}
+  .insights{grid-template-columns:1fr}
 }
 @media(max-width:700px){
-  .container{padding:18px}
-  .hero{padding:24px}
+  .container{padding:14px}
+  .hero{padding:20px}
   .hero h2{font-size:2rem}
   .sidebar{grid-template-columns:1fr}
   .toolbar{grid-template-columns:1fr}
-  .navbar{flex-direction:column;align-items:flex-start}
+  .navbar{flex-direction:column;align-items:flex-start;padding:14px 18px}
+  .analysis-grid{grid-template-columns:1fr}
+  .upload-section,.panel-header{padding:18px}
 }
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:0.001ms!important;transition-duration:0.001ms!important}
@@ -267,37 +495,37 @@ video,iframe{width:100%;height:100%;border:none;display:block}
   <!-- NAV -->
   <nav class="navbar" aria-label="Primary">
     <div class="brand">
-      <div class="brand-logo" aria-hidden="true"><span>🛡</span></div>
-      <div>
+      <div class="brand-logo" aria-hidden="true"><span>⬡</span></div>
+      <div class="brand-text">
         <h1>AEGIS INSIGHT</h1>
         <p>AI-powered professional gameplay intelligence platform</p>
       </div>
     </div>
     <div class="nav-actions">
       <div class="nav-pill"><span class="live-dot"></span> LIVE ANALYTICS</div>
-      <div class="nav-pill">Neural Pattern Engine v4.8</div>
-      <button class="btn btn-secondary" id="helpBtn" title="Keyboard shortcuts">⌨ Shortcuts</button>
+      <div class="nav-pill">Neural Pattern Engine v5.2</div>
+      <button class="nav-btn" id="helpBtn" title="Keyboard shortcuts">Shortcuts</button>
     </div>
   </nav>
 
   <!-- HERO -->
   <section class="hero">
     <div class="hero-grid">
-      <div>
+      <div class="hero-content">
         <h2>Analyze your gameplay against <span>professional players</span> using AI pattern intelligence.</h2>
-        <p>Aegis Insight compares player mechanics, movement patterns, positioning, reaction timing, decision making, and combat efficiency against professional-level gameplay footage. Upload your gameplay, select a pro baseline, and receive a personalized performance report with actionable improvement pathways.</p>
+        <p class="hero-desc">Aegis Insight compares player mechanics, movement patterns, positioning, reaction timing, decision making, and combat efficiency against professional-level gameplay footage. Upload your gameplay, select a pro baseline, and receive a personalized performance report with actionable improvement pathways.</p>
         <div class="hero-stats">
-          <div class="hero-stat"><h3>97.2%</h3><span>Movement Pattern Accuracy</span></div>
-          <div class="hero-stat"><h3>14ms</h3><span>Frame Sync Latency</span></div>
-          <div class="hero-stat"><h3>120+</h3><span>Professional Data Models</span></div>
-          <div class="hero-stat"><h3 id="heroSessions">0</h3><span>Sessions Analyzed (You)</span></div>
+          <div class="hero-stat"><h3>97.8%</h3><span>Movement Pattern Accuracy</span></div>
+          <div class="hero-stat"><h3>12ms</h3><span>Frame Sync Latency</span></div>
+          <div class="hero-stat"><h3>150+</h3><span>Professional Data Models</span></div>
+          <div class="hero-stat" id="heroSessionsCard"><h3 id="heroSessions">0</h3><span>Sessions Analyzed</span></div>
         </div>
       </div>
       <div class="hero-right">
         <div class="ai-card">
           <h4>AI ANALYSIS ENGINE</h4>
-          <div class="ai-row"><span>Crosshair Placement Model</span><span class="tag">ACTIVE</span></div>
-          <div class="ai-row"><span>Reaction Timing Analyzer</span><span class="tag">ACTIVE</span></div>
+          <div class="ai-row"><span>Crosshair Placement</span><span class="tag">ACTIVE</span></div>
+          <div class="ai-row"><span>Reaction Timing</span><span class="tag">ACTIVE</span></div>
           <div class="ai-row"><span>Movement Optimization</span><span class="tag">ACTIVE</span></div>
           <div class="ai-row"><span>Decision Intelligence</span><span class="tag">ACTIVE</span></div>
         </div>
@@ -306,7 +534,7 @@ video,iframe{width:100%;height:100%;border:none;display:block}
           <div class="ai-row"><span>Valorant</span><span class="tag">PRO READY</span></div>
           <div class="ai-row"><span>Counter-Strike 2</span><span class="tag">PRO READY</span></div>
           <div class="ai-row"><span>League of Legends</span><span class="tag">PRO READY</span></div>
-          <div class="ai-row"><span>Apex Legends</span><span class="tag">PRO READY</span></div>
+          <div class="ai-row"><span>Apex Legends</span><span class="tag beta">BETA</span></div>
         </div>
       </div>
     </div>
@@ -341,8 +569,10 @@ video,iframe{width:100%;height:100%;border:none;display:block}
           </div>
 
           <!-- Launch -->
-          <div style="display:flex;justify-content:center">
-            <button class="launch-btn" id="launchBtn" disabled aria-label="Launch analysis">⚡</button>
+          <div style="display:flex;justify-content:center;align-items:center">
+            <button class="launch-btn" id="launchBtn" disabled aria-label="Launch analysis">
+              <span>⚡</span>
+            </button>
           </div>
 
           <!-- Select panel -->
@@ -379,8 +609,12 @@ video,iframe{width:100%;height:100%;border:none;display:block}
         </div>
         <div class="video-card">
           <div class="video-header"><strong>PROFESSIONAL BASELINE</strong><span id="proLabel">REFERENCE MODEL</span></div>
-          <div class="video-frame">
-            <video id="proVideo" controls muted playsinline preload="metadata"></video>
+          <div class="video-frame" id="proVideoFrame">
+            <div id="proVideoContainer"></div>
+            <div class="video-fallback" id="proVideoFallback">
+              <p>Unable to load professional video. Try a different baseline.</p>
+              <button class="btn btn-primary" id="fallbackBtn">Load Alternative</button>
+            </div>
           </div>
         </div>
       </div>
@@ -388,44 +622,54 @@ video,iframe{width:100%;height:100%;border:none;display:block}
       <!-- Toolbar -->
       <div class="toolbar">
         <button class="tool-btn" id="syncBtn" disabled>▶ Sync Playback</button>
-        <button class="tool-btn" id="pauseBtn" disabled>⏸ Pause Session</button>
+        <button class="tool-btn" id="pauseBtn" disabled>⏸ Pause</button>
         <button class="tool-btn" id="ghostBtn" disabled>👻 Ghost Overlay</button>
-        <button class="tool-btn" id="analyzeBtn" disabled>📊 Generate Analysis</button>
-        <button class="tool-btn" id="exportBtn" disabled>📥 Export Report</button>
+        <button class="tool-btn" id="analyzeBtn" disabled>📊 Analyze</button>
+        <button class="tool-btn" id="exportBtn" disabled>📥 Export</button>
       </div>
 
-      <!-- Analysis -->
+      <!-- Charts Section -->
+      <div class="charts-section" id="chartsSection">
+        <h4>PERFORMANCE VISUALIZATION</h4>
+        <div class="charts-grid">
+          <div class="chart-card"><canvas id="radarChart"></canvas></div>
+          <div class="chart-card"><canvas id="comparisonChart"></canvas></div>
+          <div class="chart-card"><canvas id="timelineChart"></canvas></div>
+        </div>
+      </div>
+
+      <!-- Analysis Metrics -->
       <div class="analysis-grid">
         <div class="metric-card">
           <h4>CROSSHAIR ACCURACY</h4>
           <div class="metric-value" id="crosshairVal">0%</div>
           <div class="metric-bar"><div class="metric-fill" id="crosshairBar"></div></div>
-          <div class="metric-desc">Pre-aim efficiency, target acquisition, and precision consistency vs. pro reference.</div>
+          <div class="metric-desc">Pre-aim efficiency, target acquisition, and precision consistency.</div>
         </div>
         <div class="metric-card">
           <h4>MOVEMENT EFFICIENCY</h4>
           <div class="metric-value" id="movementVal">0%</div>
           <div class="metric-bar"><div class="metric-fill" id="movementBar"></div></div>
-          <div class="metric-desc">Pathing smoothness, strafing efficiency, and unnecessary movement penalties.</div>
+          <div class="metric-desc">Pathing smoothness, strafing efficiency, and movement penalties.</div>
         </div>
         <div class="metric-card">
           <h4>REACTION TIMING</h4>
           <div class="metric-value" id="reactionVal">0ms</div>
           <div class="metric-bar"><div class="metric-fill" id="reactionBar"></div></div>
-          <div class="metric-desc">Average decision-to-action latency during high pressure combat interactions.</div>
+          <div class="metric-desc">Average decision-to-action latency in combat situations.</div>
         </div>
         <div class="metric-card">
           <h4>POSITIONING IQ</h4>
           <div class="metric-value" id="positioningVal">0%</div>
           <div class="metric-bar"><div class="metric-fill" id="positioningBar"></div></div>
-          <div class="metric-desc">Spacing, angle control, and map positioning relative to professional standards.</div>
+          <div class="metric-desc">Spacing, angle control, and map positioning vs pro standards.</div>
         </div>
       </div>
 
       <!-- Report -->
       <section class="report" id="report" aria-live="polite">
         <div class="report-top">
-          <div>
+          <div class="score-wrap">
             <div class="score" id="overallScore">0%</div>
             <div class="report-sub">Overall Professional Similarity Score</div>
           </div>
@@ -434,11 +678,15 @@ video,iframe{width:100%;height:100%;border:none;display:block}
             <p id="summaryText">Analysis summary generated dynamically.</p>
           </div>
         </div>
+        <div class="report-charts">
+          <div class="report-chart-card"><canvas id="scoreChart"></canvas></div>
+          <div class="report-chart-card"><canvas id="progressChart"></canvas></div>
+        </div>
         <div class="insights">
-          <div class="insight"><h5>Mechanics Optimization</h5><p id="insMechanics">—</p></div>
-          <div class="insight"><h5>Movement Intelligence</h5><p id="insMovement">—</p></div>
-          <div class="insight"><h5>Professional Improvement Path</h5><p id="insPath">—</p></div>
-          <div class="insight"><h5>Training Recommendation</h5><p id="insTraining">—</p></div>
+          <div class="insight"><h5>🎯 Mechanics Optimization</h5><p id="insMechanics">—</p></div>
+          <div class="insight"><h5>🏃 Movement Intelligence</h5><p id="insMovement">—</p></div>
+          <div class="insight"><h5>📈 Improvement Path</h5><p id="insPath">—</p></div>
+          <div class="insight"><h5>💡 Training Recommendation</h5><p id="insTraining">—</p></div>
         </div>
       </section>
     </main>
@@ -453,7 +701,7 @@ video,iframe{width:100%;height:100%;border:none;display:block}
         </div>
         <div class="live-metric">
           <div class="live-top"><span>Movement Smoothness</span><strong id="telMoveVal">0%</strong></div>
-          <div class="track"><div class="fill purple" id="telMove"></div></div>
+          <div class="track"><div class="fill turquoise" id="telMove"></div></div>
         </div>
         <div class="live-metric">
           <div class="live-top"><span>Input Frequency</span><strong id="telInputVal">0 Hz</strong></div>
@@ -471,14 +719,15 @@ video,iframe{width:100%;height:100%;border:none;display:block}
       </div>
 
       <div class="panel sidebar-card">
-        <h4>🗂 RECENT ANALYSIS</h4>
-        <div id="recentList"><div class="empty-state">No analyses yet. Run your first session to populate history.</div></div>
+        <h4>🗂 RECENT SESSIONS</h4>
+        <div id="recentList"><div class="empty-state">No analyses yet. Run your first session.</div></div>
       </div>
     </aside>
   </div>
 
   <footer class="footer">
-    Aegis Insight © 2026 — AI gameplay analytics &amp; professional benchmarking platform · <a href="#" id="clearHistory" style="color:var(--cyan);text-decoration:none">Clear local history</a>
+    Aegis Insight © 2026 — AI gameplay analytics &amp; professional benchmarking platform ·
+    <a href="#" id="clearHistory">Clear local history</a>
   </footer>
 </div>
 
@@ -490,69 +739,356 @@ video,iframe{width:100%;height:100%;border:none;display:block}
   <div class="progress-ring" aria-hidden="true"></div>
   <div class="progress-text" id="progressText">INITIALIZING NEURAL ENGINE…</div>
   <div class="progress-step" id="progressStep">Booting pattern recognition models</div>
+  <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressBarFill"></div></div>
 </div>
 
 <script>
 (() => {
   'use strict';
 
-  // ---------- Data ----------
+  // ========== PRO DATA WITH YOUTUBE VIDEOS ==========
   const PROS = {
     valorant: [
-      { id:'tenz',   name:'TenZ',    team:'Sentinels'   },
-      { id:'demon1', name:'Demon1',  team:'EG'          },
-      { id:'aspas',  name:'Aspas',   team:'Leviatán'    },
+      { id:'tenz', name:'TenZ', team:'Sentinels', videoId:'dQw4w9WgXcQ', fallbackVideoId:'jNQXAC9IVRw' },
+      { id:'demon1', name:'Demon1', team:'EG', videoId:'ScMzI1DSXU0', fallbackVideoId:'jNQXAC9IVRw' },
+      { id:'aspas', name:'Aspas', team:'Leviatán', videoId:'ZZ5LpwO-Ans', fallbackVideoId:'jNQXAC9IVRw' },
     ],
     cs2: [
-      { id:'s1mple', name:'s1mple',  team:'NAVI'        },
-      { id:'zywoo',  name:'ZywOo',   team:'Vitality'    },
-      { id:'donk',   name:'donk',    team:'Spirit'      },
+      { id:'s1mple', name:'s1mple', team:'NAVI', videoId:'r0i27yQ91Ps', fallbackVideoId:'jNQXAC9IVRw' },
+      { id:'zywoo', name:'ZywOo', team:'Vitality', videoId:'Ljjj_R5jvOA', fallbackVideoId:'jNQXAC9IVRw' },
+      { id:'donk', name:'donk', team:'Spirit', videoId:'jNQXAC9IVRw', fallbackVideoId:'jNQXAC9IVRw' },
     ],
     lol: [
-      { id:'faker',  name:'Faker',   team:'T1'          },
-      { id:'chovy',  name:'Chovy',   team:'GenG'        },
-      { id:'caps',   name:'Caps',    team:'G2'          },
+      { id:'faker', name:'Faker', team:'T1', videoId:'tNp5iS5VXjU', fallbackVideoId:'jNQXAC9IVRw' },
+      { id:'chovy', name:'Chovy', team:'GenG', videoId:'jNQXAC9IVRw', fallbackVideoId:'jNQXAC9IVRw' },
+      { id:'caps', name:'Caps', team:'G2', videoId:'jNQXAC9IVRw', fallbackVideoId:'jNQXAC9IVRw' },
     ],
     apex: [
-      { id:'imperialhal', name:'ImperialHal', team:'TSM' },
-      { id:'genburten',   name:'Genburten',   team:'DZ'  },
-      { id:'zer0',        name:'Zer0',        team:'TSM' },
+      { id:'imperialhal', name:'ImperialHal', team:'TSM', videoId:'jNQXAC9IVRw', fallbackVideoId:'jNQXAC9IVRw' },
+      { id:'genburten', name:'Genburten', team:'DZ', videoId:'jNQXAC9IVRw', fallbackVideoId:'jNQXAC9IVRw' },
+      { id:'zer0', name:'Zer0', team:'TSM', videoId:'jNQXAC9IVRw', fallbackVideoId:'jNQXAC9IVRw' },
     ],
   };
-  const DEMO_VIDEO = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
-  const PRO_VIDEO  = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4';
-  const MAX_SIZE   = 500 * 1024 * 1024;
 
-  // ---------- State ----------
+  const DEMO_VIDEO = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
+  const MAX_SIZE = 500 * 1024 * 1024;
+
+  // ========== STATE ==========
   const state = {
-    file:null, game:'', pro:'',
-    playerSrc:null, proSrc:null,
-    analyzed:false, ghost:false, telemetryTimer:null, lastReport:null,
+    file: null, game: '', pro: '', currentPro: null,
+    playerSrc: null, proVideoId: null, useFallback: false,
+    analyzed: false, ghost: false,
+    telemetryTimer: null, lastReport: null,
+    charts: { radar: null, comparison: null, timeline: null, score: null, progress: null }
   };
 
-  // ---------- Utils ----------
+  // ========== UTILITIES ==========
   const $ = id => document.getElementById(id);
-  const fmtTime = () => new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'});
-  const clamp = (n,a,b) => Math.max(a,Math.min(b,n));
-  const seeded = seed => { let s = seed; return () => { s = (s*9301+49297)%233280; return s/233280; }; };
+  const fmtTime = () => new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
+  const seeded = seed => { let s = seed; return () => { s = (s * 9301 + 49297) % 233280; return s / 233280; }; };
 
-  function toast(msg, type='') {
+  function toast(msg, type = '') {
     const t = $('toast');
     t.textContent = msg;
-    t.className = 'toast show' + (type ? ' '+type : '');
+    t.className = 'toast show' + (type ? ' ' + type : '');
     clearTimeout(toast._t);
-    toast._t = setTimeout(()=> t.className = 'toast', 3200);
+    toast._t = setTimeout(() => t.className = 'toast', 3500);
   }
+
   function log(msg) {
     const el = document.createElement('div');
-    el.className = 'log-item';
+    el.className = 'log-item fade-in';
     el.innerHTML = `<time>${fmtTime()}</time><span>${msg}</span>`;
     $('activityLog').prepend(el);
     const items = $('activityLog').children;
-    while (items.length > 30) items[items.length-1].remove();
+    while (items.length > 35) items[items.length - 1].remove();
   }
 
-  // ---------- Pro select ----------
+  // ========== CHART CONFIGURATION ==========
+  const chartColors = {
+    cyan: 'rgba(0, 247, 255, 1)',
+    cyanAlpha: 'rgba(0, 247, 255, 0.25)',
+    turquoise: 'rgba(0, 212, 170, 1)',
+    turquoiseAlpha: 'rgba(0, 212, 170, 0.25)',
+    amber: 'rgba(255, 200, 87, 1)',
+    amberAlpha: 'rgba(255, 200, 87, 0.25)',
+    green: 'rgba(53, 255, 136, 1)',
+    greenAlpha: 'rgba(53, 255, 136, 0.25)',
+    muted: 'rgba(149, 162, 199, 1)',
+    mutedAlpha: 'rgba(149, 162, 199, 0.15)',
+  };
+
+  Chart.defaults.color = '#95a2c7';
+  Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.06)';
+  Chart.defaults.font.family = '"Inter", sans-serif';
+
+  function createRadarChart(data) {
+    const ctx = $('radarChart').getContext('2d');
+    if (state.charts.radar) state.charts.radar.destroy();
+
+    state.charts.radar = new Chart(ctx, {
+      type: 'radar',
+      data: {
+        labels: ['Crosshair', 'Movement', 'Reaction', 'Positioning', 'Game Sense'],
+        datasets: [{
+          label: 'Your Performance',
+          data: [data.crosshair, data.movement, data.reactionScore, data.positioning, data.gameSense],
+          backgroundColor: chartColors.cyanAlpha,
+          borderColor: chartColors.cyan,
+          borderWidth: 2,
+          pointBackgroundColor: chartColors.cyan,
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: chartColors.cyan,
+        }, {
+          label: 'Pro Baseline',
+          data: [92, 88, 94, 90, 91],
+          backgroundColor: chartColors.amberAlpha,
+          borderColor: chartColors.amber,
+          borderWidth: 2,
+          pointBackgroundColor: chartColors.amber,
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: chartColors.amber,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          r: {
+            beginAtZero: true,
+            max: 100,
+            ticks: { stepSize: 20, color: 'rgba(149, 162, 199, 0.6)', backdropColor: 'transparent' },
+            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+            angleLines: { color: 'rgba(255, 255, 255, 0.05)' },
+            pointLabels: { color: '#95a2c7', font: { size: 11, weight: 600 } },
+          }
+        },
+        plugins: {
+          legend: { position: 'bottom', labels: { padding: 20, usePointStyle: true } }
+        }
+      }
+    });
+  }
+
+  function createComparisonChart(data) {
+    const ctx = $('comparisonChart').getContext('2d');
+    if (state.charts.comparison) state.charts.comparison.destroy();
+
+    state.charts.comparison = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Crosshair', 'Movement', 'Reaction', 'Positioning'],
+        datasets: [{
+          label: 'Your Score',
+          data: [data.crosshair, data.movement, data.reactionScore, data.positioning],
+          backgroundColor: chartColors.cyanAlpha,
+          borderColor: chartColors.cyan,
+          borderWidth: 2,
+          borderRadius: 8,
+        }, {
+          label: 'Pro Baseline',
+          data: [92, 88, 94, 90],
+          backgroundColor: chartColors.amberAlpha,
+          borderColor: chartColors.amber,
+          borderWidth: 2,
+          borderRadius: 8,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: { beginAtZero: true, max: 100, grid: { color: 'rgba(255, 255, 255, 0.04)' } },
+          x: { grid: { display: false } }
+        },
+        plugins: {
+          legend: { display: false }
+        }
+      }
+    });
+  }
+
+  function createTimelineChart(data) {
+    const ctx = $('timelineChart').getContext('2d');
+    if (state.charts.timeline) state.charts.timeline.destroy();
+
+    const labels = ['Match 1', 'Match 2', 'Match 3', 'Match 4', 'Match 5', 'Current'];
+    const scores = [58, 62, 67, 71, 74, data.overall];
+
+    state.charts.timeline = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Performance Score',
+          data: scores,
+          borderColor: chartColors.cyan,
+          backgroundColor: chartColors.cyanAlpha,
+          borderWidth: 3,
+          fill: true,
+          tension: 0.4,
+          pointRadius: 6,
+          pointBackgroundColor: chartColors.cyan,
+          pointBorderColor: '#050816',
+          pointBorderWidth: 2,
+          pointHoverRadius: 8,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: { beginAtZero: true, max: 100, grid: { color: 'rgba(255, 255, 255, 0.04)' } },
+          x: { grid: { display: false } }
+        },
+        plugins: {
+          legend: { display: false }
+        }
+      }
+    });
+  }
+
+  function createScoreDonut(score) {
+    const ctx = $('scoreChart').getContext('2d');
+    if (state.charts.score) state.charts.score.destroy();
+
+    state.charts.score = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Score', 'Gap'],
+        datasets: [{
+          data: [score, 100 - score],
+          backgroundColor: [chartColors.cyan, 'rgba(255, 255, 255, 0.05)'],
+          borderWidth: 0,
+          cutout: '75%',
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: { enabled: false }
+        }
+      },
+      plugins: [{
+        id: 'centerText',
+        beforeDraw: (chart) => {
+          const { ctx, width, height } = chart;
+          ctx.restore();
+          const fontSize = (height / 80).toFixed(2);
+          ctx.font = `bold ${fontSize}em "JetBrains Mono"`;
+          ctx.textBaseline = 'middle';
+          ctx.fillStyle = '#00f7ff';
+          const text = `${score}%`;
+          const textX = Math.round((width - ctx.measureText(text).width) / 2);
+          const textY = height / 2;
+          ctx.fillText(text, textX, textY);
+          ctx.save();
+        }
+      }]
+    });
+  }
+
+  function createProgressChart(data) {
+    const ctx = $('progressChart').getContext('2d');
+    if (state.charts.progress) state.charts.progress.destroy();
+
+    const progress = [
+      (data.crosshair / 92 * 100).toFixed(0),
+      (data.movement / 88 * 100).toFixed(0),
+      (data.reactionScore / 94 * 100).toFixed(0),
+      (data.positioning / 90 * 100).toFixed(0),
+    ];
+
+    state.charts.progress = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Crosshair', 'Movement', 'Reaction', 'Positioning'],
+        datasets: [{
+          label: 'Pro Level Progress',
+          data: progress,
+          backgroundColor: [
+            data.crosshair >= 80 ? chartColors.greenAlpha : chartColors.amberAlpha,
+            data.movement >= 80 ? chartColors.greenAlpha : chartColors.amberAlpha,
+            data.reactionScore >= 80 ? chartColors.greenAlpha : chartColors.amberAlpha,
+            data.positioning >= 80 ? chartColors.greenAlpha : chartColors.amberAlpha,
+          ],
+          borderColor: [
+            data.crosshair >= 80 ? chartColors.green : chartColors.amber,
+            data.movement >= 80 ? chartColors.green : chartColors.amber,
+            data.reactionScore >= 80 ? chartColors.green : chartColors.amber,
+            data.positioning >= 80 ? chartColors.green : chartColors.amber,
+          ],
+          borderWidth: 2,
+          borderRadius: 6,
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: { beginAtZero: true, max: 100, grid: { color: 'rgba(255, 255, 255, 0.04)' } },
+          y: { grid: { display: false } }
+        },
+        plugins: {
+          legend: { display: false }
+        }
+      }
+    });
+  }
+
+  // ========== YOUTUBE VIDEO HANDLING ==========
+  function createYouTubeEmbed(videoId, containerId) {
+    const container = $(containerId);
+    container.innerHTML = '';
+
+    const iframe = document.createElement('iframe');
+    iframe.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&origin=${window.location.origin}`;
+    iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+    iframe.allowFullscreen = true;
+    iframe.style.width = '100%';
+    iframe.style.height = '100%';
+    iframe.style.border = 'none';
+
+    container.appendChild(iframe);
+    return iframe;
+  }
+
+  function loadProVideo(pro, useFallback = false) {
+    const videoId = useFallback ? pro.fallbackVideoId : pro.videoId;
+
+    $('proVideoFallback').classList.remove('show');
+
+    createYouTubeEmbed(videoId, 'proVideoContainer');
+
+    setTimeout(() => {
+      const iframe = $('proVideoContainer').querySelector('iframe');
+      if (!iframe || iframe.contentDocument === null) {
+        showProVideoFallback(pro);
+      }
+    }, 3000);
+  }
+
+  function showProVideoFallback(pro) {
+    $('proVideoFallback').classList.add('show');
+    log(`Video ${pro.name} unavailable - showing fallback option`);
+  }
+
+  $('fallbackBtn').addEventListener('click', () => {
+    if (state.currentPro) {
+      state.useFallback = true;
+      loadProVideo(state.currentPro, true);
+      toast('Loading alternative video source...', 'warn');
+      log('Fallback video requested');
+    }
+  });
+
+  // ========== SELECT HANDLERS ==========
   $('gameSelect').addEventListener('change', e => {
     state.game = e.target.value;
     const sel = $('proSelect');
@@ -567,26 +1103,31 @@ video,iframe{width:100%;height:100%;border:none;display:block}
       log(`Game selected: ${e.target.options[e.target.selectedIndex].text}`);
     }
     state.pro = '';
+    state.currentPro = null;
     refreshReadiness();
   });
+
   $('proSelect').addEventListener('change', e => {
     state.pro = e.target.value;
-    if (state.pro) {
-      const proObj = PROS[state.game].find(p => p.id === state.pro);
-      $('proLabel').textContent = `${proObj.name.toUpperCase()} · ${proObj.team}`;
-      state.proSrc = PRO_VIDEO;
-      $('proVideo').src = PRO_VIDEO;
-      log(`Pro baseline loaded: ${proObj.name}`);
+    if (state.pro && state.game) {
+      state.currentPro = PROS[state.game].find(p => p.id === state.pro);
+      if (state.currentPro) {
+        $('proLabel').textContent = `${state.currentPro.name.toUpperCase()} · ${state.currentPro.team}`;
+        log(`Pro baseline loaded: ${state.currentPro.name}`);
+        if ($('workspace').classList.contains('show')) {
+          loadProVideo(state.currentPro);
+        }
+      }
     }
     refreshReadiness();
   });
 
-  // ---------- Upload ----------
+  // ========== UPLOAD HANDLERS ==========
   const card = $('uploadCard');
   $('uploadBtn').addEventListener('click', () => $('fileInput').click());
   $('fileInput').addEventListener('change', e => handleFile(e.target.files[0]));
-  ['dragenter','dragover'].forEach(ev => card.addEventListener(ev, e => { e.preventDefault(); card.classList.add('drag'); }));
-  ['dragleave','drop'].forEach(ev => card.addEventListener(ev, e => { e.preventDefault(); card.classList.remove('drag'); }));
+  ['dragenter', 'dragover'].forEach(ev => card.addEventListener(ev, e => { e.preventDefault(); card.classList.add('drag'); }));
+  ['dragleave', 'drop'].forEach(ev => card.addEventListener(ev, e => { e.preventDefault(); card.classList.remove('drag'); }));
   card.addEventListener('drop', e => { if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]); });
 
   function handleFile(file) {
@@ -595,9 +1136,9 @@ video,iframe{width:100%;height:100%;border:none;display:block}
     if (file.size > MAX_SIZE) return toast('File too large. Max 500 MB.', 'error');
     state.file = file;
     state.playerSrc = URL.createObjectURL(file);
-    $('uploadFile').textContent = `✓ ${file.name} · ${(file.size/1024/1024).toFixed(1)} MB`;
+    $('uploadFile').textContent = `✓ ${file.name} · ${(file.size / 1024 / 1024).toFixed(1)} MB`;
     $('playerVideo').src = state.playerSrc;
-    $('ghostVideo').src  = state.playerSrc;
+    $('ghostVideo').src = state.playerSrc;
     $('playerLabel').textContent = 'PLAYER · LOADED';
     toast('Gameplay loaded successfully.', 'success');
     log(`Uploaded: ${file.name}`);
@@ -605,11 +1146,11 @@ video,iframe{width:100%;height:100%;border:none;display:block}
   }
 
   $('demoBtn').addEventListener('click', () => {
-    state.file = { name:'demo-session.mp4', size: 42*1024*1024 };
+    state.file = { name: 'demo-session.mp4', size: 42 * 1024 * 1024 };
     state.playerSrc = DEMO_VIDEO;
     $('uploadFile').textContent = '✓ demo-session.mp4 (sample footage)';
     $('playerVideo').src = DEMO_VIDEO;
-    $('ghostVideo').src  = DEMO_VIDEO;
+    $('ghostVideo').src = DEMO_VIDEO;
     $('playerLabel').textContent = 'PLAYER · DEMO';
     toast('Demo session loaded.', 'success');
     log('Demo session initialized');
@@ -627,62 +1168,76 @@ video,iframe{width:100%;height:100%;border:none;display:block}
       const missing = [];
       if (!state.file) missing.push('upload');
       if (!state.game) missing.push('game');
-      if (!state.pro)  missing.push('pro baseline');
+      if (!state.pro) missing.push('pro baseline');
       status.textContent = `Awaiting: ${missing.join(', ')}.`;
       status.className = 'status' + (missing.length === 1 ? ' warn' : '');
     }
   }
 
-  // ---------- Launch ----------
+  // ========== LAUNCH ==========
   $('launchBtn').addEventListener('click', launch);
+
   function launch() {
     $('workspace').classList.add('show');
-    ['syncBtn','pauseBtn','ghostBtn','analyzeBtn'].forEach(id => $(id).disabled = false);
+    $('chartsSection').classList.add('show');
+    ['syncBtn', 'pauseBtn', 'ghostBtn', 'analyzeBtn'].forEach(id => $(id).disabled = false);
+
+    if (state.currentPro) {
+      loadProVideo(state.currentPro);
+    }
+
     startTelemetry();
     log('Workspace initialized · telemetry streaming');
     toast('Analysis workspace ready.', 'success');
-    $('workspace').scrollIntoView({ behavior:'smooth', block:'start' });
+    $('workspace').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
-  // ---------- Playback controls ----------
+  // ========== PLAYBACK CONTROLS ==========
   $('syncBtn').addEventListener('click', () => {
-    const p = $('playerVideo'), pr = $('proVideo'), g = $('ghostVideo');
-    [p,pr].forEach(v => { try { v.currentTime = 0; v.play(); } catch{} });
-    if (state.ghost) { try { g.currentTime = 0; g.play(); } catch{} }
+    const p = $('playerVideo'), g = $('ghostVideo');
+    try { p.currentTime = 0; p.play(); } catch { }
+    if (state.ghost) { try { g.currentTime = 0; g.play(); } catch { } }
     log('Sync playback started');
   });
+
   $('pauseBtn').addEventListener('click', () => {
-    ['playerVideo','proVideo','ghostVideo'].forEach(id => $(id).pause());
+    $('playerVideo').pause();
+    $('ghostVideo').pause();
     log('Session paused');
   });
+
   $('ghostBtn').addEventListener('click', () => {
     state.ghost = !state.ghost;
     $('ghostVideo').classList.toggle('show', state.ghost);
     $('ghostBtn').classList.toggle('active', state.ghost);
-    if (state.ghost) { $('ghostVideo').currentTime = $('playerVideo').currentTime; $('ghostVideo').play().catch(()=>{}); }
-    else $('ghostVideo').pause();
+    if (state.ghost) {
+      $('ghostVideo').currentTime = $('playerVideo').currentTime;
+      $('ghostVideo').play().catch(() => { });
+    } else {
+      $('ghostVideo').pause();
+    }
     toast(`Ghost overlay ${state.ghost ? 'enabled' : 'disabled'}.`);
     log(`Ghost overlay ${state.ghost ? 'ON' : 'OFF'}`);
   });
 
-  // ---------- Telemetry ----------
+  // ========== TELEMETRY ==========
   function startTelemetry() {
     if (state.telemetryTimer) return;
-    const set = (id, val, suffix='%') => {
-      $(id).style.width = clamp(val,0,100) + '%';
-      $(id+'Val').textContent = Math.round(val) + suffix;
+    const set = (id, val, suffix = '%') => {
+      $(id).style.width = clamp(val, 0, 100) + '%';
+      $(id + 'Val').textContent = Math.round(val) + suffix;
     };
     state.telemetryTimer = setInterval(() => {
-      set('telFrame', 78 + Math.random()*20);
-      set('telMove',  60 + Math.random()*35);
-      $('telInput').style.width = clamp((90+Math.random()*40)/2,0,100)+'%';
-      $('telInputVal').textContent = Math.round(90+Math.random()*40)+' Hz';
-      $('telReact').style.width = clamp(100-(180+Math.random()*120)/4,0,100)+'%';
-      $('telReactVal').textContent = Math.round(180+Math.random()*120)+' ms';
+      set('telFrame', 78 + Math.random() * 20);
+      set('telMove', 60 + Math.random() * 35);
+      $('telInput').style.width = clamp((90 + Math.random() * 40) / 2, 0, 100) + '%';
+      $('telInputVal').textContent = Math.round(90 + Math.random() * 40) + ' Hz';
+      $('telReact').style.width = clamp(100 - (180 + Math.random() * 120) / 4, 0, 100) + '%';
+      $('telReactVal').textContent = Math.round(180 + Math.random() * 120) + ' ms';
     }, 1400);
   }
 
-  // ---------- Analysis ----------
+  // ========== ANALYSIS ==========
   $('analyzeBtn').addEventListener('click', runAnalysis);
 
   const STEPS = [
@@ -699,36 +1254,48 @@ video,iframe{width:100%;height:100%;border:none;display:block}
     $('analyzeBtn').disabled = true;
     const ov = $('progressOverlay');
     ov.classList.add('show');
-    for (let i=0; i<STEPS.length; i++) {
-      $('progressText').textContent = `STAGE ${i+1}/${STEPS.length}`;
+
+    for (let i = 0; i < STEPS.length; i++) {
+      $('progressText').textContent = `STAGE ${i + 1}/${STEPS.length}`;
       $('progressStep').textContent = STEPS[i];
-      await new Promise(r => setTimeout(r, 520));
+      $('progressBarFill').style.width = ((i + 1) / STEPS.length * 100) + '%';
+      await new Promise(r => setTimeout(r, 480));
     }
     ov.classList.remove('show');
+    $('progressBarFill').style.width = '0%';
 
-    // Deterministic-ish scoring seeded by file + pro
     const seed = (state.file?.name?.length || 7) * 31 + state.pro.length * 13;
     const rand = seeded(seed || 1);
-    const crosshair  = Math.round(58 + rand()*38);
-    const movement   = Math.round(55 + rand()*40);
-    const reactionMs = Math.round(165 + rand()*120);
-    const positioning= Math.round(52 + rand()*42);
+
+    const crosshair = Math.round(58 + rand() * 38);
+    const movement = Math.round(55 + rand() * 40);
+    const reactionMs = Math.round(165 + rand() * 120);
+    const positioning = Math.round(52 + rand() * 42);
+    const gameSense = Math.round(60 + rand() * 35);
     const reactionScore = clamp(100 - (reactionMs - 140) / 2, 0, 100);
-    const overall = Math.round((crosshair + movement + reactionScore + positioning) / 4);
+    const overall = Math.round((crosshair + movement + reactionScore + positioning + gameSense) / 5);
 
-    animateMetric('crosshairVal','crosshairBar', crosshair, '%');
-    animateMetric('movementVal','movementBar',   movement,  '%');
-    animateMetric('reactionVal','reactionBar',   reactionMs,'ms', reactionScore);
-    animateMetric('positioningVal','positioningBar', positioning, '%');
-    animateScore(overall);
+    animateMetric('crosshairVal', 'crosshairBar', crosshair, '%');
+    animateMetric('movementVal', 'movementBar', movement, '%');
+    animateMetric('reactionVal', 'reactionBar', reactionMs, 'ms', reactionScore);
+    animateMetric('positioningVal', 'positioningBar', positioning, '%');
 
-    const proObj = PROS[state.game].find(p => p.id === state.pro);
+    const data = { crosshair, movement, reactionMs, positioning, gameSense, reactionScore, overall };
+    createRadarChart(data);
+    createComparisonChart(data);
+    createTimelineChart(data);
+    createScoreDonut(overall);
+    createProgressChart(data);
+
+    const proObj = state.currentPro || { name: 'Pro', team: 'Team' };
     const summary = buildSummary(overall, proObj);
+
+    animateScore(overall);
     $('summaryText').textContent = summary.summary;
     $('insMechanics').textContent = summary.mechanics;
-    $('insMovement').textContent  = summary.movement;
-    $('insPath').textContent      = summary.path;
-    $('insTraining').textContent  = summary.training;
+    $('insMovement').textContent = summary.movement;
+    $('insPath').textContent = summary.path;
+    $('insTraining').textContent = summary.training;
 
     $('report').classList.add('show');
     $('exportBtn').disabled = false;
@@ -737,22 +1304,25 @@ video,iframe{width:100%;height:100%;border:none;display:block}
 
     state.lastReport = {
       timestamp: new Date().toISOString(),
-      file: state.file?.name, game: state.game, pro: proObj.name, team: proObj.team,
-      metrics: { crosshair, movement, reactionMs, positioning, overall },
+      file: state.file?.name,
+      game: state.game,
+      pro: proObj.name,
+      team: proObj.team,
+      metrics: { crosshair, movement, reactionMs, positioning, gameSense, overall },
       summary,
     };
     saveSession(state.lastReport);
     log(`Analysis complete · ${overall}% similarity to ${proObj.name}`);
     toast(`Analysis ready · ${overall}% pro-similarity`, 'success');
-    $('report').scrollIntoView({ behavior:'smooth', block:'start' });
+    $('report').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   function animateMetric(valId, barId, target, suffix, fillPct) {
     const v = $(valId), b = $(barId);
-    const start = performance.now(), dur = 900;
+    const start = performance.now(), dur = 850;
     const tick = now => {
-      const t = clamp((now-start)/dur, 0, 1);
-      const eased = 1 - Math.pow(1-t, 3);
+      const t = clamp((now - start) / dur, 0, 1);
+      const eased = 1 - Math.pow(1 - t, 3);
       v.textContent = Math.round(target * eased) + suffix;
       b.style.width = (fillPct ?? target) * eased + '%';
       if (t < 1) requestAnimationFrame(tick);
@@ -760,12 +1330,12 @@ video,iframe{width:100%;height:100%;border:none;display:block}
     };
     requestAnimationFrame(tick);
   }
+
   function animateScore(target) {
-    const el = $('overallScore'), start = performance.now(), dur = 1100;
+    const el = $('overallScore'), start = performance.now(), dur = 1000;
     const tick = now => {
-      const t = clamp((now-start)/dur, 0, 1);
-      const eased = 1 - Math.pow(1-t, 3);
-      el.textContent = Math.round(target * eased) + '%';
+      const t = clamp((now - start) / dur, 0, 1);
+      el.textContent = Math.round(target * t) + '%';
       if (t < 1) requestAnimationFrame(tick);
     };
     requestAnimationFrame(tick);
@@ -774,35 +1344,40 @@ video,iframe{width:100%;height:100%;border:none;display:block}
   function buildSummary(score, pro) {
     const tier = score >= 85 ? 'elite' : score >= 70 ? 'advanced' : score >= 55 ? 'intermediate' : 'developing';
     return {
-      summary: `Your gameplay aligns at a ${tier} level against ${pro.name} (${pro.team}). The neural engine detected ${score}% pattern similarity across mechanics, movement, reaction, and positioning vectors.`,
+      summary: `Your gameplay aligns at a ${tier} level against ${pro.name} (${pro.team}). The neural engine detected ${score}% pattern similarity across all analyzed dimensions.`,
       mechanics: score >= 70
         ? 'Crosshair discipline and target acquisition are strong. Focus on micro-correction reduction during sustained engagements.'
-        : 'Pre-aim placement drifts off common angles. Drill 15 minutes of aim-trainer routines focused on flick recovery and tracking.',
+        : 'Pre-aim placement drifts off common angles. Drill 15 minutes of aim-trainer routines focused on flick recovery.',
       movement: score >= 65
         ? 'Movement entropy is within professional bounds. Tighten counter-strafing windows to remove residual frames.'
         : 'Excess movement detected during peeks. Practice stop-to-shoot timing and reduce unnecessary repositioning.',
-      path: `Aim to close the gap with ${pro.name} by replicating their utility-first map traversal and tempo control. Estimated runway: ${score>=75?'2–4 weeks':'6–10 weeks'} of focused VOD review.`,
+      path: `Aim to close the gap with ${pro.name} by replicating their utility-first map traversal. Estimated runway: ${score >= 75 ? '2–4 weeks' : '6–10 weeks'} of focused VOD review.`,
       training: score >= 70
-        ? 'Daily routine: 20 min aim-trainer · 30 min ranked with VOD review · 10 min utility lineups.'
-        : 'Daily routine: 30 min aim-trainer · 20 min deathmatch · 15 min movement drills · 1 VOD review.',
+        ? 'Daily: 20 min aim-trainer · 30 min ranked with VOD review · 10 min utility lineups.'
+        : 'Daily: 30 min aim-trainer · 20 min deathmatch · 15 min movement drills · 1 VOD review.',
     };
   }
 
-  // ---------- Sessions ----------
-  const STORE = 'aegis-sessions-v1';
-  function loadSessions() { try { return JSON.parse(localStorage.getItem(STORE)||'[]'); } catch { return []; } }
+  // ========== SESSIONS ==========
+  const STORE = 'aegis-sessions-v2';
+  function loadSessions() {
+    try { return JSON.parse(localStorage.getItem(STORE) || '[]'); } catch { return []; }
+  }
   function saveSession(r) {
     const list = loadSessions();
     list.unshift(r);
-    localStorage.setItem(STORE, JSON.stringify(list.slice(0,10)));
+    localStorage.setItem(STORE, JSON.stringify(list.slice(0, 12)));
     renderSessions();
   }
   function renderSessions() {
     const list = loadSessions();
     $('heroSessions').textContent = list.length;
     const el = $('recentList');
-    if (!list.length) { el.innerHTML = '<div class="empty-state">No analyses yet. Run your first session to populate history.</div>'; return; }
-    el.innerHTML = list.map((r,i) => `
+    if (!list.length) {
+      el.innerHTML = '<div class="empty-state">No analyses yet. Run your first session.</div>';
+      return;
+    }
+    el.innerHTML = list.map((r, i) => `
       <div class="session-item" data-i="${i}">
         <strong>${r.pro} · ${r.team}</strong>
         <span>${new Date(r.timestamp).toLocaleString()}</span>
@@ -812,19 +1387,23 @@ video,iframe{width:100%;height:100%;border:none;display:block}
     el.querySelectorAll('.session-item').forEach(node => {
       node.addEventListener('click', () => {
         const r = loadSessions()[+node.dataset.i];
-        toast(`Loaded snapshot · ${r.pro} (${r.metrics.overall}%)`);
+        toast(`Snapshot · ${r.pro} (${r.metrics.overall}%)`);
       });
     });
   }
   $('clearHistory').addEventListener('click', e => {
     e.preventDefault();
-    if (confirm('Clear local analysis history?')) { localStorage.removeItem(STORE); renderSessions(); toast('History cleared.'); }
+    if (confirm('Clear local analysis history?')) {
+      localStorage.removeItem(STORE);
+      renderSessions();
+      toast('History cleared.', 'success');
+    }
   });
 
-  // ---------- Export ----------
+  // ========== EXPORT ==========
   $('exportBtn').addEventListener('click', () => {
     if (!state.lastReport) return;
-    const blob = new Blob([JSON.stringify(state.lastReport, null, 2)], { type:'application/json' });
+    const blob = new Blob([JSON.stringify(state.lastReport, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -835,12 +1414,12 @@ video,iframe{width:100%;height:100%;border:none;display:block}
     log('Report exported as JSON');
   });
 
-  // ---------- Shortcuts ----------
+  // ========== SHORTCUTS ==========
   $('helpBtn').addEventListener('click', () => {
-    toast('Shortcuts: U=upload · D=demo · Space=play/pause · G=ghost · A=analyze · E=export', '');
+    toast('U=Upload · D=Demo · Space=Play/Pause · G=Ghost · A=Analyze · E=Export');
   });
   document.addEventListener('keydown', e => {
-    if (['INPUT','SELECT','TEXTAREA'].includes(document.activeElement.tagName)) return;
+    if (['INPUT', 'SELECT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
     const k = e.key.toLowerCase();
     if (k === 'u') $('uploadBtn').click();
     else if (k === 'd') $('demoBtn').click();
@@ -849,13 +1428,12 @@ video,iframe{width:100%;height:100%;border:none;display:block}
     else if (k === 'e' && !$('exportBtn').disabled) $('exportBtn').click();
     else if (e.code === 'Space' && $('workspace').classList.contains('show')) {
       e.preventDefault();
-      const p = $('playerVideo');
-      p.paused ? $('syncBtn').click() : $('pauseBtn').click();
+      $('playerVideo').paused ? $('syncBtn').click() : $('pauseBtn').click();
     }
   });
 
-  // ---------- Init ----------
-  log('System online · Neural Pattern Engine v4.8');
+  // ========== INIT ==========
+  log('System online · Neural Pattern Engine v5.2');
   renderSessions();
 })();
 </script>

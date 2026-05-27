@@ -1,407 +1,634 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="description" content="Aegis Insight — AI-powered gameplay intelligence platform that benchmarks your play against professional players." />
-<meta name="theme-color" content="#050816" />
-<title>Aegis Insight | AI Gameplay Intelligence Platform</title>
-
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta name="description" content="Aegis Insight — AI-powered gameplay intelligence platform"/>
+<meta name="theme-color" content="#09090b"/>
+<title>Aegis Insight | AI Gameplay Intelligence</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg:#050816; --bg2:#0b1026;
-  --surface:rgba(14,19,45,.82); --surface-solid:#101735; --card:#121935;
-  --border:rgba(0,247,255,.12);
-  --cyan:#00f7ff; --cyan-soft:rgba(0,247,255,.15);
-  --purple:#8f5cff; --purple-soft:rgba(143,92,255,.15);
-  --green:#35ff88; --red:#ff5370; --yellow:#ffc857; --orange:#ff7c3e;
-  --text:#ecf3ff; --muted:#95a2c7;
-  --shadow:0 20px 60px rgba(0,0,0,.45);
-  --radius:18px;
+:root {
+  --bg: #09090b;
+  --bg-1: #111116;
+  --bg-2: #18181f;
+  --bg-3: #1e1e28;
+  --border: rgba(255,255,255,.07);
+  --border-soft: rgba(255,255,255,.04);
+  --border-active: rgba(99,179,237,.3);
+  --cyan: #63b3ed;
+  --cyan-2: #90cdf4;
+  --cyan-dim: rgba(99,179,237,.12);
+  --purple: #b794f4;
+  --purple-dim: rgba(183,148,244,.12);
+  --green: #68d391;
+  --green-dim: rgba(104,211,145,.1);
+  --red: #fc8181;
+  --yellow: #f6e05e;
+  --orange: #f6ad55;
+  --text: #f7fafc;
+  --text-2: #a0aec0;
+  --text-3: #718096;
+  --mono: "IBM Plex Mono",monospace;
+  --sans: "DM Sans",sans-serif;
+  --display: "Syne",sans-serif;
+  --radius: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --shadow: 0 1px 3px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.25);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.3);
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{
-  min-height:100vh; overflow-x:hidden; color:var(--text);
-  font-family:"DM Sans",sans-serif;
-  background:
-    radial-gradient(circle at top left, rgba(0,247,255,.12), transparent 35%),
-    radial-gradient(circle at top right, rgba(143,92,255,.12), transparent 35%),
-    linear-gradient(180deg,#040611 0%,#090d1d 100%);
+  min-height:100vh;overflow-x:hidden;
+  color:var(--text);font-family:var(--sans);
+  background:var(--bg);
+  font-size:14px;
+  line-height:1.6;
 }
+/* grain overlay */
 body::before{
-  content:""; position:fixed; inset:0; pointer-events:none; z-index:-1;
-  background-image:
-    linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
-  background-size:44px 44px;
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  opacity:.018;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:256px 256px;
 }
-h1,h2,h3,h4,h5,.brand h1,.panel-title h3,.section-heading,.step-name,.sidebar-card h4,
-.pipeline-header p,.tool-btn,.btn,.launch-btn,.nav-pill,.tag,
-.metric-card h4,.report-sub,.insight h5,.summary-box h5,.ai-card h4,
-.video-header strong,.score,.tier-badge,.chart-card h4,.chart-card .chart-subtitle,
-.modal-box h3,.shortcut-key,.log-item time{
-  font-family:"Rajdhani",sans-serif;
+/* subtle top glow */
+body::after{
+  content:"";position:fixed;top:0;left:50%;transform:translateX(-50%);
+  width:600px;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(99,179,237,.25),transparent);
+  pointer-events:none;z-index:1;
 }
-.mono{font-family:"JetBrains Mono",monospace}
-.container{max-width:1620px;margin:auto;padding:28px}
+.container{max-width:1600px;margin:auto;padding:24px 28px;position:relative;z-index:1}
 
-/* ── ENTRANCE ANIMATIONS ───────────────────────────── */
-@keyframes fadeSlideUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+/* ─ ANIMATIONS ─ */
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-.fade-in{animation:fadeSlideUp .55s ease both}
-.delay-1{animation-delay:.08s} .delay-2{animation-delay:.16s}
-.delay-3{animation-delay:.24s} .delay-4{animation-delay:.32s}
-.delay-5{animation-delay:.40s}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes flow{0%{left:-40%;opacity:0}15%{opacity:1}85%{opacity:1}100%{left:110%;opacity:0}}
+@keyframes barRise{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+.fade-up{animation:fadeUp .5s ease both}
+.d1{animation-delay:.06s}.d2{animation-delay:.12s}.d3{animation-delay:.18s}
+.d4{animation-delay:.24s}.d5{animation-delay:.3s}
 
-/* ── NAV ───────────────────────────────────────────── */
-.navbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;gap:20px;flex-wrap:wrap}
-.brand{display:flex;align-items:center;gap:16px}
-.brand-logo{
-  width:52px;height:52px;border-radius:14px;
-  background:linear-gradient(135deg,rgba(0,247,255,.25),rgba(143,92,255,.25));
-  border:1px solid rgba(255,255,255,.08);
+/* ─ NAV ─ */
+.nav{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:28px;gap:16px;flex-wrap:wrap;
+  padding-bottom:20px;
+  border-bottom:1px solid var(--border);
+}
+.brand{display:flex;align-items:center;gap:14px}
+.brand-mark{
+  width:36px;height:36px;border-radius:9px;
+  background:var(--bg-2);border:1px solid var(--border);
   display:flex;align-items:center;justify-content:center;
-  box-shadow:0 0 35px rgba(0,247,255,.15);
+  font-size:16px;flex-shrink:0;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.06);
+}
+.brand-text h1{
+  font-family:var(--display);font-size:1.05rem;font-weight:700;
+  letter-spacing:.08em;color:var(--text);line-height:1;
+}
+.brand-text p{color:var(--text-3);font-size:.72rem;margin-top:2px;letter-spacing:.02em}
+.nav-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.badge{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:5px 11px;border-radius:999px;font-size:.7rem;
+  background:var(--bg-2);border:1px solid var(--border);
+  color:var(--text-2);letter-spacing:.04em;font-family:var(--display);font-weight:600;
+}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;flex-shrink:0}
+.btn-nav{
+  padding:6px 14px;border-radius:8px;border:1px solid var(--border);
+  background:var(--bg-2);color:var(--text-2);font-size:.75rem;
+  font-family:var(--display);font-weight:600;letter-spacing:.04em;
+  cursor:pointer;transition:.15s;
+}
+.btn-nav:hover{border-color:rgba(255,255,255,.14);color:var(--text);background:var(--bg-3)}
+
+/* ─ HERO ─ */
+.hero{
+  display:grid;grid-template-columns:1.3fr .7fr;gap:24px;
+  margin-bottom:20px;
+}
+.hero-main{
+  background:var(--bg-1);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:36px 40px;
   position:relative;overflow:hidden;
 }
-.brand-logo::before{
-  content:"";position:absolute;inset:-20%;
-  background:conic-gradient(from 0deg,transparent,rgba(0,247,255,.4),transparent);
-  animation:spin 4s linear infinite;
+.hero-main::before{
+  content:"";position:absolute;top:-80px;right:-80px;
+  width:280px;height:280px;border-radius:50%;
+  background:radial-gradient(circle,rgba(99,179,237,.06),transparent 70%);
+  pointer-events:none;
 }
-.brand-logo span{position:relative;z-index:2;font-size:1.3rem}
-.brand h1{font-size:1.55rem;font-weight:700;letter-spacing:.1em}
-.brand p{color:var(--muted);font-size:.82rem;margin-top:3px;font-family:"DM Sans",sans-serif}
-.nav-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.nav-pill{
-  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);
-  color:var(--muted);padding:9px 15px;border-radius:999px;font-size:.78rem;
-  display:flex;align-items:center;gap:8px;backdrop-filter:blur(10px);
-  letter-spacing:.06em;
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:7px;
+  font-size:.68rem;font-family:var(--display);font-weight:600;letter-spacing:.12em;
+  color:var(--cyan);margin-bottom:18px;
+  background:var(--cyan-dim);border:1px solid rgba(99,179,237,.2);
+  padding:4px 11px;border-radius:999px;
 }
-.live-dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);animation:pulse 2s infinite}
-
-/* ── HERO ───────────────────────────────────────────── */
-.hero{
-  position:relative;overflow:hidden;border-radius:28px;
-  background:linear-gradient(145deg,rgba(0,247,255,.07),rgba(143,92,255,.07));
-  border:1px solid rgba(255,255,255,.07);
-  padding:36px;margin-bottom:20px;box-shadow:var(--shadow);
+.hero-eyebrow::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--cyan);flex-shrink:0}
+.hero-main h2{
+  font-family:var(--display);font-size:2.6rem;font-weight:800;
+  line-height:1.08;letter-spacing:-.02em;margin-bottom:14px;
 }
-.hero-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:28px}
-.hero h2{font-size:3rem;line-height:1.06;margin-bottom:16px;font-family:"Rajdhani",sans-serif;font-weight:700;letter-spacing:.01em}
-.hero h2 span{background:linear-gradient(90deg,var(--cyan),#6cf5ff,#c391ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.hero p{color:var(--muted);line-height:1.8;max-width:720px;font-size:1rem}
-.hero-stats{margin-top:26px;display:flex;flex-wrap:wrap;gap:14px}
-.hero-stat{min-width:148px;padding:16px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.05)}
-.hero-stat h3{font-size:1.65rem;font-weight:700;margin-bottom:4px;font-family:"Rajdhani",sans-serif}
-.hero-stat span{color:var(--muted);font-size:.8rem}
-.hero-right{display:grid;gap:16px}
-.ai-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:20px;padding:20px;backdrop-filter:blur(14px)}
-.ai-card h4{font-size:.85rem;margin-bottom:16px;color:var(--cyan);letter-spacing:.1em}
-.ai-row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.05)}
-.ai-row:last-child{border-bottom:none}
-.ai-row span{color:var(--muted);font-size:.88rem}
-.tag{font-size:.68rem;padding:4px 9px;border-radius:999px;background:rgba(53,255,136,.12);color:var(--green);border:1px solid rgba(53,255,136,.25);letter-spacing:.08em;font-weight:600}
-
-/* ── PIPELINE FLOWCHART ─────────────────────────────── */
-.pipeline-section{
-  background:var(--surface);border:1px solid rgba(255,255,255,.06);
-  border-radius:var(--radius);backdrop-filter:blur(18px);
-  box-shadow:var(--shadow);padding:28px 32px 32px;margin-bottom:22px;
+.hero-main h2 em{
+  font-style:normal;
+  background:linear-gradient(90deg,var(--cyan-2),var(--purple));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
 }
-.pipeline-header{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:10px;margin-bottom:28px}
-.pipeline-header-left h3{font-size:.78rem;letter-spacing:.14em;color:var(--muted);margin-bottom:5px}
-.pipeline-header-left p{font-size:1.15rem;font-weight:600;letter-spacing:.04em}
-.pipeline-legend{display:flex;gap:20px;align-items:center}
-.legend-item{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:.8rem}
-.legend-dot{width:10px;height:10px;border-radius:50%}
-.legend-dot.cyan{background:var(--cyan);box-shadow:0 0 8px var(--cyan)}
-.legend-dot.purple{background:var(--purple);box-shadow:0 0 8px var(--purple)}
-.legend-dot.green{background:var(--green);box-shadow:0 0 8px var(--green)}
-
-.pipeline-flow{display:flex;align-items:center;justify-content:center;gap:0;overflow-x:auto;padding-bottom:4px}
-.pipeline-flow::-webkit-scrollbar{height:4px}
-.pipeline-flow::-webkit-scrollbar-thumb{background:rgba(0,247,255,.2);border-radius:2px}
-
-.pipeline-step{
-  display:flex;flex-direction:column;align-items:center;gap:12px;
-  min-width:148px;flex:1;max-width:200px;
+.hero-main p{
+  color:var(--text-2);line-height:1.75;font-size:.9rem;max-width:560px;
 }
-.step-box{
-  width:100%;aspect-ratio:1.15;border-radius:18px;
-  background:rgba(255,255,255,.035);
-  border:1.5px solid rgba(255,255,255,.08);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
-  transition:.4s cubic-bezier(.34,1.56,.64,1);
-  position:relative;overflow:hidden;cursor:default;
+.hero-kpis{
+  display:flex;flex-wrap:wrap;gap:8px;margin-top:28px;
 }
-.step-glow{
-  position:absolute;inset:0;opacity:0;
-  background:radial-gradient(circle at 50% 60%,rgba(0,247,255,.18),transparent 65%);
-  transition:.4s ease;
+.kpi{
+  padding:12px 16px;border-radius:10px;
+  background:var(--bg-2);border:1px solid var(--border-soft);
+  min-width:130px;
 }
-.step-box.active{border-color:rgba(0,247,255,.7);transform:translateY(-3px);box-shadow:0 0 32px rgba(0,247,255,.22)}
-.step-box.active .step-glow{opacity:1}
-.step-box.complete{border-color:rgba(53,255,136,.5);box-shadow:0 0 20px rgba(53,255,136,.12)}
-.step-box.complete .step-glow{background:radial-gradient(circle at 50% 60%,rgba(53,255,136,.15),transparent 65%);opacity:1}
-.step-icon{font-size:2rem;line-height:1;position:relative;z-index:1}
-.step-name{font-size:.88rem;font-weight:600;letter-spacing:.06em;text-align:center;position:relative;z-index:1;line-height:1.2}
-.step-sub{font-size:.72rem;color:var(--muted);text-align:center;position:relative;z-index:1;line-height:1.4;padding:0 6px;font-family:"DM Sans",sans-serif}
-.step-status{
-  font-size:.68rem;letter-spacing:.08em;font-weight:600;padding:3px 9px;
-  border-radius:999px;border:1px solid rgba(255,255,255,.1);
-  color:var(--muted);background:rgba(255,255,255,.04);
-  transition:.3s ease;
+.kpi-val{
+  font-family:var(--mono);font-size:1.35rem;font-weight:600;
+  color:var(--text);display:block;line-height:1;margin-bottom:4px;
 }
-.step-box.active .step-status{color:var(--cyan);border-color:rgba(0,247,255,.4);background:rgba(0,247,255,.1)}
-.step-box.complete .step-status{color:var(--green);border-color:rgba(53,255,136,.4);background:rgba(53,255,136,.08)}
-
-.pipeline-connector{
-  width:52px;flex-shrink:0;height:2px;position:relative;
-  background:rgba(255,255,255,.06);
-  align-self:center;margin-bottom:36px;
+.kpi-lbl{color:var(--text-3);font-size:.68rem;letter-spacing:.04em;font-family:var(--display);font-weight:600}
+.hero-aside{display:grid;gap:10px;align-content:start}
+.info-card{
+  background:var(--bg-1);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:18px 20px;
 }
-.pipeline-connector::before{
-  content:'';position:absolute;top:0;left:0;height:2px;width:30%;
-  background:linear-gradient(90deg,var(--cyan),rgba(0,247,255,0));
-  border-radius:2px;
-  animation:connectorFlow 2.4s linear infinite;
+.info-card-title{
+  font-family:var(--display);font-size:.68rem;font-weight:700;
+  letter-spacing:.12em;color:var(--text-3);margin-bottom:12px;
 }
-.pipeline-connector::after{
-  content:'▶';position:absolute;right:-10px;top:50%;transform:translateY(-50%);
-  font-size:.65rem;color:rgba(0,247,255,.4);line-height:1;
+.info-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:8px 0;border-bottom:1px solid var(--border-soft);font-size:.8rem;
 }
-@keyframes connectorFlow{
-  0%{left:-30%;opacity:0} 10%{opacity:1} 90%{opacity:1} 100%{left:100%;opacity:0}
+.info-row:last-child{border-bottom:none;padding-bottom:0}
+.info-row span:first-child{color:var(--text-2)}
+.tag-badge{
+  font-size:.62rem;padding:3px 8px;border-radius:999px;font-weight:700;
+  font-family:var(--display);letter-spacing:.08em;
+  background:var(--green-dim);color:var(--green);border:1px solid rgba(104,211,145,.2);
 }
 
-/* ── DASHBOARD ──────────────────────────────────────── */
-.dashboard{display:grid;grid-template-columns:1fr 360px;gap:22px}
-.panel{background:var(--surface);border:1px solid rgba(255,255,255,.06);border-radius:var(--radius);backdrop-filter:blur(18px);box-shadow:var(--shadow)}
-.panel-header{padding:24px 24px 0;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.panel-title h3{font-size:.95rem;letter-spacing:.1em}
-.panel-title p{margin-top:5px;color:var(--muted);font-size:.85rem;font-family:"DM Sans",sans-serif}
+/* ─ PIPELINE ─ */
+.section-card{
+  background:var(--bg-1);border:1px solid var(--border);
+  border-radius:var(--radius-lg);margin-bottom:20px;
+  box-shadow:var(--shadow);
+}
+.section-header{
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;
+  padding:20px 24px 0;
+}
+.section-title{font-family:var(--display);font-size:.68rem;font-weight:700;letter-spacing:.14em;color:var(--text-3)}
+.section-sub{font-family:var(--display);font-size:.95rem;font-weight:700;color:var(--text);margin-top:3px;letter-spacing:.01em}
+.pipeline-legend{display:flex;gap:16px;align-items:center}
+.leg{display:flex;align-items:center;gap:6px;font-size:.7rem;color:var(--text-3);font-family:var(--display);font-weight:600;letter-spacing:.04em}
+.leg-dot{width:7px;height:7px;border-radius:50%}
+.leg-dot.active{background:var(--cyan)}
+.leg-dot.done{background:var(--green)}
+.leg-dot.wait{background:rgba(255,255,255,.15)}
 
-/* ── UPLOAD ─────────────────────────────────────────── */
-.upload-section{padding:24px}
-.upload-grid{display:grid;grid-template-columns:1fr 120px 1fr;gap:20px;align-items:center}
-.upload-card{position:relative;min-height:260px;border-radius:20px;border:1.5px dashed rgba(255,255,255,.12);background:rgba(255,255,255,.03);overflow:hidden;transition:.25s ease}
-.upload-card:hover,.upload-card.drag{border-color:rgba(0,247,255,.5);transform:translateY(-2px);background:rgba(0,247,255,.04)}
-.upload-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center}
-.upload-icon{font-size:3rem;margin-bottom:12px}
-.upload-title{font-weight:700;margin-bottom:8px;font-family:"Rajdhani",sans-serif;letter-spacing:.04em;font-size:1rem}
-.upload-sub{color:var(--muted);font-size:.88rem;line-height:1.7;margin-bottom:16px;max-width:280px;font-family:"DM Sans",sans-serif}
-.upload-file{margin-top:12px;color:var(--cyan);font-size:.78rem;word-break:break-word;max-width:280px;font-family:"JetBrains Mono",monospace}
-.button-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
-.btn{border:none;cursor:pointer;transition:.2s ease;font-family:"Rajdhani",sans-serif;font-size:.9rem;font-weight:600;letter-spacing:.04em}
-.btn-primary{background:linear-gradient(135deg,var(--cyan),#3fe8ff);color:#041018;padding:11px 18px;border-radius:11px}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:0 0 22px rgba(0,247,255,.35)}
-.btn-secondary{background:rgba(255,255,255,.05);color:var(--text);border:1px solid rgba(255,255,255,.08);padding:11px 18px;border-radius:11px}
-.btn-secondary:hover{background:rgba(255,255,255,.09)}
-.btn:disabled{opacity:.45;cursor:not-allowed;transform:none!important;box-shadow:none!important}
+.pipeline-flow{
+  display:flex;align-items:center;padding:24px;
+  gap:0;overflow-x:auto;
+}
+.pipeline-flow::-webkit-scrollbar{height:3px}
+.pipeline-flow::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.pipe-step{display:flex;flex-direction:column;align-items:center;gap:10px;min-width:140px;flex:1;max-width:180px}
+.pipe-box{
+  width:100%;border-radius:var(--radius);
+  background:var(--bg-2);border:1px solid var(--border);
+  padding:18px 12px;
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  transition:.3s cubic-bezier(.34,1.56,.64,1);cursor:default;
+  position:relative;overflow:hidden;
+}
+.pipe-box::before{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(255,255,255,.02),transparent);
+  pointer-events:none;
+}
+.pipe-box.active{
+  border-color:rgba(99,179,237,.4);
+  box-shadow:0 0 0 1px rgba(99,179,237,.15),0 4px 16px rgba(99,179,237,.08);
+  transform:translateY(-2px);
+}
+.pipe-box.done{border-color:rgba(104,211,145,.3);box-shadow:0 0 0 1px rgba(104,211,145,.1)}
+.pipe-icon{font-size:1.6rem;line-height:1}
+.pipe-name{font-family:var(--display);font-size:.78rem;font-weight:700;letter-spacing:.06em;text-align:center}
+.pipe-sub{font-size:.67rem;color:var(--text-3);text-align:center;line-height:1.5}
+.pipe-badge{
+  font-size:.6rem;font-family:var(--display);font-weight:700;letter-spacing:.08em;
+  padding:2px 8px;border-radius:999px;
+  background:var(--bg-3);border:1px solid var(--border);color:var(--text-3);
+  transition:.25s;
+}
+.pipe-box.active .pipe-badge{background:var(--cyan-dim);border-color:rgba(99,179,237,.3);color:var(--cyan)}
+.pipe-box.done .pipe-badge{background:var(--green-dim);border-color:rgba(104,211,145,.25);color:var(--green)}
+.pipe-arrow{
+  flex-shrink:0;width:40px;height:1px;
+  background:var(--border);position:relative;align-self:center;margin-bottom:26px;
+}
+.pipe-arrow::after{
+  content:"";position:absolute;top:0;left:0;height:1px;width:35%;
+  background:linear-gradient(90deg,var(--cyan),transparent);
+  animation:flow 2.2s linear infinite;
+}
+.pipe-arrow::before{
+  content:"";position:absolute;right:-5px;top:50%;transform:translateY(-50%);
+  width:0;height:0;
+  border-left:5px solid rgba(255,255,255,.15);
+  border-top:3px solid transparent;border-bottom:3px solid transparent;
+}
+
+/* ─ DASHBOARD GRID ─ */
+.dashboard{display:grid;grid-template-columns:1fr 340px;gap:20px}
+.main-panel{background:var(--bg-1);border:1px solid var(--border);border-radius:var(--radius-lg)}
+.panel-head{
+  padding:20px 24px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.panel-head-left{}
+.panel-label{font-family:var(--display);font-size:.66rem;font-weight:700;letter-spacing:.14em;color:var(--text-3)}
+.panel-title{font-family:var(--display);font-size:.92rem;font-weight:700;color:var(--text);margin-top:2px}
+
+/* ─ UPLOAD AREA ─ */
+.upload-area{padding:24px}
+.upload-row{display:grid;grid-template-columns:1fr 100px 1fr;gap:20px;align-items:center}
+.drop-zone{
+  min-height:230px;border-radius:var(--radius-lg);
+  border:1.5px dashed var(--border);
+  background:var(--bg-2);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:24px;text-align:center;gap:10px;
+  transition:.2s ease;cursor:pointer;position:relative;overflow:hidden;
+}
+.drop-zone::before{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(circle at 50% 0%,rgba(99,179,237,.04),transparent 60%);
+}
+.drop-zone:hover,.drop-zone.drag{
+  border-color:rgba(99,179,237,.4);
+  background:var(--bg-3);
+}
+.drop-icon{
+  width:44px;height:44px;border-radius:11px;
+  background:var(--bg-3);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;font-size:1.3rem;
+}
+.drop-title{font-family:var(--display);font-size:.88rem;font-weight:700;letter-spacing:.02em}
+.drop-sub{color:var(--text-3);font-size:.75rem;line-height:1.65;max-width:240px}
+.drop-file{color:var(--cyan);font-size:.7rem;font-family:var(--mono);word-break:break-all;max-width:240px}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.btn{
+  font-family:var(--display);font-weight:700;letter-spacing:.04em;
+  font-size:.78rem;cursor:pointer;border:none;transition:.15s ease;
+  border-radius:8px;padding:9px 16px;
+}
+.btn-primary{
+  background:var(--cyan);color:#0a1628;
+}
+.btn-primary:hover{background:var(--cyan-2);transform:translateY(-1px)}
+.btn-ghost{
+  background:var(--bg-3);color:var(--text-2);
+  border:1px solid var(--border);
+}
+.btn-ghost:hover{border-color:rgba(255,255,255,.12);color:var(--text)}
+.btn:disabled{opacity:.35;cursor:not-allowed;transform:none!important}
+
+.launch-wrap{display:flex;justify-content:center}
 .launch-btn{
-  width:100px;height:100px;border-radius:50%;
+  width:84px;height:84px;border-radius:50%;border:none;
   background:linear-gradient(135deg,var(--cyan),var(--purple));
-  color:white;font-size:2.2rem;display:flex;align-items:center;justify-content:center;
-  border:none;cursor:pointer;transition:.3s cubic-bezier(.34,1.56,.64,1);
-  box-shadow:0 0 45px rgba(0,247,255,.25);font-family:"Rajdhani",sans-serif;
+  color:#fff;font-size:1.8rem;cursor:pointer;
+  transition:.3s cubic-bezier(.34,1.56,.64,1);
+  box-shadow:0 0 0 0 rgba(99,179,237,0);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--display);
 }
-.launch-btn:hover:not(:disabled){transform:scale(1.1);box-shadow:0 0 60px rgba(0,247,255,.4)}
-.launch-btn:disabled{opacity:.3;cursor:not-allowed}
-.select-panel{padding:24px;display:flex;flex-direction:column;gap:14px}
-.select-panel label{font-size:.74rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;font-family:"Rajdhani",sans-serif;font-weight:600}
-.select-panel select{
-  width:100%;background:#0b1024;color:var(--text);
-  border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:13px;outline:none;
-  font-size:.9rem;font-family:"DM Sans",sans-serif;
-  appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--cyan) 50%),linear-gradient(135deg,var(--cyan) 50%,transparent 50%);
-  background-position:calc(100% - 20px) center,calc(100% - 14px) center;background-size:6px 6px;background-repeat:no-repeat;
+.launch-btn:hover:not(:disabled){
+  transform:scale(1.08);
+  box-shadow:0 0 0 8px rgba(99,179,237,.12),0 8px 32px rgba(99,179,237,.2);
 }
-.select-panel select:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(0,247,255,.12)}
-.status{padding:13px;border-radius:13px;background:rgba(255,255,255,.04);color:var(--muted);font-size:.83rem;border:1px solid rgba(255,255,255,.05);font-family:"DM Sans",sans-serif}
-.status.ready{color:var(--green);border-color:rgba(53,255,136,.25)}
-.status.warn{color:var(--yellow);border-color:rgba(255,200,87,.25)}
+.launch-btn:disabled{opacity:.25;cursor:not-allowed}
 
-/* ── WORKSPACE ──────────────────────────────────────── */
-.workspace{display:none;margin-top:22px;gap:18px;grid-template-columns:1fr 1fr}
+.config-panel{display:flex;flex-direction:column;gap:14px}
+.field-label{
+  font-family:var(--display);font-size:.68rem;font-weight:700;
+  letter-spacing:.1em;color:var(--text-3);display:block;margin-bottom:6px;
+}
+select{
+  width:100%;background:var(--bg-2);color:var(--text);
+  border:1px solid var(--border);border-radius:9px;
+  padding:10px 12px;font-size:.82rem;font-family:var(--sans);
+  outline:none;appearance:none;cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%23718096' stroke-width='1.5' d='m6 8 4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 10px center;background-size:16px;
+  padding-right:32px;
+  transition:.15s;
+}
+select:focus{border-color:rgba(99,179,237,.4);box-shadow:0 0 0 3px rgba(99,179,237,.08)}
+select:disabled{opacity:.4;cursor:not-allowed}
+.status-msg{
+  padding:10px 13px;border-radius:9px;font-size:.75rem;
+  background:var(--bg-2);border:1px solid var(--border);
+  color:var(--text-3);line-height:1.5;
+}
+.status-msg.ready{color:var(--green);border-color:rgba(104,211,145,.25)}
+.status-msg.warn{color:var(--yellow);border-color:rgba(246,224,94,.2)}
+
+/* ─ WORKSPACE ─ */
+.workspace{display:none;grid-template-columns:1fr 1fr;gap:16px;padding:0 24px 20px}
 .workspace.show{display:grid}
-.video-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);border-radius:20px;overflow:hidden}
-.video-header{display:flex;justify-content:space-between;align-items:center;padding:15px 18px;border-bottom:1px solid rgba(255,255,255,.05)}
-.video-header strong{font-size:.82rem;letter-spacing:.1em}
-.video-header span{color:var(--muted);font-size:.73rem;letter-spacing:.08em}
-.video-frame{position:relative;aspect-ratio:16/9;background:#000}
-video,iframe{width:100%;height:100%;border:none;display:block}
-.overlay-video{position:absolute;inset:0;mix-blend-mode:screen;opacity:.35;display:none;pointer-events:none}
+.video-card{border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);background:var(--bg-2)}
+.vid-header{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:11px 14px;border-bottom:1px solid var(--border);
+}
+.vid-header strong{font-family:var(--display);font-size:.72rem;font-weight:700;letter-spacing:.1em;color:var(--text-2)}
+.vid-header span{color:var(--text-3);font-size:.66rem;font-family:var(--mono)}
+.vid-frame{position:relative;aspect-ratio:16/9;background:#000}
+video{width:100%;height:100%;border:none;display:block}
+.overlay-video{position:absolute;inset:0;mix-blend-mode:screen;opacity:.3;display:none;pointer-events:none}
 .overlay-video.show{display:block}
 
-/* ── TOOLBAR ────────────────────────────────────────── */
-.toolbar{margin-top:18px;display:grid;grid-template-columns:repeat(5,1fr);gap:12px;padding:0 22px 22px}
-.tool-btn{padding:15px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);color:var(--text);cursor:pointer;transition:.2s ease;font-weight:600;font-family:"Rajdhani",sans-serif;font-size:.84rem;letter-spacing:.04em}
-.tool-btn:hover:not(:disabled){transform:translateY(-2px);border-color:rgba(0,247,255,.3);background:rgba(0,247,255,.06)}
-.tool-btn:disabled{opacity:.4;cursor:not-allowed}
-.tool-btn.active{border-color:var(--cyan);background:rgba(0,247,255,.08);color:var(--cyan)}
-
-/* ── ANALYSIS METRICS ───────────────────────────────── */
-.analysis-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;padding:0 22px 16px}
-.metric-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.05);border-radius:18px;padding:20px;transition:.3s ease}
-.metric-card:hover{border-color:rgba(0,247,255,.15)}
-.metric-card h4{color:var(--muted);font-size:.74rem;margin-bottom:12px;letter-spacing:.12em}
-.metric-value{font-size:2.1rem;font-weight:700;margin-bottom:10px;font-family:"JetBrains Mono",monospace}
-.metric-bar{width:100%;height:7px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}
-.metric-fill{height:100%;width:0%;border-radius:999px;background:linear-gradient(90deg,var(--cyan),#7ffcff);transition:1s ease}
-.metric-desc{margin-top:11px;color:var(--muted);line-height:1.65;font-size:.83rem;font-family:"DM Sans",sans-serif}
-
-/* ── CHARTS SECTION ─────────────────────────────────── */
-.charts-section{display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:0 22px 16px}
-.chart-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.05);border-radius:20px;padding:22px;overflow:hidden}
-.chart-card h4{color:var(--muted);font-size:.74rem;margin-bottom:6px;letter-spacing:.12em}
-.chart-subtitle{font-size:.9rem;margin-bottom:18px;font-weight:600;letter-spacing:.04em}
-.chart-card svg{display:block;width:100%;height:auto}
-
-/* Radar axes labels */
-.radar-label{font-size:11px;font-family:"Rajdhani",sans-serif;fill:rgba(149,162,199,.8);font-weight:600;letter-spacing:.06em}
-.radar-value{font-size:12px;font-family:"JetBrains Mono",monospace;fill:var(--text)}
-
-/* Timeline */
-.timeline-x-label{font-size:10px;font-family:"JetBrains Mono",monospace;fill:rgba(149,162,199,.7)}
-.timeline-y-label{font-size:10px;font-family:"JetBrains Mono",monospace;fill:rgba(149,162,199,.6)}
-.chart-legend{display:flex;gap:16px;margin-top:12px;justify-content:center}
-.chart-leg-item{display:flex;align-items:center;gap:6px;font-size:.76rem;color:var(--muted)}
-.chart-leg-dot{width:10px;height:10px;border-radius:3px}
-
-/* ── REPORT ─────────────────────────────────────────── */
-.report{margin:0 22px 22px;padding:28px;border-radius:22px;background:linear-gradient(135deg,rgba(0,247,255,.08),rgba(143,92,255,.08));border:1px solid rgba(255,255,255,.07);display:none}
-.report.show{display:block}
-.report-top{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap;margin-bottom:24px}
-.score-block{display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap}
-.score{font-size:4.5rem;font-weight:700;line-height:1;background:linear-gradient(90deg,var(--cyan),#9bfffe);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-family:"JetBrains Mono",monospace}
-.tier-badge{
-  padding:6px 14px;border-radius:999px;font-size:.8rem;font-weight:700;letter-spacing:.08em;
-  margin-bottom:6px;align-self:flex-end;
-  border:1.5px solid;
+/* ─ TOOLBAR ─ */
+.toolbar{
+  display:flex;gap:8px;flex-wrap:wrap;
+  padding:12px 24px 20px;
 }
-.tier-badge.elite{background:rgba(255,199,87,.12);color:var(--yellow);border-color:rgba(255,199,87,.4)}
-.tier-badge.advanced{background:rgba(0,247,255,.1);color:var(--cyan);border-color:rgba(0,247,255,.35)}
-.tier-badge.intermediate{background:rgba(143,92,255,.12);color:var(--purple);border-color:rgba(143,92,255,.35)}
-.tier-badge.developing{background:rgba(255,83,112,.1);color:var(--red);border-color:rgba(255,83,112,.3)}
-.report-sub{color:var(--muted);margin-top:6px;font-size:.88rem;font-family:"DM Sans",sans-serif}
-.summary-box{flex:1;min-width:260px;background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:18px}
-.summary-box h5{color:var(--cyan);font-size:.82rem;margin-bottom:10px;letter-spacing:.1em}
-.summary-box p{color:var(--muted);line-height:1.75;font-size:.88rem;font-family:"DM Sans",sans-serif}
+.tool-btn{
+  flex:1;min-width:100px;padding:10px 12px;border-radius:9px;
+  background:var(--bg-2);border:1px solid var(--border);
+  color:var(--text-2);cursor:pointer;transition:.15s ease;
+  font-family:var(--display);font-size:.72rem;font-weight:700;letter-spacing:.04em;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.tool-btn:hover:not(:disabled){border-color:rgba(99,179,237,.25);color:var(--text);background:var(--bg-3)}
+.tool-btn:disabled{opacity:.3;cursor:not-allowed}
+.tool-btn.active{border-color:rgba(99,179,237,.4);background:var(--cyan-dim);color:var(--cyan)}
+
+/* ─ METRICS ─ */
+.metrics-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:12px;
+  padding:0 24px 16px;
+}
+.metric-tile{
+  border-radius:var(--radius);background:var(--bg-2);border:1px solid var(--border-soft);
+  padding:16px 18px;transition:.2s;
+}
+.metric-tile:hover{border-color:var(--border)}
+.metric-tile-label{
+  font-family:var(--display);font-size:.64rem;font-weight:700;
+  letter-spacing:.12em;color:var(--text-3);margin-bottom:8px;
+}
+.metric-val{
+  font-family:var(--mono);font-size:1.8rem;font-weight:600;
+  line-height:1;margin-bottom:8px;color:var(--text);
+}
+.bar-track{height:5px;background:rgba(255,255,255,.07);border-radius:999px;overflow:hidden;margin-bottom:8px}
+.bar-fill{height:100%;width:0%;border-radius:999px;background:linear-gradient(90deg,var(--cyan),var(--cyan-2));transition:1s ease}
+.metric-note{font-size:.72rem;color:var(--text-3);line-height:1.6}
+
+/* ─ CHARTS ─ */
+.charts-row{
+  display:grid;grid-template-columns:1fr 1fr;gap:12px;
+  padding:0 24px 16px;
+}
+.chart-tile{
+  border-radius:var(--radius);background:var(--bg-2);border:1px solid var(--border-soft);
+  padding:18px;overflow:hidden;
+}
+.chart-tile-label{font-family:var(--display);font-size:.64rem;font-weight:700;letter-spacing:.12em;color:var(--text-3);margin-bottom:2px}
+.chart-tile-title{font-family:var(--display);font-size:.85rem;font-weight:700;color:var(--text);margin-bottom:14px}
+.chart-legend{display:flex;gap:14px;margin-top:10px;justify-content:center}
+.chart-leg{display:flex;align-items:center;gap:5px;font-size:.68rem;color:var(--text-3);font-family:var(--display);font-weight:600}
+.chart-leg-swatch{width:10px;height:3px;border-radius:2px;flex-shrink:0}
+
+/* ─ REPORT ─ */
+.report{
+  margin:0 24px 24px;border-radius:var(--radius-lg);
+  background:var(--bg-2);border:1px solid var(--border);
+  padding:24px;display:none;
+}
+.report.show{display:block}
+.report-top{
+  display:flex;justify-content:space-between;align-items:flex-start;
+  gap:20px;flex-wrap:wrap;margin-bottom:22px;
+  padding-bottom:22px;border-bottom:1px solid var(--border);
+}
+.score-group{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.score{
+  font-family:var(--mono);font-size:3.5rem;font-weight:600;line-height:1;
+  background:linear-gradient(90deg,var(--cyan-2),#c4b5fd);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.tier-pill{
+  padding:5px 13px;border-radius:999px;font-size:.68rem;font-weight:700;
+  font-family:var(--display);letter-spacing:.08em;margin-bottom:5px;align-self:flex-end;
+}
+.tier-pill.elite{background:rgba(246,224,94,.1);color:var(--yellow);border:1px solid rgba(246,224,94,.3)}
+.tier-pill.advanced{background:var(--cyan-dim);color:var(--cyan);border:1px solid rgba(99,179,237,.3)}
+.tier-pill.intermediate{background:var(--purple-dim);color:var(--purple);border:1px solid rgba(183,148,244,.3)}
+.tier-pill.developing{background:rgba(252,129,129,.08);color:var(--red);border:1px solid rgba(252,129,129,.25)}
+.report-sub-text{color:var(--text-3);font-size:.75rem;margin-top:4px;font-family:var(--display);font-weight:600;letter-spacing:.04em}
+.summary-box{
+  flex:1;min-width:240px;max-width:380px;
+  background:var(--bg-3);border:1px solid var(--border-soft);
+  border-radius:var(--radius);padding:16px;
+}
+.summary-box h5{
+  font-family:var(--display);font-size:.68rem;font-weight:700;
+  letter-spacing:.12em;color:var(--cyan);margin-bottom:8px;
+}
+.summary-box p{color:var(--text-2);font-size:.78rem;line-height:1.75}
 
 /* Delta table */
-.delta-table{width:100%;border-collapse:collapse;margin-top:22px}
-.delta-table th{color:var(--muted);font-size:.72rem;letter-spacing:.1em;font-weight:600;padding:8px 12px;text-align:left;border-bottom:1px solid rgba(255,255,255,.07)}
-.delta-table td{padding:11px 12px;font-size:.86rem;border-bottom:1px solid rgba(255,255,255,.04)}
+.delta-table{width:100%;border-collapse:collapse;margin-bottom:20px}
+.delta-table th{
+  font-family:var(--display);font-size:.64rem;font-weight:700;letter-spacing:.1em;
+  color:var(--text-3);padding:7px 10px;text-align:left;
+  border-bottom:1px solid var(--border);
+}
+.delta-table td{padding:10px 10px;font-size:.78rem;border-bottom:1px solid rgba(255,255,255,.03)}
 .delta-table tr:last-child td{border-bottom:none}
-.delta-pos{color:var(--green);font-family:"JetBrains Mono",monospace;font-size:.82rem;font-weight:600}
-.delta-neg{color:var(--red);font-family:"JetBrains Mono",monospace;font-size:.82rem;font-weight:600}
-.delta-neutral{color:var(--yellow);font-family:"JetBrains Mono",monospace;font-size:.82rem;font-weight:600}
-.delta-bar-wrap{width:120px;height:6px;background:rgba(255,255,255,.07);border-radius:999px;overflow:hidden;display:inline-block;vertical-align:middle;margin-left:8px}
-.delta-bar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--cyan),#7ffcff)}
+.delta-pos{color:var(--green);font-family:var(--mono);font-size:.75rem;font-weight:600}
+.delta-neg{color:var(--red);font-family:var(--mono);font-size:.75rem;font-weight:600}
+.delta-neutral{color:var(--yellow);font-family:var(--mono);font-size:.75rem;font-weight:600}
+.delta-bar-wrap{width:80px;height:4px;background:rgba(255,255,255,.06);border-radius:999px;overflow:hidden;display:inline-block;vertical-align:middle;margin-left:8px}
+.delta-bar-fill{height:100%;border-radius:999px}
 
-.insights{margin-top:22px;display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
-.insight{background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.05);border-radius:18px;padding:18px}
-.insight h5{margin-bottom:10px;color:var(--cyan);font-size:.9rem;letter-spacing:.05em}
-.insight p{color:var(--muted);line-height:1.75;font-size:.86rem;font-family:"DM Sans",sans-serif}
-.report-actions{display:flex;gap:12px;margin-top:22px;flex-wrap:wrap}
+.insights-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+.insight-card{
+  background:var(--bg-3);border:1px solid var(--border-soft);
+  border-radius:var(--radius);padding:16px;
+}
+.insight-card h5{
+  font-family:var(--display);font-size:.72rem;font-weight:700;
+  letter-spacing:.06em;color:var(--cyan);margin-bottom:7px;
+}
+.insight-card p{color:var(--text-2);font-size:.76rem;line-height:1.7}
+.report-actions{display:flex;gap:8px;flex-wrap:wrap}
 
-/* ── SIDEBAR ────────────────────────────────────────── */
-.sidebar{display:flex;flex-direction:column;gap:18px}
-.sidebar-card{padding:20px}
-.sidebar-card h4{margin-bottom:18px;color:var(--cyan);letter-spacing:.1em;font-size:.88rem;display:flex;align-items:center;gap:8px}
-.live-metric{margin-bottom:16px}
-.live-metric:last-child{margin-bottom:0}
-.live-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}
-.live-top span{color:var(--muted);font-size:.8rem}
-.live-top strong{font-size:.88rem;font-family:"JetBrains Mono",monospace}
-.track{height:7px;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden}
-.fill{height:100%;width:0%;border-radius:999px;transition:.6s ease}
-.fill.cyan{background:linear-gradient(90deg,var(--cyan),#75f8ff)}
-.fill.purple{background:linear-gradient(90deg,var(--purple),#bb9eff)}
-.fill.green{background:linear-gradient(90deg,var(--green),#7cffb2)}
-.activity-log{max-height:270px;overflow:auto}
-.activity-log::-webkit-scrollbar{width:5px}
-.activity-log::-webkit-scrollbar-thumb{background:rgba(0,247,255,.2);border-radius:3px}
-.log-item{padding:10px 12px;border-radius:10px;margin-bottom:7px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.05);color:var(--muted);font-size:.78rem;display:flex;gap:10px;align-items:flex-start}
-.log-item time{color:var(--cyan);font-family:"JetBrains Mono",monospace;font-size:.7rem;flex-shrink:0}
-.session-item{padding:13px;border-radius:13px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.05);margin-bottom:10px;cursor:pointer;transition:.2s ease}
-.session-item:hover{border-color:rgba(0,247,255,.25);transform:translateX(3px)}
-.session-item strong{display:block;margin-bottom:5px;font-size:.88rem;font-family:"Rajdhani",sans-serif;letter-spacing:.04em}
-.session-item span{color:var(--muted);font-size:.76rem;display:block}
-.session-item .score-badge{display:inline-block;margin-top:5px;padding:3px 9px;background:rgba(0,247,255,.12);color:var(--cyan);border-radius:999px;font-size:.7rem;font-family:"JetBrains Mono",monospace}
-.empty-state{color:var(--muted);font-size:.8rem;text-align:center;padding:16px 0;font-family:"DM Sans",sans-serif}
+/* ─ SIDEBAR ─ */
+.sidebar{display:flex;flex-direction:column;gap:14px}
+.side-card{
+  background:var(--bg-1);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:18px 20px;
+}
+.side-title{
+  font-family:var(--display);font-size:.68rem;font-weight:700;
+  letter-spacing:.12em;color:var(--text-3);margin-bottom:16px;
+  display:flex;align-items:center;gap:7px;
+}
+.side-title::before{content:"";width:3px;height:12px;border-radius:2px;background:var(--cyan);flex-shrink:0}
+.live-row{margin-bottom:12px}
+.live-row:last-child{margin-bottom:0}
+.live-meta{display:flex;justify-content:space-between;margin-bottom:5px;align-items:center}
+.live-meta span{font-size:.72rem;color:var(--text-3)}
+.live-meta strong{font-family:var(--mono);font-size:.74rem;color:var(--text-2)}
+.track{height:4px;background:rgba(255,255,255,.06);border-radius:999px;overflow:hidden}
+.fill{height:100%;width:0%;border-radius:999px;transition:.5s ease}
+.fill.c{background:linear-gradient(90deg,var(--cyan),var(--cyan-2))}
+.fill.p{background:linear-gradient(90deg,var(--purple),#d6bcfa)}
+.fill.g{background:linear-gradient(90deg,var(--green),#9ae6b4)}
 
-/* ── TOAST ──────────────────────────────────────────── */
-.toast{position:fixed;bottom:26px;right:26px;padding:13px 20px;border-radius:13px;background:#11182f;border:1px solid rgba(255,255,255,.08);box-shadow:var(--shadow);color:var(--text);transform:translateY(20px);opacity:0;pointer-events:none;transition:.3s ease;z-index:1200;max-width:360px;font-size:.86rem;font-family:"DM Sans",sans-serif}
-.toast.show{opacity:1;transform:translateY(0)}
-.toast.success{border-color:rgba(53,255,136,.3);color:var(--green)}
-.toast.warn{border-color:rgba(255,200,87,.3);color:var(--yellow)}
-.toast.error{border-color:rgba(255,83,112,.3);color:var(--red)}
+.log-feed{max-height:240px;overflow-y:auto;display:flex;flex-direction:column;gap:4px}
+.log-feed::-webkit-scrollbar{width:3px}
+.log-feed::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.log-item{
+  padding:8px 10px;border-radius:7px;
+  background:var(--bg-2);border:1px solid var(--border-soft);
+  display:flex;gap:8px;align-items:flex-start;
+}
+.log-time{font-family:var(--mono);font-size:.62rem;color:var(--cyan);flex-shrink:0}
+.log-msg{font-size:.72rem;color:var(--text-3);line-height:1.5}
+.session-item{
+  padding:12px;border-radius:9px;background:var(--bg-2);border:1px solid var(--border-soft);
+  margin-bottom:8px;cursor:pointer;transition:.15s;
+}
+.session-item:hover{border-color:rgba(99,179,237,.2);transform:translateX(2px)}
+.session-item:last-child{margin-bottom:0}
+.session-item strong{display:block;font-family:var(--display);font-size:.8rem;font-weight:700;letter-spacing:.02em;margin-bottom:3px}
+.session-item span{display:block;font-size:.68rem;color:var(--text-3)}
+.session-score{
+  display:inline-block;margin-top:5px;padding:2px 8px;
+  background:var(--cyan-dim);color:var(--cyan);border-radius:999px;
+  font-size:.62rem;font-family:var(--mono);font-weight:600;
+}
+.empty{color:var(--text-3);font-size:.75rem;text-align:center;padding:14px 0}
 
-/* ── PROGRESS OVERLAY ───────────────────────────────── */
-.progress-overlay{position:fixed;inset:0;background:rgba(4,6,17,.88);backdrop-filter:blur(10px);z-index:998;display:none;align-items:center;justify-content:center;flex-direction:column;gap:20px}
+/* ─ PROGRESS OVERLAY ─ */
+.progress-overlay{
+  position:fixed;inset:0;background:rgba(9,9,11,.9);
+  backdrop-filter:blur(12px);z-index:999;
+  display:none;align-items:center;justify-content:center;flex-direction:column;gap:18px;
+}
 .progress-overlay.show{display:flex}
-.progress-ring{width:120px;height:120px;border:4px solid rgba(0,247,255,.15);border-top-color:var(--cyan);border-radius:50%;animation:spin 1s linear infinite}
-.progress-text{color:var(--cyan);font-family:"Rajdhani",sans-serif;letter-spacing:.14em;font-size:1rem;font-weight:700}
-.progress-step{color:var(--muted);font-size:.82rem;max-width:400px;text-align:center;font-family:"DM Sans",sans-serif}
-.progress-bar-wrap{width:280px;height:5px;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden}
-.progress-bar-fill{height:100%;width:0%;border-radius:999px;background:linear-gradient(90deg,var(--cyan),var(--purple));transition:.4s ease}
+.progress-ring{
+  width:56px;height:56px;border-radius:50%;
+  border:2px solid rgba(99,179,237,.15);border-top-color:var(--cyan);
+  animation:spin .9s linear infinite;
+}
+.progress-label{
+  font-family:var(--display);font-size:.78rem;font-weight:700;
+  letter-spacing:.14em;color:var(--cyan);
+}
+.progress-desc{color:var(--text-3);font-size:.75rem;max-width:360px;text-align:center}
+.progress-track{width:240px;height:3px;background:rgba(255,255,255,.06);border-radius:999px;overflow:hidden}
+.progress-fill{height:100%;width:0%;border-radius:999px;background:linear-gradient(90deg,var(--cyan),var(--purple));transition:.35s ease}
 
-/* ── SHORTCUTS MODAL ────────────────────────────────── */
-.modal-overlay{position:fixed;inset:0;background:rgba(4,6,17,.8);backdrop-filter:blur(8px);z-index:1100;display:none;align-items:center;justify-content:center;padding:20px}
-.modal-overlay.show{display:flex;animation:fadeIn .2s ease}
-.modal-box{background:#0d1230;border:1px solid rgba(255,255,255,.1);border-radius:24px;padding:32px;max-width:500px;width:100%;box-shadow:0 40px 80px rgba(0,0,0,.7)}
-.modal-box h3{font-size:1.2rem;letter-spacing:.1em;margin-bottom:22px;color:var(--cyan)}
-.shortcut-grid{display:grid;grid-template-columns:auto 1fr;gap:12px 16px;align-items:center}
-.shortcut-key{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:6px 12px;font-size:.82rem;font-weight:600;color:var(--text);letter-spacing:.08em;text-align:center;min-width:36px;display:inline-block;font-family:"JetBrains Mono",monospace}
-.shortcut-desc{color:var(--muted);font-size:.87rem;font-family:"DM Sans",sans-serif}
-.modal-close{margin-top:24px;width:100%}
+/* ─ MODAL ─ */
+.modal-backdrop{
+  position:fixed;inset:0;background:rgba(9,9,11,.75);
+  backdrop-filter:blur(8px);z-index:1100;
+  display:none;align-items:center;justify-content:center;padding:20px;
+}
+.modal-backdrop.show{display:flex;animation:fadeIn .18s ease}
+.modal{
+  background:var(--bg-1);border:1px solid var(--border);
+  border-radius:var(--radius-xl);padding:28px;max-width:460px;width:100%;
+  box-shadow:0 24px 64px rgba(0,0,0,.6);
+}
+.modal h3{
+  font-family:var(--display);font-size:1rem;font-weight:700;
+  letter-spacing:.06em;color:var(--text);margin-bottom:20px;
+  padding-bottom:14px;border-bottom:1px solid var(--border);
+}
+.shortcuts-grid{display:grid;grid-template-columns:auto 1fr;gap:9px 14px;align-items:center}
+.key{
+  font-family:var(--mono);font-size:.72rem;font-weight:600;
+  background:var(--bg-2);border:1px solid var(--border);
+  border-radius:5px;padding:4px 9px;color:var(--text-2);
+  text-align:center;min-width:32px;display:inline-block;
+  box-shadow:0 2px 0 var(--border);
+}
+.key-desc{font-size:.78rem;color:var(--text-3)}
+.modal-close{margin-top:20px;width:100%}
 
-/* ── CONFETTI CANVAS ────────────────────────────────── */
-#confettiCanvas{position:fixed;inset:0;pointer-events:none;z-index:1300;opacity:0;transition:opacity .3s}
+/* ─ TOAST ─ */
+.toast{
+  position:fixed;bottom:22px;right:22px;
+  padding:11px 16px;border-radius:10px;
+  background:var(--bg-1);border:1px solid var(--border);
+  box-shadow:var(--shadow);color:var(--text-2);
+  transform:translateY(12px);opacity:0;pointer-events:none;
+  transition:.25s ease;z-index:1200;max-width:320px;
+  font-size:.78rem;line-height:1.5;
+}
+.toast.show{opacity:1;transform:none}
+.toast.ok{color:var(--green);border-color:rgba(104,211,145,.25)}
+.toast.warn{color:var(--yellow);border-color:rgba(246,224,94,.2)}
+.toast.err{color:var(--red);border-color:rgba(252,129,129,.2)}
+
+/* ─ CONFETTI ─ */
+#confettiCanvas{position:fixed;inset:0;pointer-events:none;z-index:1300;opacity:0;transition:opacity .25s}
 #confettiCanvas.show{opacity:1}
 
-/* ── FOOTER ─────────────────────────────────────────── */
-.footer{margin-top:22px;text-align:center;color:var(--muted);font-size:.8rem;padding-bottom:10px;font-family:"DM Sans",sans-serif}
+/* ─ FOOTER ─ */
+.footer{
+  margin-top:20px;text-align:center;padding:16px;
+  border-top:1px solid var(--border);
+  font-size:.7rem;color:var(--text-3);
+}
+.footer a{color:var(--cyan);text-decoration:none;opacity:.7}
+.footer a:hover{opacity:1}
 
-/* ── ANIMATIONS ─────────────────────────────────────── */
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-@keyframes barRise{from{transform:scaleY(0)}to{transform:scaleY(1)}}
-@keyframes strokeDraw{from{stroke-dashoffset:var(--dash)}to{stroke-dashoffset:0}}
-
-/* ── RESPONSIVE ─────────────────────────────────────── */
-@media(max-width:1300px){
+/* ─ RESPONSIVE ─ */
+@media(max-width:1280px){
   .dashboard{grid-template-columns:1fr}
   .sidebar{display:grid;grid-template-columns:1fr 1fr}
 }
-@media(max-width:1050px){
-  .hero-grid{grid-template-columns:1fr}
-  .upload-grid{grid-template-columns:1fr}
+@media(max-width:1000px){
+  .hero{grid-template-columns:1fr}
+  .upload-row{grid-template-columns:1fr}
   .workspace.show{grid-template-columns:1fr}
-  .toolbar{grid-template-columns:1fr 1fr}
-  .analysis-grid,.insights,.charts-section{grid-template-columns:1fr}
-  .pipeline-flow{gap:4px}
-  .pipeline-connector{width:28px}
-  .step-sub{display:none}
+  .toolbar{flex-wrap:wrap}
+  .metrics-grid,.charts-row,.insights-row{grid-template-columns:1fr}
+  .pipe-arrow{width:22px}
+  .pipe-sub{display:none}
 }
-@media(max-width:720px){
+@media(max-width:700px){
   .container{padding:16px}
-  .hero{padding:22px}
-  .hero h2{font-size:2rem}
+  .hero-main h2{font-size:1.8rem}
   .sidebar{grid-template-columns:1fr}
-  .toolbar{grid-template-columns:1fr}
-  .navbar{flex-direction:column;align-items:flex-start}
-  .pipeline-flow{flex-wrap:wrap;justify-content:center;gap:10px}
-  .pipeline-connector{display:none}
+  .pipeline-flow{flex-wrap:wrap;justify-content:center}
+  .pipe-arrow{display:none}
   .delta-bar-wrap{display:none}
+  .nav{flex-direction:column;align-items:flex-start}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}}
 </style>
@@ -410,371 +637,345 @@ video,iframe{width:100%;height:100%;border:none;display:block}
 <canvas id="confettiCanvas"></canvas>
 <div class="container">
 
-  <!-- NAV -->
-  <nav class="navbar fade-in" aria-label="Primary">
-    <div class="brand">
-      <div class="brand-logo" aria-hidden="true"><span>🛡</span></div>
-      <div>
-        <h1>AEGIS INSIGHT</h1>
-        <p>AI-powered professional gameplay intelligence platform</p>
-      </div>
+<!-- NAV -->
+<nav class="nav fade-up">
+  <div class="brand">
+    <div class="brand-mark">🛡</div>
+    <div class="brand-text">
+      <h1>AEGIS INSIGHT</h1>
+      <p>AI gameplay intelligence platform</p>
     </div>
-    <div class="nav-actions">
-      <div class="nav-pill"><span class="live-dot"></span> LIVE ANALYTICS</div>
-      <div class="nav-pill">Neural Pattern Engine v4.8</div>
-      <button class="btn btn-secondary" id="helpBtn" title="Keyboard shortcuts">⌨ Shortcuts</button>
-    </div>
-  </nav>
-
-  <!-- HERO -->
-  <section class="hero fade-in delay-1">
-    <div class="hero-grid">
-      <div>
-        <h2>Analyze your gameplay against <span>professional players</span> using AI pattern intelligence.</h2>
-        <p>Aegis Insight compares player mechanics, movement patterns, positioning, reaction timing, decision making, and combat efficiency against professional-level gameplay footage. Upload your gameplay, select a pro baseline, and receive a personalized performance report with actionable improvement pathways.</p>
-        <div class="hero-stats">
-          <div class="hero-stat"><h3>97.2%</h3><span>Movement Pattern Accuracy</span></div>
-          <div class="hero-stat"><h3>14ms</h3><span>Frame Sync Latency</span></div>
-          <div class="hero-stat"><h3>120+</h3><span>Professional Data Models</span></div>
-          <div class="hero-stat"><h3 id="heroSessions">0</h3><span>Sessions Analyzed (You)</span></div>
-        </div>
-      </div>
-      <div class="hero-right">
-        <div class="ai-card">
-          <h4>AI ANALYSIS ENGINE</h4>
-          <div class="ai-row"><span>Crosshair Placement Model</span><span class="tag">ACTIVE</span></div>
-          <div class="ai-row"><span>Reaction Timing Analyzer</span><span class="tag">ACTIVE</span></div>
-          <div class="ai-row"><span>Movement Optimization</span><span class="tag">ACTIVE</span></div>
-          <div class="ai-row"><span>Decision Intelligence</span><span class="tag">ACTIVE</span></div>
-        </div>
-        <div class="ai-card">
-          <h4>SUPPORTED TITLES</h4>
-          <div class="ai-row"><span>Valorant</span><span class="tag">PRO READY</span></div>
-          <div class="ai-row"><span>Counter-Strike 2</span><span class="tag">PRO READY</span></div>
-          <div class="ai-row"><span>League of Legends</span><span class="tag">PRO READY</span></div>
-          <div class="ai-row"><span>Apex Legends</span><span class="tag">PRO READY</span></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- PIPELINE FLOWCHART -->
-  <section class="pipeline-section fade-in delay-2">
-    <div class="pipeline-header">
-      <div class="pipeline-header-left">
-        <h3>NEURAL ANALYSIS PIPELINE</h3>
-        <p>How Aegis Insight processes your gameplay</p>
-      </div>
-      <div class="pipeline-legend">
-        <div class="legend-item"><div class="legend-dot cyan"></div>Active / Processing</div>
-        <div class="legend-item"><div class="legend-dot green"></div>Complete</div>
-        <div class="legend-item"><div class="legend-dot" style="background:rgba(255,255,255,.2);box-shadow:none"></div>Pending</div>
-      </div>
-    </div>
-    <div class="pipeline-flow" id="pipelineFlow">
-
-      <div class="pipeline-step">
-        <div class="step-box" id="pipeStep0">
-          <div class="step-glow"></div>
-          <div class="step-icon">📁</div>
-          <div class="step-name">VIDEO INPUT</div>
-          <div class="step-sub">MP4 · MOV · WEBM<br>Up to 500 MB</div>
-          <div class="step-status" id="pipeStatus0">WAITING</div>
-        </div>
-      </div>
-
-      <div class="pipeline-connector"></div>
-
-      <div class="pipeline-step">
-        <div class="step-box" id="pipeStep1">
-          <div class="step-glow"></div>
-          <div class="step-icon">🎬</div>
-          <div class="step-name">FRAME SYNC</div>
-          <div class="step-sub">60fps alignment<br>Timeline merge</div>
-          <div class="step-status" id="pipeStatus1">PENDING</div>
-        </div>
-      </div>
-
-      <div class="pipeline-connector"></div>
-
-      <div class="pipeline-step">
-        <div class="step-box" id="pipeStep2">
-          <div class="step-glow"></div>
-          <div class="step-icon">🧠</div>
-          <div class="step-name">AI PATTERN</div>
-          <div class="step-sub">Neural engine<br>Vector analysis</div>
-          <div class="step-status" id="pipeStatus2">PENDING</div>
-        </div>
-      </div>
-
-      <div class="pipeline-connector"></div>
-
-      <div class="pipeline-step">
-        <div class="step-box" id="pipeStep3">
-          <div class="step-glow"></div>
-          <div class="step-icon">⚡</div>
-          <div class="step-name">PRO COMPARE</div>
-          <div class="step-sub">120+ models<br>Similarity scoring</div>
-          <div class="step-status" id="pipeStatus3">PENDING</div>
-        </div>
-      </div>
-
-      <div class="pipeline-connector"></div>
-
-      <div class="pipeline-step">
-        <div class="step-box" id="pipeStep4">
-          <div class="step-glow"></div>
-          <div class="step-icon">📊</div>
-          <div class="step-name">REPORT</div>
-          <div class="step-sub">Insights &amp;<br>improvement path</div>
-          <div class="step-status" id="pipeStatus4">PENDING</div>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- DASHBOARD -->
-  <div class="dashboard fade-in delay-3">
-    <!-- MAIN -->
-    <main class="panel">
-      <header class="panel-header">
-        <div class="panel-title">
-          <h3>SESSION INITIALIZATION</h3>
-          <p>Upload gameplay and select a professional reference model.</p>
-        </div>
-      </header>
-
-      <div class="upload-section">
-        <div class="upload-grid">
-          <div class="upload-card" id="uploadCard">
-            <div class="upload-inner">
-              <div class="upload-icon">🎮</div>
-              <div class="upload-title">Upload Your Gameplay</div>
-              <div class="upload-sub">MP4, MOV, or WEBM up to 500 MB. Recommended 1080p @ 60fps. Drag &amp; drop supported.</div>
-              <div class="button-row">
-                <button class="btn btn-primary" id="uploadBtn">Upload Video</button>
-                <button class="btn btn-secondary" id="demoBtn">Demo Session</button>
-              </div>
-              <div class="upload-file" id="uploadFile">No gameplay uploaded</div>
-              <input type="file" id="fileInput" accept="video/mp4,video/quicktime,video/webm" hidden />
-            </div>
-          </div>
-
-          <div style="display:flex;justify-content:center">
-            <button class="launch-btn" id="launchBtn" disabled aria-label="Launch analysis">⚡</button>
-          </div>
-
-          <div class="select-panel">
-            <div>
-              <label for="gameSelect">Select Game</label>
-              <select id="gameSelect">
-                <option value="">— Choose game —</option>
-                <option value="valorant">Valorant</option>
-                <option value="cs2">Counter-Strike 2</option>
-                <option value="lol">League of Legends</option>
-                <option value="apex">Apex Legends</option>
-              </select>
-            </div>
-            <div>
-              <label for="proSelect">Professional Baseline</label>
-              <select id="proSelect" disabled>
-                <option value="">— Select a game first —</option>
-              </select>
-            </div>
-            <div class="status" id="statusBox">Waiting for gameplay upload and baseline selection…</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Workspace -->
-      <div class="workspace" id="workspace">
-        <div class="video-card">
-          <div class="video-header"><strong>PLAYER FOOTAGE</strong><span id="playerLabel">UNINITIALIZED</span></div>
-          <div class="video-frame">
-            <video id="playerVideo" controls playsinline preload="metadata"></video>
-            <video id="ghostVideo" class="overlay-video" muted playsinline preload="metadata"></video>
-          </div>
-        </div>
-        <div class="video-card">
-          <div class="video-header"><strong>PROFESSIONAL BASELINE</strong><span id="proLabel">REFERENCE MODEL</span></div>
-          <div class="video-frame">
-            <video id="proVideo" controls muted playsinline preload="metadata"></video>
-          </div>
-        </div>
-      </div>
-
-      <!-- Toolbar -->
-      <div class="toolbar">
-        <button class="tool-btn" id="syncBtn" disabled>▶ Sync Playback</button>
-        <button class="tool-btn" id="pauseBtn" disabled>⏸ Pause Session</button>
-        <button class="tool-btn" id="ghostBtn" disabled>👻 Ghost Overlay</button>
-        <button class="tool-btn" id="analyzeBtn" disabled>📊 Generate Analysis</button>
-        <button class="tool-btn" id="exportBtn" disabled>📥 Export Report</button>
-      </div>
-
-      <!-- Analysis Metrics -->
-      <div class="analysis-grid">
-        <div class="metric-card">
-          <h4>CROSSHAIR ACCURACY</h4>
-          <div class="metric-value" id="crosshairVal">0%</div>
-          <div class="metric-bar"><div class="metric-fill" id="crosshairBar"></div></div>
-          <div class="metric-desc">Pre-aim efficiency, target acquisition, and precision consistency vs. pro reference.</div>
-        </div>
-        <div class="metric-card">
-          <h4>MOVEMENT EFFICIENCY</h4>
-          <div class="metric-value" id="movementVal">0%</div>
-          <div class="metric-bar"><div class="metric-fill" id="movementBar"></div></div>
-          <div class="metric-desc">Pathing smoothness, strafing efficiency, and unnecessary movement penalties.</div>
-        </div>
-        <div class="metric-card">
-          <h4>REACTION TIMING</h4>
-          <div class="metric-value" id="reactionVal">0ms</div>
-          <div class="metric-bar"><div class="metric-fill" id="reactionBar"></div></div>
-          <div class="metric-desc">Average decision-to-action latency during high pressure combat interactions.</div>
-        </div>
-        <div class="metric-card">
-          <h4>POSITIONING IQ</h4>
-          <div class="metric-value" id="positioningVal">0%</div>
-          <div class="metric-bar"><div class="metric-fill" id="positioningBar"></div></div>
-          <div class="metric-desc">Spacing, angle control, and map positioning relative to professional standards.</div>
-        </div>
-      </div>
-
-      <!-- CHARTS SECTION (Radar + Timeline) -->
-      <div class="charts-section" id="chartsSection" style="display:none">
-        <div class="chart-card">
-          <h4>PERFORMANCE RADAR</h4>
-          <div class="chart-subtitle">Player vs Pro Benchmark</div>
-          <div id="radarContainer"></div>
-          <div class="chart-legend">
-            <div class="chart-leg-item"><div class="chart-leg-dot" style="background:rgba(0,247,255,.5);border:1.5px solid var(--cyan)"></div>Your Performance</div>
-            <div class="chart-leg-item"><div class="chart-leg-dot" style="background:transparent;border:1.5px dashed var(--purple)"></div>Pro Benchmark</div>
-          </div>
-        </div>
-        <div class="chart-card">
-          <h4>PERFORMANCE TIMELINE</h4>
-          <div class="chart-subtitle">Consistency Across Segments</div>
-          <div id="timelineContainer"></div>
-          <div class="chart-legend">
-            <div class="chart-leg-item"><div class="chart-leg-dot" style="background:var(--cyan)"></div>Your Score</div>
-            <div class="chart-leg-item"><div class="chart-leg-dot" style="background:var(--purple)"></div>Pro Average</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Report -->
-      <section class="report" id="report" aria-live="polite">
-        <div class="report-top">
-          <div>
-            <div class="score-block">
-              <div class="score" id="overallScore">0%</div>
-              <div>
-                <div class="tier-badge" id="tierBadge">—</div>
-              </div>
-            </div>
-            <div class="report-sub">Overall Professional Similarity Score</div>
-          </div>
-          <div class="summary-box">
-            <h5>AI PERFORMANCE SUMMARY</h5>
-            <p id="summaryText">Analysis summary generated dynamically.</p>
-          </div>
-        </div>
-
-        <!-- Delta Comparison Table -->
-        <table class="delta-table" id="deltaTable">
-          <thead>
-            <tr>
-              <th>METRIC</th>
-              <th>YOUR SCORE</th>
-              <th>PRO BASELINE</th>
-              <th>DELTA</th>
-              <th>PROGRESS</th>
-            </tr>
-          </thead>
-          <tbody id="deltaBody"></tbody>
-        </table>
-
-        <div class="insights">
-          <div class="insight"><h5>Mechanics Optimization</h5><p id="insMechanics">—</p></div>
-          <div class="insight"><h5>Movement Intelligence</h5><p id="insMovement">—</p></div>
-          <div class="insight"><h5>Professional Improvement Path</h5><p id="insPath">—</p></div>
-          <div class="insight"><h5>Training Recommendation</h5><p id="insTraining">—</p></div>
-        </div>
-
-        <div class="report-actions">
-          <button class="btn btn-secondary" id="shareBtn">🔗 Share Results</button>
-          <button class="btn btn-secondary" id="exportBtn2">📥 Export JSON</button>
-        </div>
-      </section>
-    </main>
-
-    <!-- SIDEBAR -->
-    <aside class="sidebar fade-in delay-4">
-      <div class="panel sidebar-card">
-        <h4>📡 LIVE TELEMETRY</h4>
-        <div class="live-metric">
-          <div class="live-top"><span>Frame Alignment</span><strong id="telFrameVal">0%</strong></div>
-          <div class="track"><div class="fill cyan" id="telFrame"></div></div>
-        </div>
-        <div class="live-metric">
-          <div class="live-top"><span>Movement Smoothness</span><strong id="telMoveVal">0%</strong></div>
-          <div class="track"><div class="fill purple" id="telMove"></div></div>
-        </div>
-        <div class="live-metric">
-          <div class="live-top"><span>Input Frequency</span><strong id="telInputVal">— Hz</strong></div>
-          <div class="track"><div class="fill green" id="telInput"></div></div>
-        </div>
-        <div class="live-metric">
-          <div class="live-top"><span>Reaction Stability</span><strong id="telReactVal">— ms</strong></div>
-          <div class="track"><div class="fill cyan" id="telReact"></div></div>
-        </div>
-      </div>
-
-      <div class="panel sidebar-card">
-        <h4>📜 SYSTEM LOG</h4>
-        <div class="activity-log" id="activityLog"></div>
-      </div>
-
-      <div class="panel sidebar-card">
-        <h4>🗂 RECENT ANALYSIS</h4>
-        <div id="recentList"><div class="empty-state">No analyses yet. Run your first session to populate history.</div></div>
-      </div>
-    </aside>
   </div>
+  <div class="nav-right">
+    <div class="badge"><span class="live-dot"></span>LIVE ANALYTICS</div>
+    <div class="badge">Neural Engine v4.8</div>
+    <button class="btn-nav" id="helpBtn">⌨ Shortcuts</button>
+  </div>
+</nav>
 
-  <footer class="footer">
-    Aegis Insight © 2026 — AI gameplay analytics &amp; professional benchmarking platform ·
-    <a href="#" id="clearHistory" style="color:var(--cyan);text-decoration:none">Clear local history</a>
-  </footer>
+<!-- HERO -->
+<div class="hero fade-up d1">
+  <div class="hero-main">
+    <div class="hero-eyebrow">AI-powered professional benchmarking</div>
+    <h2>Analyze your gameplay against <em>professional players</em></h2>
+    <p>Aegis Insight compares player mechanics, movement patterns, positioning, reaction timing, and combat efficiency against professional-level gameplay footage. Upload your footage and receive a personalized performance report with actionable improvement pathways.</p>
+    <div class="hero-kpis">
+      <div class="kpi"><span class="kpi-val">97.2%</span><span class="kpi-lbl">Pattern Accuracy</span></div>
+      <div class="kpi"><span class="kpi-val">14ms</span><span class="kpi-lbl">Frame Sync Latency</span></div>
+      <div class="kpi"><span class="kpi-val">120+</span><span class="kpi-lbl">Pro Data Models</span></div>
+      <div class="kpi"><span class="kpi-val" id="heroSessions">0</span><span class="kpi-lbl">Your Sessions</span></div>
+    </div>
+  </div>
+  <div class="hero-aside">
+    <div class="info-card">
+      <div class="info-card-title">AI ANALYSIS ENGINE</div>
+      <div class="info-row"><span>Crosshair Placement Model</span><span class="tag-badge">ACTIVE</span></div>
+      <div class="info-row"><span>Reaction Timing Analyzer</span><span class="tag-badge">ACTIVE</span></div>
+      <div class="info-row"><span>Movement Optimization</span><span class="tag-badge">ACTIVE</span></div>
+      <div class="info-row"><span>Decision Intelligence</span><span class="tag-badge">ACTIVE</span></div>
+    </div>
+    <div class="info-card">
+      <div class="info-card-title">SUPPORTED TITLES</div>
+      <div class="info-row"><span>Valorant</span><span class="tag-badge">PRO READY</span></div>
+      <div class="info-row"><span>Counter-Strike 2</span><span class="tag-badge">PRO READY</span></div>
+      <div class="info-row"><span>League of Legends</span><span class="tag-badge">PRO READY</span></div>
+      <div class="info-row"><span>Apex Legends</span><span class="tag-badge">PRO READY</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- PIPELINE -->
+<div class="section-card fade-up d2">
+  <div class="section-header">
+    <div>
+      <div class="section-title">NEURAL ANALYSIS PIPELINE</div>
+      <div class="section-sub">How Aegis Insight processes your gameplay</div>
+    </div>
+    <div class="pipeline-legend">
+      <div class="leg"><div class="leg-dot active"></div>Processing</div>
+      <div class="leg"><div class="leg-dot done"></div>Complete</div>
+      <div class="leg"><div class="leg-dot wait"></div>Pending</div>
+    </div>
+  </div>
+  <div class="pipeline-flow" id="pipelineFlow">
+    <div class="pipe-step">
+      <div class="pipe-box" id="pipeStep0">
+        <div class="pipe-icon">📁</div>
+        <div class="pipe-name">VIDEO INPUT</div>
+        <div class="pipe-sub">MP4 · MOV · WEBM</div>
+        <div class="pipe-badge" id="pipeStatus0">WAITING</div>
+      </div>
+    </div>
+    <div class="pipe-arrow"></div>
+    <div class="pipe-step">
+      <div class="pipe-box" id="pipeStep1">
+        <div class="pipe-icon">🎬</div>
+        <div class="pipe-name">FRAME SYNC</div>
+        <div class="pipe-sub">60fps alignment</div>
+        <div class="pipe-badge" id="pipeStatus1">PENDING</div>
+      </div>
+    </div>
+    <div class="pipe-arrow"></div>
+    <div class="pipe-step">
+      <div class="pipe-box" id="pipeStep2">
+        <div class="pipe-icon">🧠</div>
+        <div class="pipe-name">AI PATTERN</div>
+        <div class="pipe-sub">Neural vectors</div>
+        <div class="pipe-badge" id="pipeStatus2">PENDING</div>
+      </div>
+    </div>
+    <div class="pipe-arrow"></div>
+    <div class="pipe-step">
+      <div class="pipe-box" id="pipeStep3">
+        <div class="pipe-icon">⚡</div>
+        <div class="pipe-name">PRO COMPARE</div>
+        <div class="pipe-sub">120+ models</div>
+        <div class="pipe-badge" id="pipeStatus3">PENDING</div>
+      </div>
+    </div>
+    <div class="pipe-arrow"></div>
+    <div class="pipe-step">
+      <div class="pipe-box" id="pipeStep4">
+        <div class="pipe-icon">📊</div>
+        <div class="pipe-name">REPORT</div>
+        <div class="pipe-sub">Insights & path</div>
+        <div class="pipe-badge" id="pipeStatus4">PENDING</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="dashboard fade-up d3">
+  <main class="main-panel">
+    <div class="panel-head">
+      <div class="panel-head-left">
+        <div class="panel-label">INITIALIZATION</div>
+        <div class="panel-title">Session Setup</div>
+      </div>
+    </div>
+
+    <div class="upload-area">
+      <div class="upload-row">
+        <div class="drop-zone" id="uploadCard">
+          <div class="drop-icon">🎮</div>
+          <div class="drop-title">Upload Gameplay</div>
+          <div class="drop-sub">MP4, MOV, or WEBM · up to 500 MB · 1080p @ 60fps recommended</div>
+          <div class="btn-row">
+            <button class="btn btn-primary" id="uploadBtn">Choose File</button>
+            <button class="btn btn-ghost" id="demoBtn">Demo Session</button>
+          </div>
+          <div class="drop-file" id="uploadFile">No gameplay uploaded</div>
+          <input type="file" id="fileInput" accept="video/mp4,video/quicktime,video/webm" hidden/>
+        </div>
+
+        <div class="launch-wrap">
+          <button class="launch-btn" id="launchBtn" disabled aria-label="Launch analysis">⚡</button>
+        </div>
+
+        <div class="config-panel">
+          <div>
+            <label class="field-label" for="gameSelect">GAME</label>
+            <select id="gameSelect">
+              <option value="">— Choose game —</option>
+              <option value="valorant">Valorant</option>
+              <option value="cs2">Counter-Strike 2</option>
+              <option value="lol">League of Legends</option>
+              <option value="apex">Apex Legends</option>
+            </select>
+          </div>
+          <div>
+            <label class="field-label" for="proSelect">PROFESSIONAL BASELINE</label>
+            <select id="proSelect" disabled>
+              <option value="">— Select a game first —</option>
+            </select>
+          </div>
+          <div class="status-msg" id="statusBox">Awaiting gameplay upload and baseline selection…</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Workspace -->
+    <div class="workspace" id="workspace">
+      <div class="video-card">
+        <div class="vid-header"><strong>PLAYER FOOTAGE</strong><span id="playerLabel">UNINITIALIZED</span></div>
+        <div class="vid-frame">
+          <video id="playerVideo" controls playsinline preload="metadata"></video>
+          <video id="ghostVideo" class="overlay-video" muted playsinline preload="metadata"></video>
+        </div>
+      </div>
+      <div class="video-card">
+        <div class="vid-header"><strong>PRO BASELINE</strong><span id="proLabel">REFERENCE MODEL</span></div>
+        <div class="vid-frame">
+          <video id="proVideo" controls muted playsinline preload="metadata"></video>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <button class="tool-btn" id="syncBtn" disabled>▶ Sync Playback</button>
+      <button class="tool-btn" id="pauseBtn" disabled>⏸ Pause</button>
+      <button class="tool-btn" id="ghostBtn" disabled>👻 Ghost Overlay</button>
+      <button class="tool-btn" id="analyzeBtn" disabled>📊 Run Analysis</button>
+      <button class="tool-btn" id="exportBtn" disabled>📥 Export</button>
+    </div>
+
+    <!-- Metrics -->
+    <div class="metrics-grid">
+      <div class="metric-tile">
+        <div class="metric-tile-label">CROSSHAIR ACCURACY</div>
+        <div class="metric-val" id="crosshairVal">0%</div>
+        <div class="bar-track"><div class="bar-fill" id="crosshairBar"></div></div>
+        <div class="metric-note">Pre-aim efficiency, target acquisition, and precision consistency vs. pro reference.</div>
+      </div>
+      <div class="metric-tile">
+        <div class="metric-tile-label">MOVEMENT EFFICIENCY</div>
+        <div class="metric-val" id="movementVal">0%</div>
+        <div class="bar-track"><div class="bar-fill" id="movementBar"></div></div>
+        <div class="metric-note">Pathing smoothness, strafing efficiency, and unnecessary movement penalties.</div>
+      </div>
+      <div class="metric-tile">
+        <div class="metric-tile-label">REACTION TIMING</div>
+        <div class="metric-val" id="reactionVal">0ms</div>
+        <div class="bar-track"><div class="bar-fill" id="reactionBar"></div></div>
+        <div class="metric-note">Average decision-to-action latency during high pressure combat interactions.</div>
+      </div>
+      <div class="metric-tile">
+        <div class="metric-tile-label">POSITIONING IQ</div>
+        <div class="metric-val" id="positioningVal">0%</div>
+        <div class="bar-track"><div class="bar-fill" id="positioningBar"></div></div>
+        <div class="metric-note">Spacing, angle control, and map positioning relative to professional standards.</div>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="charts-row" id="chartsSection" style="display:none">
+      <div class="chart-tile">
+        <div class="chart-tile-label">PERFORMANCE RADAR</div>
+        <div class="chart-tile-title">Player vs Pro Benchmark</div>
+        <div id="radarContainer"></div>
+        <div class="chart-legend">
+          <div class="chart-leg"><div class="chart-leg-swatch" style="background:var(--cyan)"></div>Your Performance</div>
+          <div class="chart-leg"><div class="chart-leg-swatch" style="background:transparent;border:1.5px dashed var(--purple)"></div>Pro Benchmark</div>
+        </div>
+      </div>
+      <div class="chart-tile">
+        <div class="chart-tile-label">PERFORMANCE TIMELINE</div>
+        <div class="chart-tile-title">Consistency Across Segments</div>
+        <div id="timelineContainer"></div>
+        <div class="chart-legend">
+          <div class="chart-leg"><div class="chart-leg-swatch" style="background:var(--cyan)"></div>Your Score</div>
+          <div class="chart-leg"><div class="chart-leg-swatch" style="background:var(--purple)"></div>Pro Average</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Report -->
+    <section class="report" id="report" aria-live="polite">
+      <div class="report-top">
+        <div>
+          <div class="score-group">
+            <div class="score" id="overallScore">0%</div>
+            <div class="tier-pill" id="tierBadge">—</div>
+          </div>
+          <div class="report-sub-text">Overall Professional Similarity Score</div>
+        </div>
+        <div class="summary-box">
+          <h5>AI PERFORMANCE SUMMARY</h5>
+          <p id="summaryText">Analysis summary generated dynamically.</p>
+        </div>
+      </div>
+
+      <table class="delta-table" id="deltaTable">
+        <thead>
+          <tr>
+            <th>METRIC</th><th>YOUR SCORE</th><th>PRO BASELINE</th><th>DELTA</th><th>PROGRESS</th>
+          </tr>
+        </thead>
+        <tbody id="deltaBody"></tbody>
+      </table>
+
+      <div class="insights-row">
+        <div class="insight-card"><h5>Mechanics Optimization</h5><p id="insMechanics">—</p></div>
+        <div class="insight-card"><h5>Movement Intelligence</h5><p id="insMovement">—</p></div>
+        <div class="insight-card"><h5>Professional Improvement Path</h5><p id="insPath">—</p></div>
+        <div class="insight-card"><h5>Training Recommendation</h5><p id="insTraining">—</p></div>
+      </div>
+
+      <div class="report-actions">
+        <button class="btn btn-ghost" id="shareBtn">🔗 Share Results</button>
+        <button class="btn btn-ghost" id="exportBtn2">📥 Export JSON</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar fade-up d4">
+    <div class="side-card">
+      <div class="side-title">LIVE TELEMETRY</div>
+      <div class="live-row">
+        <div class="live-meta"><span>Frame Alignment</span><strong id="telFrameVal">0%</strong></div>
+        <div class="track"><div class="fill c" id="telFrame"></div></div>
+      </div>
+      <div class="live-row">
+        <div class="live-meta"><span>Movement Smoothness</span><strong id="telMoveVal">0%</strong></div>
+        <div class="track"><div class="fill p" id="telMove"></div></div>
+      </div>
+      <div class="live-row">
+        <div class="live-meta"><span>Input Frequency</span><strong id="telInputVal">— Hz</strong></div>
+        <div class="track"><div class="fill g" id="telInput"></div></div>
+      </div>
+      <div class="live-row">
+        <div class="live-meta"><span>Reaction Stability</span><strong id="telReactVal">— ms</strong></div>
+        <div class="track"><div class="fill c" id="telReact"></div></div>
+      </div>
+    </div>
+
+    <div class="side-card">
+      <div class="side-title">SYSTEM LOG</div>
+      <div class="log-feed" id="activityLog"></div>
+    </div>
+
+    <div class="side-card">
+      <div class="side-title">RECENT ANALYSES</div>
+      <div id="recentList"><div class="empty">No analyses yet.</div></div>
+    </div>
+  </aside>
+</div>
+
+<footer class="footer">
+  Aegis Insight © 2026 — AI gameplay analytics &amp; professional benchmarking ·
+  <a href="#" id="clearHistory">Clear local history</a>
+</footer>
 </div>
 
 <!-- Toast -->
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<!-- Progress Overlay -->
-<div class="progress-overlay" id="progressOverlay" role="dialog" aria-modal="true" aria-label="Analysis in progress">
+<!-- Progress -->
+<div class="progress-overlay" id="progressOverlay" role="dialog" aria-modal="true">
   <div class="progress-ring" aria-hidden="true"></div>
-  <div class="progress-text" id="progressText">INITIALIZING NEURAL ENGINE…</div>
-  <div class="progress-step" id="progressStep">Booting pattern recognition models</div>
-  <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressBarFill"></div></div>
+  <div class="progress-label" id="progressText">INITIALIZING NEURAL ENGINE…</div>
+  <div class="progress-desc" id="progressStep">Booting pattern recognition models</div>
+  <div class="progress-track"><div class="progress-fill" id="progressBarFill"></div></div>
 </div>
 
 <!-- Shortcuts Modal -->
-<div class="modal-overlay" id="shortcutsModal" role="dialog" aria-modal="true" aria-label="Keyboard shortcuts">
-  <div class="modal-box">
-    <h3>⌨ KEYBOARD SHORTCUTS</h3>
-    <div class="shortcut-grid">
-      <span class="shortcut-key">U</span><span class="shortcut-desc">Open file upload dialog</span>
-      <span class="shortcut-key">D</span><span class="shortcut-desc">Load demo session</span>
-      <span class="shortcut-key">SPACE</span><span class="shortcut-desc">Play / pause synced playback</span>
-      <span class="shortcut-key">G</span><span class="shortcut-desc">Toggle ghost overlay</span>
-      <span class="shortcut-key">A</span><span class="shortcut-desc">Generate AI analysis</span>
-      <span class="shortcut-key">E</span><span class="shortcut-desc">Export report as JSON</span>
-      <span class="shortcut-key">S</span><span class="shortcut-desc">Share results to clipboard</span>
-      <span class="shortcut-key">ESC</span><span class="shortcut-desc">Close this modal</span>
+<div class="modal-backdrop" id="shortcutsModal" role="dialog" aria-modal="true">
+  <div class="modal">
+    <h3>⌨ Keyboard Shortcuts</h3>
+    <div class="shortcuts-grid">
+      <span class="key">U</span><span class="key-desc">Open file upload dialog</span>
+      <span class="key">D</span><span class="key-desc">Load demo session</span>
+      <span class="key">SPACE</span><span class="key-desc">Play / pause synced playback</span>
+      <span class="key">G</span><span class="key-desc">Toggle ghost overlay</span>
+      <span class="key">A</span><span class="key-desc">Generate AI analysis</span>
+      <span class="key">E</span><span class="key-desc">Export report as JSON</span>
+      <span class="key">S</span><span class="key-desc">Share results to clipboard</span>
+      <span class="key">ESC</span><span class="key-desc">Close this modal</span>
     </div>
-    <button class="btn btn-secondary modal-close" id="modalCloseBtn">Close</button>
+    <button class="btn btn-ghost modal-close" id="modalCloseBtn">Close</button>
   </div>
 </div>
 
@@ -782,7 +983,6 @@ video,iframe{width:100%;height:100%;border:none;display:block}
 (() => {
 'use strict';
 
-// ─── Data ────────────────────────────────────────────────────────
 const PROS = {
   valorant:[
     {id:'tenz',   name:'TenZ',       team:'Sentinels', proScores:{crosshair:94,movement:91,reaction:89,positioning:88,decision:90}},
@@ -809,86 +1009,65 @@ const DEMO_VIDEO = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/s
 const PRO_VIDEO  = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4';
 const MAX_SIZE   = 500*1024*1024;
 
-// ─── State ───────────────────────────────────────────────────────
-const state = {
-  file:null, game:'', pro:'',
-  playerSrc:null, proSrc:null,
-  analyzed:false, ghost:false,
-  telemetryTimer:null, lastReport:null,
-};
+const state = { file:null, game:'', pro:'', playerSrc:null, proSrc:null, analyzed:false, ghost:false, telTimer:null, lastReport:null };
 
-// ─── Utils ───────────────────────────────────────────────────────
-const $  = id => document.getElementById(id);
+const $ = id => document.getElementById(id);
 const fmtTime = () => new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'});
 const clamp = (n,a,b) => Math.max(a,Math.min(b,n));
 const seeded = seed => { let s=seed; return ()=>{s=(s*9301+49297)%233280;return s/233280;}; };
-const lerp = (a,b,t) => a+(b-a)*t;
 
 function toast(msg,type=''){
   const t=$('toast');
   t.textContent=msg; t.className='toast show'+(type?' '+type:'');
   clearTimeout(toast._t);
-  toast._t=setTimeout(()=>t.className='toast',3400);
+  toast._t=setTimeout(()=>t.className='toast',3200);
 }
 function log(msg){
   const el=document.createElement('div');
   el.className='log-item';
-  el.innerHTML=`<time>${fmtTime()}</time><span>${msg}</span>`;
+  el.innerHTML=`<span class="log-time">${fmtTime()}</span><span class="log-msg">${msg}</span>`;
   $('activityLog').prepend(el);
-  const items=$('activityLog').children;
-  while(items.length>30)items[items.length-1].remove();
+  while($('activityLog').children.length>28)$('activityLog').lastElementChild.remove();
 }
 
-// ─── Pipeline ────────────────────────────────────────────────────
-function setPipelineStep(idx, state){
-  // state: 'active'|'complete'|'pending'
-  const box = $(`pipeStep${idx}`);
-  const statusEl = $(`pipeStatus${idx}`);
-  if(!box) return;
-  box.className = 'step-box' + (state==='active'?' active':state==='complete'?' complete':'');
-  statusEl.textContent = state==='active'?'PROCESSING…':state==='complete'?'COMPLETE':'PENDING';
+// Pipeline
+function setPipe(idx,s){
+  const box=$(`pipeStep${idx}`),st=$(`pipeStatus${idx}`);
+  if(!box)return;
+  box.className='pipe-box'+(s==='active'?' active':s==='done'?' done':'');
+  st.textContent=s==='active'?'PROCESSING…':s==='done'?'COMPLETE':'PENDING';
 }
-function resetPipeline(){
-  for(let i=0;i<5;i++) setPipelineStep(i,'pending');
-  setPipelineStep(0,'pending');
-  $('pipeStatus0').textContent = 'WAITING';
-}
-function activateUpload(){
-  setPipelineStep(0,'active');
-  $('pipeStatus0').textContent = 'LOADED';
-  setTimeout(()=>setPipelineStep(0,'complete'),600);
-}
+function resetPipe(){for(let i=0;i<5;i++)setPipe(i,'');$('pipeStatus0').textContent='WAITING';}
+function activateUpload(){setPipe(0,'active');setTimeout(()=>setPipe(0,'done'),500);}
 
-// ─── Pro Select ──────────────────────────────────────────────────
+// Selects
 $('gameSelect').addEventListener('change',e=>{
   state.game=e.target.value;
   const sel=$('proSelect');
   sel.innerHTML='';
-  if(!state.game){
-    sel.disabled=true;
-    sel.innerHTML='<option value="">— Select a game first —</option>';
-  } else {
+  if(!state.game){sel.disabled=true;sel.innerHTML='<option value="">— Select a game first —</option>';}
+  else{
     sel.disabled=false;
     sel.innerHTML='<option value="">— Choose a professional —</option>'+
       PROS[state.game].map(p=>`<option value="${p.id}">${p.name} · ${p.team}</option>`).join('');
-    log(`Game selected: ${e.target.options[e.target.selectedIndex].text}`);
+    log(`Game: ${e.target.options[e.target.selectedIndex].text}`);
   }
   state.pro='';
-  refreshReadiness();
+  refreshReady();
 });
 $('proSelect').addEventListener('change',e=>{
   state.pro=e.target.value;
   if(state.pro){
-    const proObj=PROS[state.game].find(p=>p.id===state.pro);
-    $('proLabel').textContent=`${proObj.name.toUpperCase()} · ${proObj.team}`;
+    const p=PROS[state.game].find(x=>x.id===state.pro);
+    $('proLabel').textContent=`${p.name.toUpperCase()} · ${p.team}`;
     state.proSrc=PRO_VIDEO;
     $('proVideo').src=PRO_VIDEO;
-    log(`Pro baseline loaded: ${proObj.name}`);
+    log(`Baseline: ${p.name}`);
   }
-  refreshReadiness();
+  refreshReady();
 });
 
-// ─── Upload ──────────────────────────────────────────────────────
+// Upload
 const card=$('uploadCard');
 $('uploadBtn').addEventListener('click',()=>$('fileInput').click());
 $('fileInput').addEventListener('change',e=>handleFile(e.target.files[0]));
@@ -897,68 +1076,64 @@ $('fileInput').addEventListener('change',e=>handleFile(e.target.files[0]));
 card.addEventListener('drop',e=>{if(e.dataTransfer.files[0])handleFile(e.dataTransfer.files[0]);});
 
 function handleFile(file){
-  if(!file) return;
-  if(!file.type.startsWith('video/')) return toast('Unsupported file. Use MP4, MOV, or WEBM.','error');
-  if(file.size>MAX_SIZE) return toast('File too large. Max 500 MB.','error');
+  if(!file)return;
+  if(!file.type.startsWith('video/'))return toast('Unsupported file — use MP4, MOV, or WEBM.','err');
+  if(file.size>MAX_SIZE)return toast('File exceeds 500 MB limit.','err');
   state.file=file;
   state.playerSrc=URL.createObjectURL(file);
   $('uploadFile').textContent=`✓ ${file.name} · ${(file.size/1024/1024).toFixed(1)} MB`;
   $('playerVideo').src=state.playerSrc;
   $('ghostVideo').src=state.playerSrc;
   $('playerLabel').textContent='PLAYER · LOADED';
-  toast('Gameplay loaded successfully.','success');
+  toast('Gameplay loaded.','ok');
   log(`Uploaded: ${file.name}`);
   activateUpload();
-  refreshReadiness();
+  refreshReady();
 }
 $('demoBtn').addEventListener('click',()=>{
   state.file={name:'demo-session.mp4',size:42*1024*1024};
   state.playerSrc=DEMO_VIDEO;
-  $('uploadFile').textContent='✓ demo-session.mp4 (sample footage)';
+  $('uploadFile').textContent='✓ demo-session.mp4 (sample)';
   $('playerVideo').src=DEMO_VIDEO;
   $('ghostVideo').src=DEMO_VIDEO;
   $('playerLabel').textContent='PLAYER · DEMO';
-  toast('Demo session loaded.','success');
+  toast('Demo session loaded.','ok');
   log('Demo session initialized');
   activateUpload();
-  refreshReadiness();
+  refreshReady();
 });
 
-function refreshReadiness(){
+function refreshReady(){
   const ready=state.file&&state.game&&state.pro;
   $('launchBtn').disabled=!ready;
-  const status=$('statusBox');
-  if(ready){
-    status.textContent='✓ Ready. Press ⚡ to enter the analysis workspace.';
-    status.className='status ready';
-  } else {
-    const missing=[];
-    if(!state.file) missing.push('upload');
-    if(!state.game) missing.push('game');
-    if(!state.pro)  missing.push('pro baseline');
-    status.textContent=`Awaiting: ${missing.join(', ')}.`;
-    status.className='status'+(missing.length===1?' warn':'');
+  const s=$('statusBox');
+  if(ready){s.textContent='✓ Ready — press ⚡ to enter the workspace.';s.className='status-msg ready';}
+  else{
+    const m=[];
+    if(!state.file)m.push('upload');
+    if(!state.game)m.push('game');
+    if(!state.pro)m.push('pro baseline');
+    s.textContent=`Awaiting: ${m.join(', ')}.`;
+    s.className='status-msg'+(m.length===1?' warn':'');
   }
 }
 
-// ─── Launch ──────────────────────────────────────────────────────
-$('launchBtn').addEventListener('click',launch);
-function launch(){
+// Launch
+$('launchBtn').addEventListener('click',()=>{
   $('workspace').classList.add('show');
   ['syncBtn','pauseBtn','ghostBtn','analyzeBtn'].forEach(id=>$(id).disabled=false);
   startTelemetry();
-  setPipelineStep(1,'active');
-  setTimeout(()=>setPipelineStep(1,'complete'),1200);
-  log('Workspace initialized · telemetry streaming');
-  toast('Analysis workspace ready.','success');
+  setPipe(1,'active');
+  setTimeout(()=>setPipe(1,'done'),1100);
+  log('Workspace initialized · telemetry active');
+  toast('Workspace ready.','ok');
   $('workspace').scrollIntoView({behavior:'smooth',block:'start'});
-}
+});
 
-// ─── Playback ────────────────────────────────────────────────────
+// Playback
 $('syncBtn').addEventListener('click',()=>{
-  const p=$('playerVideo'),pr=$('proVideo'),g=$('ghostVideo');
-  [p,pr].forEach(v=>{try{v.currentTime=0;v.play();}catch{}});
-  if(state.ghost){try{g.currentTime=0;g.play();}catch{}}
+  [$('playerVideo'),$('proVideo')].forEach(v=>{try{v.currentTime=0;v.play();}catch{}});
+  if(state.ghost){try{$('ghostVideo').currentTime=0;$('ghostVideo').play();}catch{}}
   log('Sync playback started');
 });
 $('pauseBtn').addEventListener('click',()=>{
@@ -971,33 +1146,27 @@ $('ghostBtn').addEventListener('click',()=>{
   $('ghostBtn').classList.toggle('active',state.ghost);
   if(state.ghost){$('ghostVideo').currentTime=$('playerVideo').currentTime;$('ghostVideo').play().catch(()=>{});}
   else $('ghostVideo').pause();
-  toast(`Ghost overlay ${state.ghost?'enabled':'disabled'}.`);
-  log(`Ghost overlay ${state.ghost?'ON':'OFF'}`);
+  toast(`Ghost overlay ${state.ghost?'on':'off'}.`);
+  log(`Ghost ${state.ghost?'ON':'OFF'}`);
 });
 
-// ─── Telemetry ───────────────────────────────────────────────────
+// Telemetry
 function startTelemetry(){
-  if(state.telemetryTimer) return;
-  const set=(id,val,suffix='%')=>{
-    $(id).style.width=clamp(val,0,100)+'%';
-    $(id+'Val').textContent=Math.round(val)+suffix;
-  };
-  state.telemetryTimer=setInterval(()=>{
-    set('telFrame',78+Math.random()*20);
-    set('telMove', 60+Math.random()*35);
+  if(state.telTimer)return;
+  state.telTimer=setInterval(()=>{
+    const fv=78+Math.random()*20;
+    $('telFrame').style.width=clamp(fv,0,100)+'%';$('telFrameVal').textContent=Math.round(fv)+'%';
+    const mv=60+Math.random()*35;
+    $('telMove').style.width=clamp(mv,0,100)+'%';$('telMoveVal').textContent=Math.round(mv)+'%';
     const hz=Math.round(90+Math.random()*40);
-    $('telInput').style.width=clamp(hz/2,0,100)+'%';
-    $('telInputVal').textContent=hz+' Hz';
+    $('telInput').style.width=clamp(hz/2,0,100)+'%';$('telInputVal').textContent=hz+' Hz';
     const ms=Math.round(170+Math.random()*120);
-    $('telReact').style.width=clamp(100-(ms-140)/4,0,100)+'%';
-    $('telReactVal').textContent=ms+' ms';
+    $('telReact').style.width=clamp(100-(ms-140)/4,0,100)+'%';$('telReactVal').textContent=ms+' ms';
   },1400);
 }
 
-// ─── Analysis ────────────────────────────────────────────────────
-$('analyzeBtn').addEventListener('click',runAnalysis);
-
-const STEPS=[
+// Analysis
+const ASTEPS=[
   [2,'Extracting frame metadata…'],
   [2,'Aligning player & pro timelines…'],
   [3,'Computing crosshair drift vectors…'],
@@ -1006,104 +1175,90 @@ const STEPS=[
   [4,'Scoring positional IQ…'],
   [5,'Synthesizing performance report…'],
 ];
+$('analyzeBtn').addEventListener('click',runAnalysis);
 
 async function runAnalysis(){
   $('analyzeBtn').disabled=true;
-  const ov=$('progressOverlay');
-  ov.classList.add('show');
+  const ov=$('progressOverlay');ov.classList.add('show');
   const fill=$('progressBarFill');
-  for(let i=0;i<STEPS.length;i++){
-    const [pipeIdx,stepText]=STEPS[i];
-    $('progressText').textContent=`STAGE ${i+1}/${STEPS.length}`;
-    $('progressStep').textContent=stepText;
-    fill.style.width=Math.round((i+1)/STEPS.length*100)+'%';
-    // Activate pipeline step
-    if(pipeIdx<=4) setPipelineStep(pipeIdx-1,'active');
-    await new Promise(r=>setTimeout(r,520));
-    if(pipeIdx<=4) setPipelineStep(pipeIdx-1,'complete');
+  for(let i=0;i<ASTEPS.length;i++){
+    const [pi,st]=ASTEPS[i];
+    $('progressText').textContent=`STAGE ${i+1}/${ASTEPS.length}`;
+    $('progressStep').textContent=st;
+    fill.style.width=Math.round((i+1)/ASTEPS.length*100)+'%';
+    if(pi<=4)setPipe(pi-1,'active');
+    await new Promise(r=>setTimeout(r,500));
+    if(pi<=4)setPipe(pi-1,'done');
   }
-  setPipelineStep(4,'complete');
+  setPipe(4,'done');
   ov.classList.remove('show');
 
-  // Scores
   const seed=(state.file?.name?.length||7)*31+state.pro.length*13;
   const rand=seeded(seed||1);
-  const crosshair  =Math.round(58+rand()*38);
-  const movement   =Math.round(55+rand()*40);
-  const reactionMs =Math.round(155+rand()*130);
-  const positioning=Math.round(52+rand()*42);
-  const decision   =Math.round(54+rand()*38);
+  const crosshair   =Math.round(58+rand()*38);
+  const movement    =Math.round(55+rand()*40);
+  const reactionMs  =Math.round(155+rand()*130);
+  const positioning =Math.round(52+rand()*42);
+  const decision    =Math.round(54+rand()*38);
   const reactionScore=clamp(100-(reactionMs-140)/2,0,100);
   const overall=Math.round((crosshair+movement+reactionScore+positioning+decision)/5);
 
-  animateMetric('crosshairVal','crosshairBar',crosshair,'%');
-  animateMetric('movementVal','movementBar',movement,'%');
-  animateMetric('reactionVal','reactionBar',reactionMs,'ms',reactionScore);
-  animateMetric('positioningVal','positioningBar',positioning,'%');
-  animateScore(overall);
+  animMetric('crosshairVal','crosshairBar',crosshair,'%');
+  animMetric('movementVal','movementBar',movement,'%');
+  animMetric('reactionVal','reactionBar',reactionMs,'ms',reactionScore);
+  animMetric('positioningVal','positioningBar',positioning,'%');
+  animScore(overall);
 
   const proObj=PROS[state.game].find(p=>p.id===state.pro);
-  const summary=buildSummary(overall,proObj);
-
-  // Tier
+  const summ=buildSummary(overall,proObj);
   const tier=overall>=85?'elite':overall>=70?'advanced':overall>=55?'intermediate':'developing';
   const tierLabels={elite:'⭐ ELITE TIER',advanced:'◆ ADVANCED',intermediate:'▲ INTERMEDIATE',developing:'▶ DEVELOPING'};
-  const tierEl=$('tierBadge');
-  tierEl.textContent=tierLabels[tier];
-  tierEl.className='tier-badge '+tier;
+  $('tierBadge').textContent=tierLabels[tier];
+  $('tierBadge').className='tier-pill '+tier;
+  $('summaryText').textContent=summ.summary;
+  $('insMechanics').textContent=summ.mechanics;
+  $('insMovement').textContent=summ.movement;
+  $('insPath').textContent=summ.path;
+  $('insTraining').textContent=summ.training;
 
-  $('summaryText').textContent=summary.summary;
-  $('insMechanics').textContent=summary.mechanics;
-  $('insMovement').textContent=summary.movement;
-  $('insPath').textContent=summary.path;
-  $('insTraining').textContent=summary.training;
-
-  // Delta table
-  buildDeltaTable({crosshair,movement,reactionScore,positioning,decision},proObj.proScores);
-
-  // Charts
-  const allScores={crosshair,movement,reaction:reactionScore,positioning,decision};
+  buildDelta({crosshair,movement,reactionScore,positioning,decision},proObj.proScores);
+  const all={crosshair,movement,reaction:reactionScore,positioning,decision};
   $('chartsSection').style.display='grid';
-  buildRadarChart(allScores, proObj.proScores);
-  buildTimelineChart(overall, rand);
+  buildRadar(all,proObj.proScores);
+  buildTimeline(overall,rand);
 
   $('report').classList.add('show');
   $('exportBtn').disabled=false;
   $('analyzeBtn').disabled=false;
   state.analyzed=true;
-
   state.lastReport={
     timestamp:new Date().toISOString(),
-    file:state.file?.name, game:state.game,
-    pro:proObj.name, team:proObj.team, tier,
+    file:state.file?.name,game:state.game,
+    pro:proObj.name,team:proObj.team,tier,
     metrics:{crosshair,movement,reactionMs,reactionScore,positioning,decision,overall},
-    summary,
+    summary:summ,
   };
   saveSession(state.lastReport);
   log(`Analysis complete · ${overall}% similarity to ${proObj.name}`);
-  toast(`Analysis ready · ${overall}% pro-similarity`,'success');
-  if(overall>=78) triggerConfetti();
+  toast(`Analysis ready · ${overall}% pro-similarity`,'ok');
+  if(overall>=78)triggerConfetti();
   $('chartsSection').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
-function animateMetric(valId,barId,target,suffix,fillPct){
-  const v=$(valId),b=$(barId);
-  const start=performance.now(),dur=950;
+function animMetric(vi,bi,target,sfx,fill){
+  const v=$(vi),b=$(bi),start=performance.now(),dur=900;
   const tick=now=>{
-    const t=clamp((now-start)/dur,0,1);
-    const e=1-Math.pow(1-t,3);
-    v.textContent=Math.round(target*e)+suffix;
-    b.style.width=(fillPct??target)*e+'%';
-    if(t<1)requestAnimationFrame(tick);
-    else v.textContent=target+suffix;
+    const t=clamp((now-start)/dur,0,1),e=1-Math.pow(1-t,3);
+    v.textContent=Math.round(target*e)+sfx;
+    b.style.width=(fill??target)*e+'%';
+    if(t<1)requestAnimationFrame(tick);else v.textContent=target+sfx;
   };
   requestAnimationFrame(tick);
 }
-function animateScore(target){
-  const el=$('overallScore'),start=performance.now(),dur=1200;
+function animScore(target){
+  const el=$('overallScore'),start=performance.now(),dur=1100;
   const tick=now=>{
-    const t=clamp((now-start)/dur,0,1);
-    const e=1-Math.pow(1-t,3);
+    const t=clamp((now-start)/dur,0,1),e=1-Math.pow(1-t,3);
     el.textContent=Math.round(target*e)+'%';
     if(t<1)requestAnimationFrame(tick);
   };
@@ -1114,196 +1269,110 @@ function buildSummary(score,pro){
   const tier=score>=85?'elite':score>=70?'advanced':score>=55?'intermediate':'developing';
   return{
     summary:`Your gameplay aligns at a ${tier} level against ${pro.name} (${pro.team}). The neural engine detected ${score}% pattern similarity across mechanics, movement, reaction, and positioning vectors.`,
-    mechanics:score>=70
-      ?'Crosshair discipline and target acquisition are strong. Focus on micro-correction reduction during sustained engagements.'
-      :'Pre-aim placement drifts off common angles. Drill 15 minutes of aim-trainer routines focused on flick recovery and tracking.',
-    movement:score>=65
-      ?'Movement entropy is within professional bounds. Tighten counter-strafing windows to remove residual frames.'
-      :'Excess movement detected during peeks. Practice stop-to-shoot timing and reduce unnecessary repositioning.',
+    mechanics:score>=70?'Crosshair discipline and target acquisition are strong. Focus on micro-correction reduction during sustained engagements.':'Pre-aim placement drifts off common angles. Drill 15 minutes of aim-trainer routines focused on flick recovery and tracking.',
+    movement:score>=65?'Movement entropy is within professional bounds. Tighten counter-strafing windows to remove residual frames.':'Excess movement detected during peeks. Practice stop-to-shoot timing and reduce unnecessary repositioning.',
     path:`Aim to close the gap with ${pro.name} by replicating their utility-first map traversal and tempo control. Estimated runway: ${score>=75?'2–4 weeks':'6–10 weeks'} of focused VOD review.`,
-    training:score>=70
-      ?'Daily routine: 20 min aim-trainer · 30 min ranked with VOD review · 10 min utility lineups.'
-      :'Daily routine: 30 min aim-trainer · 20 min deathmatch · 15 min movement drills · 1 VOD review.',
+    training:score>=70?'Daily routine: 20 min aim-trainer · 30 min ranked with VOD review · 10 min utility lineups.':'Daily routine: 30 min aim-trainer · 20 min deathmatch · 15 min movement drills · 1 VOD review.',
   };
 }
 
-// ─── Delta Table ─────────────────────────────────────────────────
-function buildDeltaTable(player,pro){
+function buildDelta(player,pro){
   const rows=[
-    ['CROSSHAIR ACCURACY', player.crosshair, pro.crosshair, '%'],
-    ['MOVEMENT EFFICIENCY',player.movement,  pro.movement,  '%'],
-    ['REACTION SCORE',     player.reactionScore, pro.reaction,'%'],
-    ['POSITIONING IQ',     player.positioning, pro.positioning,'%'],
-    ['DECISION MAKING',    player.decision,  pro.decision,  '%'],
+    ['CROSSHAIR',player.crosshair,pro.crosshair,'%'],
+    ['MOVEMENT',player.movement,pro.movement,'%'],
+    ['REACTION',player.reactionScore,pro.reaction,'%'],
+    ['POSITIONING',player.positioning,pro.positioning,'%'],
+    ['DECISION',player.decision,pro.decision,'%'],
   ];
-  $('deltaBody').innerHTML=rows.map(([label,p,pr,unit])=>{
-    const delta=p-pr;
-    const cls=delta>=0?'delta-pos':delta>=-10?'delta-neutral':'delta-neg';
-    const sign=delta>=0?'+':'';
-    const fillW=clamp(p,0,100);
+  $('deltaBody').innerHTML=rows.map(([l,p,pr,u])=>{
+    const d=p-pr,cls=d>=0?'delta-pos':d>=-10?'delta-neutral':'delta-neg',sg=d>=0?'+':'';
+    const col=d>=0?'linear-gradient(90deg,#68d391,#9ae6b4)':'linear-gradient(90deg,#fc8181,#fed7d7)';
     return`<tr>
-      <td>${label}</td>
-      <td><strong>${p}${unit}</strong></td>
-      <td style="color:var(--muted)">${pr}${unit}</td>
-      <td><span class="${cls}">${sign}${delta}${unit}</span></td>
-      <td>
-        <div class="delta-bar-wrap">
-          <div class="delta-bar-fill" style="width:${fillW}%;background:${delta>=0?'linear-gradient(90deg,var(--green),#7cffb2)':'linear-gradient(90deg,var(--red),#ff8fa0)'}"></div>
-        </div>
-      </td>
+      <td>${l}</td>
+      <td><strong style="font-family:var(--mono)">${p}${u}</strong></td>
+      <td style="color:var(--text-3)">${pr}${u}</td>
+      <td><span class="${cls}">${sg}${d}${u}</span></td>
+      <td><div class="delta-bar-wrap"><div class="delta-bar-fill" style="width:${clamp(p,0,100)}%;background:${col}"></div></div></td>
     </tr>`;
   }).join('');
 }
 
-// ─── Radar Chart ─────────────────────────────────────────────────
-function buildRadarChart(player, pro){
+function buildRadar(player,pro){
   const labels=['CROSSHAIR','MOVEMENT','REACTION','POSITION','DECISION'];
-  const pScores=[player.crosshair,player.movement,player.reaction,player.positioning,player.decision];
-  const prScores=[pro.crosshair,pro.movement,pro.reaction,pro.positioning,pro.decision];
-  const N=5, cx=180, cy=175, R=130;
-  const angles=Array.from({length:N},(_,i)=>-Math.PI/2+(2*Math.PI*i/N));
-  const pt=(ang,val)=>({x:cx+val/100*R*Math.cos(ang),y:cy+val/100*R*Math.sin(ang)});
-
-  // grid rings
-  const gridSVG=[25,50,75,100].map(pct=>{
-    const pts=angles.map(a=>pt(a,pct));
-    return`<polygon points="${pts.map(p=>`${p.x},${p.y}`).join(' ')}" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="1"/>`;
+  const ps=[player.crosshair,player.movement,player.reaction,player.positioning,player.decision];
+  const prs=[pro.crosshair,pro.movement,pro.reaction,pro.positioning,pro.decision];
+  const N=5,cx=175,cy=170,R=120;
+  const angs=Array.from({length:N},(_,i)=>-Math.PI/2+(2*Math.PI*i/N));
+  const pt=(a,v)=>({x:cx+v/100*R*Math.cos(a),y:cy+v/100*R*Math.sin(a)});
+  const grid=[20,40,60,80,100].map(pct=>{
+    const pts=angs.map(a=>pt(a,pct));
+    return`<polygon points="${pts.map(p=>`${p.x},${p.y}`).join(' ')}" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="1"/>`;
   }).join('');
-
-  // spokes
-  const spokesSVG=angles.map(a=>{
-    const p=pt(a,100);
-    return`<line x1="${cx}" y1="${cy}" x2="${p.x}" y2="${p.y}" stroke="rgba(255,255,255,.1)" stroke-width="1"/>`;
+  const spokes=angs.map(a=>{const p=pt(a,100);return`<line x1="${cx}" y1="${cy}" x2="${p.x}" y2="${p.y}" stroke="rgba(255,255,255,.07)" stroke-width="1"/>`;}).join('');
+  const prPts=angs.map((a,i)=>pt(a,prs[i]));
+  const prPoly=`<polygon points="${prPts.map(p=>`${p.x},${p.y}`).join(' ')}" fill="rgba(183,148,244,.08)" stroke="rgba(183,148,244,.5)" stroke-width="1.5" stroke-dasharray="4,3"/>`;
+  const pPts=angs.map((a,i)=>pt(a,ps[i]));
+  const pPoly=`<polygon id="rp" points="${angs.map(a=>cx+','+cy).join(' ')}" fill="rgba(99,179,237,.15)" stroke="rgba(99,179,237,.8)" stroke-width="2"><animate attributeName="points" dur=".85s" fill="freeze" from="${angs.map(a=>cx+','+cy).join(' ')}" to="${pPts.map(p=>`${p.x},${p.y}`).join(' ')}"/></polygon>`;
+  const dots=pPts.map(p=>`<circle cx="${p.x}" cy="${p.y}" r="3.5" fill="var(--cyan)" stroke="var(--bg)" stroke-width="1.5"/>`).join('');
+  const lblSVG=angs.map((a,i)=>{
+    const p=pt(a,120);
+    const anch=Math.cos(a)>0.1?'start':Math.cos(a)<-0.1?'end':'middle';
+    return`<text x="${p.x}" y="${p.y}" text-anchor="${anch}" dominant-baseline="middle" fill="rgba(160,174,192,.7)" font-size="10" font-family="Syne" font-weight="700" letter-spacing=".06em">${labels[i]}</text>`;
   }).join('');
-
-  // pro polygon
-  const prPts=angles.map((a,i)=>pt(a,prScores[i]));
-  const prPoly=`<polygon points="${prPts.map(p=>`${p.x},${p.y}`).join(' ')}"
-    fill="rgba(143,92,255,.1)" stroke="rgba(143,92,255,.7)" stroke-width="1.5" stroke-dasharray="5,3"/>`;
-
-  // player polygon (animated)
-  const pPts=angles.map((a,i)=>pt(a,pScores[i]));
-  const pPoly=`<polygon id="radarPlayer" points="${angles.map(a=>cx+','+cy).join(' ')}"
-    fill="rgba(0,247,255,.18)" stroke="rgba(0,247,255,.9)" stroke-width="2">
-    <animate attributeName="points" dur=".9s" fill="freeze"
-      from="${angles.map(a=>cx+','+cy).join(' ')}"
-      to="${pPts.map(p=>`${p.x},${p.y}`).join(' ')}"/>
-  </polygon>`;
-
-  // dots
-  const dots=pPts.map(p=>`<circle cx="${p.x}" cy="${p.y}" r="4" fill="var(--cyan)" stroke="#050816" stroke-width="1.5"/>`).join('');
-
-  // labels
-  const labelOffset=18;
-  const labelsSVG=angles.map((a,i)=>{
-    const p=pt(a,100+labelOffset/R*100);
-    const anchor=Math.cos(a)>0.1?'start':Math.cos(a)<-0.1?'end':'middle';
-    return`<text x="${p.x}" y="${p.y}" text-anchor="${anchor}" dominant-baseline="middle" class="radar-label">${labels[i]}</text>`;
-  }).join('');
-
-  // center dot
-  const center=`<circle cx="${cx}" cy="${cy}" r="3" fill="rgba(0,247,255,.4)"/>`;
-
-  const svgH=360;
-  const svg=`<svg viewBox="0 0 360 ${svgH}" xmlns="http://www.w3.org/2000/svg" style="overflow:visible">
-    ${gridSVG}${spokesSVG}${prPoly}${pPoly}${dots}${center}${labelsSVG}
-  </svg>`;
-  $('radarContainer').innerHTML=svg;
+  $('radarContainer').innerHTML=`<svg viewBox="0 0 350 340" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;width:100%">${grid}${spokes}${prPoly}${pPoly}${dots}${lblSVG}<circle cx="${cx}" cy="${cy}" r="2.5" fill="rgba(99,179,237,.4)"/></svg>`;
 }
 
-// ─── Timeline Chart ──────────────────────────────────────────────
-function buildTimelineChart(overall, rand){
-  const segments=8;
-  const pScores=Array.from({length:segments},()=>Math.round(clamp(overall+(rand()-0.5)*24,20,100)));
-  const prScores=Array.from({length:segments},()=>Math.round(clamp(88+(rand()-0.5)*10,70,100)));
-
-  const svgW=340,svgH=200;
-  const padL=36,padB=28,padT=12,padR=10;
-  const chartW=svgW-padL-padR;
-  const chartH=svgH-padB-padT;
-  const barGroupW=chartW/segments;
-  const barW=Math.floor(barGroupW*0.38);
-
-  // y-axis grid + labels
-  const gridLines=[0,25,50,75,100].map(v=>{
-    const y=padT+chartH*(1-v/100);
-    return`<line x1="${padL}" y1="${y}" x2="${svgW-padR}" y2="${y}" stroke="rgba(255,255,255,.06)" stroke-width="1"/>
-           <text x="${padL-6}" y="${y+4}" text-anchor="end" class="timeline-y-label">${v}</text>`;
+function buildTimeline(overall,rand){
+  const n=8;
+  const ps=Array.from({length:n},()=>Math.round(clamp(overall+(rand()-.5)*24,20,100)));
+  const prs=Array.from({length:n},()=>Math.round(clamp(88+(rand()-.5)*10,70,100)));
+  const W=340,H=190,pL=34,pB=26,pT=10,pR=8;
+  const cW=W-pL-pR,cH=H-pB-pT;
+  const bGW=cW/n,bW=Math.floor(bGW*.38);
+  const grid=[0,25,50,75,100].map(v=>{
+    const y=pT+cH*(1-v/100);
+    return`<line x1="${pL}" y1="${y}" x2="${W-pR}" y2="${y}" stroke="rgba(255,255,255,.05)" stroke-width="1"/><text x="${pL-5}" y="${y+4}" text-anchor="end" fill="rgba(113,128,150,.6)" font-size="9" font-family="IBM Plex Mono">${v}</text>`;
   }).join('');
-
-  // bars
-  const bars=pScores.map((ps,i)=>{
-    const prs=prScores[i];
-    const x=padL+i*barGroupW+barGroupW*0.12;
-    const yP=padT+chartH*(1-ps/100);
-    const hP=chartH*ps/100;
-    const yPr=padT+chartH*(1-prs/100);
-    const hPr=chartH*prs/100;
-    const dur=0.4+i*0.07;
-    const timeLabel=`${i*12}s`;
-    return`
-      <rect x="${x}" y="${yP}" width="${barW}" height="${hP}" rx="3"
-        fill="url(#barGradP)" opacity=".9"
-        transform-origin="${x+barW/2} ${padT+chartH}"
-        style="animation:barRise ${dur}s ease both;animation-delay:${i*0.06}s"/>
-      <rect x="${x+barW+3}" y="${yPr}" width="${barW}" height="${hPr}" rx="3"
-        fill="url(#barGradPr)" opacity=".75"
-        transform-origin="${x+barW+3+barW/2} ${padT+chartH}"
-        style="animation:barRise ${dur}s ease both;animation-delay:${i*0.06+0.15}s"/>
-      <text x="${x+barW+1}" y="${svgH-padB+14}" text-anchor="middle" class="timeline-x-label">${timeLabel}</text>
-    `;
+  const bars=ps.map((pv,i)=>{
+    const pr=prs[i],x=pL+i*bGW+bGW*.1;
+    const yP=pT+cH*(1-pv/100),hP=cH*pv/100;
+    const yPr=pT+cH*(1-pr/100),hPr=cH*pr/100;
+    const d=.35+i*.05;
+    return`<rect x="${x}" y="${yP}" width="${bW}" height="${hP}" rx="2" fill="url(#bcp)" opacity=".9" style="animation:barRise ${d}s ease both;animation-delay:${i*.05}s;transform-origin:${x+bW/2}px ${pT+cH}px"/>
+<rect x="${x+bW+3}" y="${yPr}" width="${bW}" height="${hPr}" rx="2" fill="url(#bcpr)" opacity=".7" style="animation:barRise ${d}s ease both;animation-delay:${i*.05+.12}s;transform-origin:${x+bW+3+bW/2}px ${pT+cH}px"/>
+<text x="${x+bW+1}" y="${H-pB+14}" text-anchor="middle" fill="rgba(113,128,150,.6)" font-size="8.5" font-family="IBM Plex Mono">${i*12}s</text>`;
   }).join('');
-
-  // baseline pro avg line
-  const avgPro=Math.round(prScores.reduce((a,b)=>a+b,0)/segments);
-  const avgY=padT+chartH*(1-avgPro/100);
-  const avgLine=`<line x1="${padL}" y1="${avgY}" x2="${svgW-padR}" y2="${avgY}"
-    stroke="rgba(143,92,255,.5)" stroke-width="1" stroke-dasharray="4,3"/>`;
-
-  const svg=`<svg viewBox="0 0 ${svgW} ${svgH}" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <linearGradient id="barGradP" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#00f7ff"/>
-        <stop offset="100%" stop-color="rgba(0,247,255,.3)"/>
-      </linearGradient>
-      <linearGradient id="barGradPr" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#8f5cff"/>
-        <stop offset="100%" stop-color="rgba(143,92,255,.2)"/>
-      </linearGradient>
-    </defs>
-    ${gridLines}${bars}${avgLine}
-    <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${padT+chartH}" stroke="rgba(255,255,255,.12)" stroke-width="1"/>
-    <line x1="${padL}" y1="${padT+chartH}" x2="${svgW-padR}" y2="${padT+chartH}" stroke="rgba(255,255,255,.12)" stroke-width="1"/>
-  </svg>`;
-  $('timelineContainer').innerHTML=svg;
+  const avgPr=Math.round(prs.reduce((a,b)=>a+b,0)/n);
+  const avgY=pT+cH*(1-avgPr/100);
+  $('timelineContainer').innerHTML=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%">
+<defs>
+  <linearGradient id="bcp" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#63b3ed"/><stop offset="100%" stop-color="rgba(99,179,237,.25)"/></linearGradient>
+  <linearGradient id="bcpr" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#b794f4"/><stop offset="100%" stop-color="rgba(183,148,244,.2)"/></linearGradient>
+</defs>
+${grid}${bars}
+<line x1="${pL}" y1="${avgY}" x2="${W-pR}" y2="${avgY}" stroke="rgba(183,148,244,.4)" stroke-width="1" stroke-dasharray="4,3"/>
+<line x1="${pL}" y1="${pT}" x2="${pL}" y2="${pT+cH}" stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+<line x1="${pL}" y1="${pT+cH}" x2="${W-pR}" y2="${pT+cH}" stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+</svg>`;
 }
 
-// ─── Sessions ────────────────────────────────────────────────────
+// Sessions
 const STORE='aegis-sessions-v2';
 function loadSessions(){try{return JSON.parse(localStorage.getItem(STORE)||'[]');}catch{return[];}}
-function saveSession(r){
-  const list=loadSessions();
-  list.unshift(r);
-  localStorage.setItem(STORE,JSON.stringify(list.slice(0,10)));
-  renderSessions();
-}
+function saveSession(r){const l=loadSessions();l.unshift(r);localStorage.setItem(STORE,JSON.stringify(l.slice(0,10)));renderSessions();}
 function renderSessions(){
-  const list=loadSessions();
-  $('heroSessions').textContent=list.length;
+  const l=loadSessions();
+  $('heroSessions').textContent=l.length;
   const el=$('recentList');
-  if(!list.length){el.innerHTML='<div class="empty-state">No analyses yet. Run your first session to populate history.</div>';return;}
-  el.innerHTML=list.map((r,i)=>`
-    <div class="session-item" data-i="${i}">
-      <strong>${r.pro} · ${r.team}</strong>
-      <span>${new Date(r.timestamp).toLocaleString()}</span>
-      <span style="color:var(--muted);font-size:.74rem">${r.game?.toUpperCase()||'—'} · ${r.file||'session'}</span>
-      <span class="score-badge">${r.metrics.overall}% similarity</span>
-    </div>`).join('');
-  el.querySelectorAll('.session-item').forEach(node=>{
-    node.addEventListener('click',()=>{
-      const r=loadSessions()[+node.dataset.i];
-      toast(`Snapshot: ${r.pro} · ${r.tier?.toUpperCase()||''} · ${r.metrics.overall}%`);
-    });
+  if(!l.length){el.innerHTML='<div class="empty">No analyses yet. Run your first session.</div>';return;}
+  el.innerHTML=l.map((r,i)=>`<div class="session-item" data-i="${i}">
+    <strong>${r.pro} · ${r.team}</strong>
+    <span>${new Date(r.timestamp).toLocaleString()}</span>
+    <span style="font-size:.66rem;color:var(--text-3)">${r.game?.toUpperCase()||'—'} · ${r.file||'session'}</span>
+    <span class="session-score">${r.metrics.overall}% similarity</span>
+  </div>`).join('');
+  el.querySelectorAll('.session-item').forEach(n=>{
+    n.addEventListener('click',()=>{const r=loadSessions()[+n.dataset.i];toast(`${r.pro} · ${r.tier?.toUpperCase()||''} · ${r.metrics.overall}%`);});
   });
 }
 $('clearHistory').addEventListener('click',e=>{
@@ -1311,100 +1380,80 @@ $('clearHistory').addEventListener('click',e=>{
   if(confirm('Clear local analysis history?')){localStorage.removeItem(STORE);renderSessions();toast('History cleared.');}
 });
 
-// ─── Export ──────────────────────────────────────────────────────
+// Export
 function doExport(){
-  if(!state.lastReport) return;
+  if(!state.lastReport)return;
   const blob=new Blob([JSON.stringify(state.lastReport,null,2)],{type:'application/json'});
   const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  a.href=url; a.download=`aegis-report-${Date.now()}.json`; a.click();
-  URL.revokeObjectURL(url);
-  toast('Report exported.','success');
-  log('Report exported as JSON');
+  const a=document.createElement('a');a.href=url;a.download=`aegis-report-${Date.now()}.json`;a.click();URL.revokeObjectURL(url);
+  toast('Report exported.','ok');log('Report exported as JSON');
 }
 $('exportBtn').addEventListener('click',doExport);
 $('exportBtn2').addEventListener('click',doExport);
 
-// ─── Share ───────────────────────────────────────────────────────
+// Share
 function doShare(){
   if(!state.lastReport){toast('Run an analysis first.','warn');return;}
   const r=state.lastReport;
-  const txt=`🛡 Aegis Insight Analysis\n`+
-    `Game: ${r.game?.toUpperCase()} vs ${r.pro} (${r.team})\n`+
-    `Overall: ${r.metrics.overall}% · ${r.tier?.toUpperCase()}\n`+
-    `Crosshair: ${r.metrics.crosshair}% · Movement: ${r.metrics.movement}% · Reaction: ${r.metrics.reactionMs}ms · Positioning: ${r.metrics.positioning}%`;
-  navigator.clipboard.writeText(txt).then(()=>toast('Results copied to clipboard!','success')).catch(()=>toast('Copy failed — try manual export.','error'));
+  const txt=`🛡 Aegis Insight Analysis\nGame: ${r.game?.toUpperCase()} vs ${r.pro} (${r.team})\nOverall: ${r.metrics.overall}% · ${r.tier?.toUpperCase()}\nCrosshair: ${r.metrics.crosshair}% · Movement: ${r.metrics.movement}% · Reaction: ${r.metrics.reactionMs}ms · Positioning: ${r.metrics.positioning}%`;
+  navigator.clipboard.writeText(txt).then(()=>toast('Copied to clipboard!','ok')).catch(()=>toast('Copy failed — try manual export.','err'));
 }
 $('shareBtn').addEventListener('click',doShare);
 
-// ─── Confetti ────────────────────────────────────────────────────
+// Confetti
 function triggerConfetti(){
-  const canvas=$('confettiCanvas');
-  const ctx=canvas.getContext('2d');
-  canvas.width=window.innerWidth;
-  canvas.height=window.innerHeight;
+  const canvas=$('confettiCanvas'),ctx=canvas.getContext('2d');
+  canvas.width=window.innerWidth;canvas.height=window.innerHeight;
   canvas.classList.add('show');
-  const colors=['#00f7ff','#8f5cff','#35ff88','#ffc857','#ff7c3e','#fff'];
-  const particles=Array.from({length:90},()=>({
-    x:Math.random()*canvas.width,
-    y:-20-Math.random()*60,
-    w:6+Math.random()*8,
-    h:8+Math.random()*12,
+  const colors=['#63b3ed','#b794f4','#68d391','#f6e05e','#f6ad55','#fff'];
+  const parts=Array.from({length:80},()=>({
+    x:Math.random()*canvas.width,y:-20-Math.random()*50,
+    w:5+Math.random()*7,h:7+Math.random()*10,
     r:Math.random()*Math.PI*2,
-    vx:(Math.random()-0.5)*4,
-    vy:2+Math.random()*4,
-    vr:(Math.random()-0.5)*0.18,
-    color:colors[Math.floor(Math.random()*colors.length)],
-    alpha:1,
+    vx:(Math.random()-.5)*3.5,vy:1.8+Math.random()*3.5,
+    vr:(Math.random()-.5)*.14,
+    color:colors[Math.floor(Math.random()*colors.length)],alpha:1,
   }));
-  let start=performance.now();
-  const dur=3200;
+  let start=performance.now();const dur=3000;
   function draw(now){
     ctx.clearRect(0,0,canvas.width,canvas.height);
-    const t=(now-start)/dur;
-    if(t>=1){canvas.classList.remove('show');ctx.clearRect(0,0,canvas.width,canvas.height);return;}
-    particles.forEach(p=>{
-      p.x+=p.vx; p.y+=p.vy; p.r+=p.vr;
-      p.alpha=clamp(1-Math.max(0,(t-0.7)/0.3),0,1);
-      ctx.save();
-      ctx.globalAlpha=p.alpha;
-      ctx.translate(p.x,p.y);
-      ctx.rotate(p.r);
-      ctx.fillStyle=p.color;
-      ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
-      ctx.restore();
+    const t=(now-start)/dur;if(t>=1){canvas.classList.remove('show');return;}
+    parts.forEach(p=>{
+      p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;
+      p.alpha=clamp(1-Math.max(0,(t-.65)/.35),0,1);
+      ctx.save();ctx.globalAlpha=p.alpha;ctx.translate(p.x,p.y);ctx.rotate(p.r);
+      ctx.fillStyle=p.color;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();
     });
     requestAnimationFrame(draw);
   }
   requestAnimationFrame(draw);
 }
 
-// ─── Shortcuts Modal ─────────────────────────────────────────────
+// Modal
 function openModal(){$('shortcutsModal').classList.add('show');}
 function closeModal(){$('shortcutsModal').classList.remove('show');}
 $('helpBtn').addEventListener('click',openModal);
 $('modalCloseBtn').addEventListener('click',closeModal);
 $('shortcutsModal').addEventListener('click',e=>{if(e.target===$('shortcutsModal'))closeModal();});
 
-// ─── Keyboard ────────────────────────────────────────────────────
+// Keyboard
 document.addEventListener('keydown',e=>{
-  if(['INPUT','SELECT','TEXTAREA'].includes(document.activeElement.tagName)) return;
+  if(['INPUT','SELECT','TEXTAREA'].includes(document.activeElement.tagName))return;
   const k=e.key.toLowerCase();
   if(e.key==='Escape'){closeModal();return;}
-  if(k==='u') $('uploadBtn').click();
-  else if(k==='d') $('demoBtn').click();
-  else if(k==='g'&&!$('ghostBtn').disabled) $('ghostBtn').click();
-  else if(k==='a'&&!$('analyzeBtn').disabled) $('analyzeBtn').click();
-  else if(k==='e'&&!$('exportBtn').disabled) doExport();
-  else if(k==='s') doShare();
+  if(k==='u')$('uploadBtn').click();
+  else if(k==='d')$('demoBtn').click();
+  else if(k==='g'&&!$('ghostBtn').disabled)$('ghostBtn').click();
+  else if(k==='a'&&!$('analyzeBtn').disabled)$('analyzeBtn').click();
+  else if(k==='e'&&!$('exportBtn').disabled)doExport();
+  else if(k==='s')doShare();
   else if(e.code==='Space'&&$('workspace').classList.contains('show')){
     e.preventDefault();
-    const p=$('playerVideo');
-    p.paused?$('syncBtn').click():$('pauseBtn').click();
+    const p=$('playerVideo');p.paused?$('syncBtn').click():$('pauseBtn').click();
   }
 });
 
-// ─── Init ────────────────────────────────────────────────────────
+// Init
 log('System online · Neural Pattern Engine v4.8');
 log('All analysis modules loaded and ready');
 renderSessions();

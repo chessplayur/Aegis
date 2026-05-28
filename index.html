@@ -746,43 +746,43 @@ body::after{
 (() => {
   'use strict';
 
-  // ========== PRO DATA — each pro is linked to their REAL YouTube channel ==========
-  // `handle` = the @handle of the pro's own (or primary) YouTube channel.
-  // At selection time we resolve the handle -> channelId -> RSS feed of latest uploads
-  // through a public CORS proxy, then embed the most recent video from THAT channel.
+  // ========== PRO DATA ==========
+  // `query` = a YouTube search query for the pro's gameplay. We fetch YouTube
+  // search results through a CORS proxy and extract video IDs — this avoids
+  // fragile @handle -> channelId resolution that breaks when YouTube changes
+  // its public HTML or when a handle doesn't exist as a real channel.
+  // `handle` is kept only for the "Open on YouTube" fallback link.
   const PROS = {
     valorant: [
-      { id:'tenz',    name:'TenZ',    team:'Sentinels', handle:'TenZOfficial' },
-      { id:'demon1',  name:'Demon1',  team:'EG',        handle:'demon1' },
-      { id:'aspas',   name:'Aspas',   team:'Leviatán',  handle:'aspas' },
+      { id:'tenz',    name:'TenZ',    team:'Sentinels', handle:'TenZOfficial', query:'TenZ Valorant highlights' },
+      { id:'demon1',  name:'Demon1',  team:'EG',        handle:'demon1',       query:'Demon1 Valorant highlights' },
+      { id:'aspas',   name:'Aspas',   team:'Leviatán',  handle:'aspas',        query:'Aspas Valorant highlights' },
     ],
     cs2: [
-      { id:'s1mple',  name:'s1mple',  team:'NAVI',      handle:'s1mpleO' },
-      { id:'zywoo',   name:'ZywOo',   team:'Vitality',  handle:'ZywOo' },
-      { id:'donk',    name:'donk',    team:'Spirit',    handle:'donk' },
+      { id:'s1mple',  name:'s1mple',  team:'NAVI',      handle:'s1mpleO',      query:'s1mple CS2 highlights' },
+      { id:'zywoo',   name:'ZywOo',   team:'Vitality',  handle:'ZywOo',        query:'ZywOo CS2 highlights' },
+      { id:'donk',    name:'donk',    team:'Spirit',    handle:'donk',         query:'donk CS2 highlights' },
     ],
     lol: [
-      { id:'faker',   name:'Faker',   team:'T1',        handle:'T1Faker' },
-      { id:'chovy',   name:'Chovy',   team:'GenG',      handle:'chovy' },
-      { id:'caps',    name:'Caps',    team:'G2',        handle:'CapsOfficial' },
+      { id:'faker',   name:'Faker',   team:'T1',        handle:'T1Faker',      query:'Faker T1 League of Legends highlights' },
+      { id:'chovy',   name:'Chovy',   team:'GenG',      handle:'chovy',        query:'Chovy GenG League of Legends highlights' },
+      { id:'caps',    name:'Caps',    team:'G2',        handle:'CapsOfficial', query:'Caps G2 League of Legends highlights' },
     ],
     apex: [
-      { id:'imperialhal', name:'ImperialHal', team:'TSM', handle:'ImperialHal' },
-      { id:'genburten',   name:'Genburten',   team:'DZ',  handle:'Genburten' },
-      { id:'zer0',        name:'Zer0',        team:'TSM', handle:'zer0apex' },
+      { id:'imperialhal', name:'ImperialHal', team:'TSM', handle:'ImperialHal', query:'ImperialHal Apex Legends highlights' },
+      { id:'genburten',   name:'Genburten',   team:'DZ',  handle:'Genburten',   query:'Genburten Apex Legends highlights' },
+      { id:'zer0',        name:'Zer0',        team:'TSM', handle:'zer0apex',    query:'Zer0 Apex Legends highlights' },
     ],
   };
 
-  // CORS-friendly proxies used to (a) resolve @handle -> channelId from the public
-  // channel HTML, and (b) fetch the channel's public RSS uploads feed.
-  // Multiple proxies are tried in order for resilience.
+  // CORS-friendly proxies, tried in order. r.jina.ai is excluded here because
+  // it returns markdown (no embedded videoId JSON to parse).
   const CORS_PROXIES = [
-    u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
     u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
-    u => `https://r.jina.ai/${u}`,
+    u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+    u => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
   ];
-  const CHANNEL_CACHE = new Map(); // handle -> channelId
-  const VIDEO_CACHE   = new Map(); // channelId -> [{id,title}]
+  const SEARCH_CACHE = new Map(); // query -> [{id,title}]
 
   async function fetchViaProxy(url) {
     let lastErr;
@@ -790,36 +790,29 @@ body::after{
       try {
         const r = await fetch(wrap(url), { cache: 'no-store' });
         if (!r.ok) { lastErr = new Error('HTTP ' + r.status); continue; }
-        return await r.text();
+        const txt = await r.text();
+        if (txt && txt.length > 500) return txt;
+        lastErr = new Error('Empty response');
       } catch (e) { lastErr = e; }
     }
     throw lastErr || new Error('All proxies failed');
   }
 
-  async function resolveChannelId(handle) {
-    if (CHANNEL_CACHE.has(handle)) return CHANNEL_CACHE.get(handle);
-    const html = await fetchViaProxy(`https://www.youtube.com/@${handle}`);
-    // YouTube embeds the canonical channelId in several places — try the most reliable first.
-    const m =
-      html.match(/"channelId":"(UC[0-9A-Za-z_-]{22})"/) ||
-      html.match(/<meta itemprop="(?:channelId|identifier)" content="(UC[0-9A-Za-z_-]{22})"/) ||
-      html.match(/\/channel\/(UC[0-9A-Za-z_-]{22})/);
-    if (!m) throw new Error('Channel not found for @' + handle);
-    CHANNEL_CACHE.set(handle, m[1]);
-    return m[1];
-  }
-
-  async function fetchChannelVideos(channelId) {
-    if (VIDEO_CACHE.has(channelId)) return VIDEO_CACHE.get(channelId);
-    const xml = await fetchViaProxy(`https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`);
-    const entries = [...xml.matchAll(/<entry>([\s\S]*?)<\/entry>/g)].map(e => {
-      const block = e[1];
-      const id = (block.match(/<yt:videoId>([^<]+)<\/yt:videoId>/) || [])[1];
-      const title = (block.match(/<title>([^<]+)<\/title>/) || [])[1] || '';
-      return id ? { id, title } : null;
-    }).filter(Boolean);
-    if (!entries.length) throw new Error('No videos in feed');
-    VIDEO_CACHE.set(channelId, entries);
+  async function searchYouTubeVideos(query) {
+    if (SEARCH_CACHE.has(query)) return SEARCH_CACHE.get(query);
+    const html = await fetchViaProxy(`https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`);
+    // Extract unique video IDs from the search results page.
+    const ids = [];
+    const seen = new Set();
+    const re = /"videoId":"([0-9A-Za-z_-]{11})"/g;
+    let m;
+    while ((m = re.exec(html)) !== null) {
+      if (!seen.has(m[1])) { seen.add(m[1]); ids.push(m[1]); }
+      if (ids.length >= 12) break;
+    }
+    if (!ids.length) throw new Error('No videos found for "' + query + '"');
+    const entries = ids.map(id => ({ id, title: query }));
+    SEARCH_CACHE.set(query, entries);
     return entries;
   }
 
@@ -1115,20 +1108,19 @@ body::after{
   async function loadProVideo(pro, rotate = false) {
     $('proVideoFallback').classList.remove('show');
     const container = $('proVideoContainer');
-    container.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--muted);font-size:.85rem;letter-spacing:.08em">Loading @' + pro.handle + ' channel…</div>';
-    log(`Resolving YouTube channel for ${pro.name} (@${pro.handle})`);
+    container.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--muted);font-size:.85rem;letter-spacing:.08em">Searching YouTube for ' + pro.name + '…</div>';
+    log(`Searching YouTube for ${pro.name} ("${pro.query}")`);
 
     try {
-      const channelId = await resolveChannelId(pro.handle);
-      const videos = await fetchChannelVideos(channelId);
+      const videos = await searchYouTubeVideos(pro.query);
 
-      // Rotate through that channel's uploads on repeated clicks.
+      // Rotate through search results on repeated clicks.
       pro._idx = rotate ? ((pro._idx ?? 0) + 1) % videos.length : 0;
       const pick = videos[pro._idx];
 
       createYouTubeEmbed(pick.id, 'proVideoContainer');
       $('proLabel').textContent = `${pro.name.toUpperCase()} · ${pro.team}`;
-      log(`Loaded "${pick.title}" from @${pro.handle}'s channel`);
+      log(`Loaded video ${pick.id} for ${pro.name}`);
     } catch (err) {
       console.warn('Pro video load failed:', err);
       showProVideoFallback(pro, err.message);

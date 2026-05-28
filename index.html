@@ -746,29 +746,82 @@ body::after{
 (() => {
   'use strict';
 
-  // ========== PRO DATA WITH YOUTUBE VIDEOS ==========
+  // ========== PRO DATA — each pro is linked to their REAL YouTube channel ==========
+  // `handle` = the @handle of the pro's own (or primary) YouTube channel.
+  // At selection time we resolve the handle -> channelId -> RSS feed of latest uploads
+  // through a public CORS proxy, then embed the most recent video from THAT channel.
   const PROS = {
     valorant: [
-      { id:'tenz', name:'TenZ', team:'Sentinels', videoId:'dQw4w9WgXcQ', fallbackVideoId:'jNQXAC9IVRw' },
-      { id:'demon1', name:'Demon1', team:'EG', videoId:'ScMzI1DSXU0', fallbackVideoId:'jNQXAC9IVRw' },
-      { id:'aspas', name:'Aspas', team:'Leviatán', videoId:'ZZ5LpwO-Ans', fallbackVideoId:'jNQXAC9IVRw' },
+      { id:'tenz',    name:'TenZ',    team:'Sentinels', handle:'TenZOfficial' },
+      { id:'demon1',  name:'Demon1',  team:'EG',        handle:'demon1' },
+      { id:'aspas',   name:'Aspas',   team:'Leviatán',  handle:'aspas' },
     ],
     cs2: [
-      { id:'s1mple', name:'s1mple', team:'NAVI', videoId:'r0i27yQ91Ps', fallbackVideoId:'jNQXAC9IVRw' },
-      { id:'zywoo', name:'ZywOo', team:'Vitality', videoId:'Ljjj_R5jvOA', fallbackVideoId:'jNQXAC9IVRw' },
-      { id:'donk', name:'donk', team:'Spirit', videoId:'jNQXAC9IVRw', fallbackVideoId:'jNQXAC9IVRw' },
+      { id:'s1mple',  name:'s1mple',  team:'NAVI',      handle:'s1mpleO' },
+      { id:'zywoo',   name:'ZywOo',   team:'Vitality',  handle:'ZywOo' },
+      { id:'donk',    name:'donk',    team:'Spirit',    handle:'donk' },
     ],
     lol: [
-      { id:'faker', name:'Faker', team:'T1', videoId:'tNp5iS5VXjU', fallbackVideoId:'jNQXAC9IVRw' },
-      { id:'chovy', name:'Chovy', team:'GenG', videoId:'jNQXAC9IVRw', fallbackVideoId:'jNQXAC9IVRw' },
-      { id:'caps', name:'Caps', team:'G2', videoId:'jNQXAC9IVRw', fallbackVideoId:'jNQXAC9IVRw' },
+      { id:'faker',   name:'Faker',   team:'T1',        handle:'T1Faker' },
+      { id:'chovy',   name:'Chovy',   team:'GenG',      handle:'chovy' },
+      { id:'caps',    name:'Caps',    team:'G2',        handle:'CapsOfficial' },
     ],
     apex: [
-      { id:'imperialhal', name:'ImperialHal', team:'TSM', videoId:'jNQXAC9IVRw', fallbackVideoId:'jNQXAC9IVRw' },
-      { id:'genburten', name:'Genburten', team:'DZ', videoId:'jNQXAC9IVRw', fallbackVideoId:'jNQXAC9IVRw' },
-      { id:'zer0', name:'Zer0', team:'TSM', videoId:'jNQXAC9IVRw', fallbackVideoId:'jNQXAC9IVRw' },
+      { id:'imperialhal', name:'ImperialHal', team:'TSM', handle:'ImperialHal' },
+      { id:'genburten',   name:'Genburten',   team:'DZ',  handle:'Genburten' },
+      { id:'zer0',        name:'Zer0',        team:'TSM', handle:'zer0apex' },
     ],
   };
+
+  // CORS-friendly proxies used to (a) resolve @handle -> channelId from the public
+  // channel HTML, and (b) fetch the channel's public RSS uploads feed.
+  // Multiple proxies are tried in order for resilience.
+  const CORS_PROXIES = [
+    u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+    u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
+    u => `https://r.jina.ai/${u}`,
+  ];
+  const CHANNEL_CACHE = new Map(); // handle -> channelId
+  const VIDEO_CACHE   = new Map(); // channelId -> [{id,title}]
+
+  async function fetchViaProxy(url) {
+    let lastErr;
+    for (const wrap of CORS_PROXIES) {
+      try {
+        const r = await fetch(wrap(url), { cache: 'no-store' });
+        if (!r.ok) { lastErr = new Error('HTTP ' + r.status); continue; }
+        return await r.text();
+      } catch (e) { lastErr = e; }
+    }
+    throw lastErr || new Error('All proxies failed');
+  }
+
+  async function resolveChannelId(handle) {
+    if (CHANNEL_CACHE.has(handle)) return CHANNEL_CACHE.get(handle);
+    const html = await fetchViaProxy(`https://www.youtube.com/@${handle}`);
+    // YouTube embeds the canonical channelId in several places — try the most reliable first.
+    const m =
+      html.match(/"channelId":"(UC[0-9A-Za-z_-]{22})"/) ||
+      html.match(/<meta itemprop="(?:channelId|identifier)" content="(UC[0-9A-Za-z_-]{22})"/) ||
+      html.match(/\/channel\/(UC[0-9A-Za-z_-]{22})/);
+    if (!m) throw new Error('Channel not found for @' + handle);
+    CHANNEL_CACHE.set(handle, m[1]);
+    return m[1];
+  }
+
+  async function fetchChannelVideos(channelId) {
+    if (VIDEO_CACHE.has(channelId)) return VIDEO_CACHE.get(channelId);
+    const xml = await fetchViaProxy(`https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`);
+    const entries = [...xml.matchAll(/<entry>([\s\S]*?)<\/entry>/g)].map(e => {
+      const block = e[1];
+      const id = (block.match(/<yt:videoId>([^<]+)<\/yt:videoId>/) || [])[1];
+      const title = (block.match(/<title>([^<]+)<\/title>/) || [])[1] || '';
+      return id ? { id, title } : null;
+    }).filter(Boolean);
+    if (!entries.length) throw new Error('No videos in feed');
+    VIDEO_CACHE.set(channelId, entries);
+    return entries;
+  }
 
   const DEMO_VIDEO = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
   const MAX_SIZE = 500 * 1024 * 1024;
@@ -1059,34 +1112,39 @@ body::after{
     return iframe;
   }
 
-  function loadProVideo(pro, useFallback = false) {
-    const videoId = useFallback ? pro.fallbackVideoId : pro.videoId;
-
+  async function loadProVideo(pro, rotate = false) {
     $('proVideoFallback').classList.remove('show');
+    const container = $('proVideoContainer');
+    container.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--muted);font-size:.85rem;letter-spacing:.08em">Loading @' + pro.handle + ' channel…</div>';
+    log(`Resolving YouTube channel for ${pro.name} (@${pro.handle})`);
 
-    createYouTubeEmbed(videoId, 'proVideoContainer');
+    try {
+      const channelId = await resolveChannelId(pro.handle);
+      const videos = await fetchChannelVideos(channelId);
 
-    setTimeout(() => {
-      const iframe = $('proVideoContainer').querySelector('iframe');
-      if (!iframe || iframe.contentDocument === null) {
-        showProVideoFallback(pro);
-      }
-    }, 3000);
-  }
+      // Rotate through that channel's uploads on repeated clicks.
+      pro._idx = rotate ? ((pro._idx ?? 0) + 1) % videos.length : 0;
+      const pick = videos[pro._idx];
 
-  function showProVideoFallback(pro) {
-    $('proVideoFallback').classList.add('show');
-    log(`Video ${pro.name} unavailable - showing fallback option`);
-  }
-
-  $('fallbackBtn').addEventListener('click', () => {
-    if (state.currentPro) {
-      state.useFallback = true;
-      loadProVideo(state.currentPro, true);
-      toast('Loading alternative video source...', 'warn');
-      log('Fallback video requested');
+      createYouTubeEmbed(pick.id, 'proVideoContainer');
+      $('proLabel').textContent = `${pro.name.toUpperCase()} · ${pro.team}`;
+      log(`Loaded "${pick.title}" from @${pro.handle}'s channel`);
+    } catch (err) {
+      console.warn('Pro video load failed:', err);
+      showProVideoFallback(pro, err.message);
     }
-  });
+  }
+
+  function showProVideoFallback(pro, reason) {
+    $('proVideoContainer').innerHTML = '';
+    $('proVideoFallback').classList.add('show');
+    const p = $('proVideoFallback').querySelector('p');
+    if (p) p.textContent = `Couldn't load @${pro.handle}'s channel${reason ? ' — ' + reason : ''}. Open it on YouTube?`;
+    const btn = $('fallbackBtn');
+    btn.textContent = `Open @${pro.handle} on YouTube`;
+    btn.onclick = () => window.open(`https://www.youtube.com/@${pro.handle}`, '_blank', 'noopener');
+    log(`Channel @${pro.handle} unavailable - showing fallback link`);
+  }
 
   // ========== SELECT HANDLERS ==========
   $('gameSelect').addEventListener('change', e => {

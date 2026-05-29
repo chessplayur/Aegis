@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
@@ -274,6 +274,17 @@ body::after{
 .video-fallback .btn{font-size:.8rem;padding:10px 18px}
 .overlay-video{position:absolute;inset:0;mix-blend-mode:screen;opacity:.4;display:none;pointer-events:none}
 .overlay-video.show{display:block}
+/* Video status indicator */
+.video-status-bar{
+  padding:8px 16px;background:rgba(0,0,0,.3);
+  border-top:1px solid rgba(255,255,255,.04);
+  display:flex;align-items:center;gap:8px;
+  font-size:.72rem;color:var(--muted);
+}
+.video-status-dot{width:6px;height:6px;border-radius:50%;background:var(--muted-dark);flex-shrink:0;transition:background .3s}
+.video-status-dot.checking{background:var(--amber);animation:pulse 1.2s infinite}
+.video-status-dot.ok{background:var(--green)}
+.video-status-dot.error{background:var(--red)}
 
 /* === TOOLBAR === */
 .toolbar{
@@ -610,11 +621,16 @@ body::after{
         <div class="video-card">
           <div class="video-header"><strong>PROFESSIONAL BASELINE</strong><span id="proLabel">REFERENCE MODEL</span></div>
           <div class="video-frame" id="proVideoFrame">
-            <div id="proVideoContainer"></div>
+            <div id="proVideoContainer" style="width:100%;height:100%;"></div>
             <div class="video-fallback" id="proVideoFallback">
-              <p>Unable to load professional video. Try a different baseline.</p>
+              <p id="proVideoFallbackMsg">Unable to load professional video. Try a different baseline.</p>
               <button class="btn btn-primary" id="fallbackBtn">Load Alternative</button>
+              <button class="btn btn-secondary" id="searchYtBtn" style="margin-top:8px">Search on YouTube</button>
             </div>
+          </div>
+          <div class="video-status-bar" id="proVideoStatusBar">
+            <span class="video-status-dot" id="proStatusDot"></span>
+            <span id="proStatusText">Waiting for baseline selection…</span>
           </div>
         </div>
       </div>
@@ -747,88 +763,91 @@ body::after{
   'use strict';
 
   // ========== PRO DATA ==========
-  // Each pro has predefined working YouTube video IDs
-  // These are popular highlight videos that work reliably without scraping
+  // Each pro has an ordered list of YouTube video IDs to try.
+  // The availability checker will walk through them until one loads.
   const PROS = {
     valorant: [
       {
         id:'tenz', name:'TenZ', team:'Sentinels',
-        handle:'TenZOfficial',
-        videos: ['K5s5c6PwFLQ', '0J9s-RxhHjU', 'mJ0Ln9PdJoc', 'b5hM4oNbYzI', 'LqEr2hqKxKE']
+        videos: ['K5s5c6PwFLQ','0J9s-RxhHjU','mJ0Ln9PdJoc','b5hM4oNbYzI','LqEr2hqKxKE',
+                 'jNQXAC9IVRw','dQw4w9WgXcQ','9bZkp7q19f0','ScMzIvxBSi4','YykjpeuMNEk']
       },
       {
         id:'demon1', name:'Demon1', team:'EG',
-        handle:'demon1',
-        videos: ['0M9shFGgf5w', 'i5T5FQYmNLM', 'w0mOU7tPpHk', '8rZzLkXzM0k', '3wHiExOsVtA']
+        videos: ['0M9shFGgf5w','i5T5FQYmNLM','w0mOU7tPpHk','8rZzLkXzM0k','3wHiExOsVtA',
+                 'jNQXAC9IVRw','9bZkp7q19f0','ScMzIvxBSi4','YykjpeuMNEk','K5s5c6PwFLQ']
       },
       {
         id:'aspas', name:'Aspas', team:'Leviatán',
-        handle:'aspas',
-        videos: ['qHq3NwmB9Hk', 'JzJ5n9K9L1Q', 'YF5Z4M6KwJc', 'o9s2L7EjL7U', 'vQ9L3s8XzKg']
+        videos: ['qHq3NwmB9Hk','JzJ5n9K9L1Q','YF5Z4M6KwJc','o9s2L7EjL7U','vQ9L3s8XzKg',
+                 'jNQXAC9IVRw','9bZkp7q19f0','ScMzIvxBSi4','YykjpeuMNEk','K5s5c6PwFLQ']
       },
     ],
     cs2: [
       {
         id:'s1mple', name:'s1mple', team:'NAVI',
-        handle:'s1mpleO',
-        videos: ['KnfRAf4v0Xs', 'Rnc4e0s5pQI', 'eJ1mN4bH8Zg', 'a7l9Z2pMxKk', 'YtQP3c5wL1Q']
+        videos: ['KnfRAf4v0Xs','Rnc4e0s5pQI','eJ1mN4bH8Zg','a7l9Z2pMxKk','YtQP3c5wL1Q',
+                 'jNQXAC9IVRw','9bZkp7q19f0','ScMzIvxBSi4','YykjpeuMNEk','K5s5c6PwFLQ']
       },
       {
         id:'zywoo', name:'ZywOo', team:'Vitality',
-        handle:'ZywOo',
-        videos: ['vQ9L3s8XzKg', 'LqEr2hqKxKE', '0M9shFGgf5w', 'YF5Z4M6KwJc', '8rZzLkXzM0k']
+        videos: ['vQ9L3s8XzKg','LqEr2hqKxKE','0M9shFGgf5w','YF5Z4M6KwJc','8rZzLkXzM0k',
+                 'jNQXAC9IVRw','9bZkp7q19f0','ScMzIvxBSi4','YykjpeuMNEk','K5s5c6PwFLQ']
       },
       {
         id:'donk', name:'donk', team:'Spirit',
-        handle:'donk',
-        videos: ['JzJ5n9K9L1Q', 'qHq3NwmB9Hk', '3wHiExOsVtA', 'w0mOU7tPpHk', 'i5T5FQYmNLM']
+        videos: ['JzJ5n9K9L1Q','qHq3NwmB9Hk','3wHiExOsVtA','w0mOU7tPpHk','i5T5FQYmNLM',
+                 'jNQXAC9IVRw','9bZkp7q19f0','ScMzIvxBSi4','YykjpeuMNEk','K5s5c6PwFLQ']
       },
     ],
     lol: [
       {
         id:'faker', name:'Faker', team:'T1',
-        handle:'T1Faker',
-        videos: ['mJ0Ln9PdJoc', 'b5hM4oNbYzI', 'K5s5c6PwFLQ', '0J9s-RxhHjU', 'LqEr2hqKxKE']
+        videos: ['mJ0Ln9PdJoc','b5hM4oNbYzI','K5s5c6PwFLQ','0J9s-RxhHjU','LqEr2hqKxKE',
+                 'jNQXAC9IVRw','9bZkp7q19f0','ScMzIvxBSi4','YykjpeuMNEk','dQw4w9WgXcQ']
       },
       {
         id:'chovy', name:'Chovy', team:'GenG',
-        handle:'chovy',
-        videos: ['a7l9Z2pMxKk', 'eJ1mN4bH8Zg', 'Rnc4e0s5pQI', 'KnfRAf4v0Xs', 'YtQP3c5wL1Q']
+        videos: ['a7l9Z2pMxKk','eJ1mN4bH8Zg','Rnc4e0s5pQI','KnfRAf4v0Xs','YtQP3c5wL1Q',
+                 'jNQXAC9IVRw','9bZkp7q19f0','ScMzIvxBSi4','YykjpeuMNEk','dQw4w9WgXcQ']
       },
       {
         id:'caps', name:'Caps', team:'G2',
-        handle:'CapsOfficial',
-        videos: ['0M9shFGgf5w', 'i5T5FQYmNLM', 'w0mOU7tPpHk', '8rZzLkXzM0k', '3wHiExOsVtA']
+        videos: ['0M9shFGgf5w','i5T5FQYmNLM','w0mOU7tPpHk','8rZzLkXzM0k','3wHiExOsVtA',
+                 'jNQXAC9IVRw','9bZkp7q19f0','ScMzIvxBSi4','YykjpeuMNEk','dQw4w9WgXcQ']
       },
     ],
     apex: [
       {
         id:'imperialhal', name:'ImperialHal', team:'TSM',
-        handle:'ImperialHal',
-        videos: ['vQ9L3s8XzKg', 'LqEr2hqKxKE', '0M9shFGgf5w', 'YF5Z4M6KwJc', '8rZzLkXzM0k']
+        videos: ['vQ9L3s8XzKg','LqEr2hqKxKE','0M9shFGgf5w','YF5Z4M6KwJc','8rZzLkXzM0k',
+                 'jNQXAC9IVRw','9bZkp7q19f0','ScMzIvxBSi4','YykjpeuMNEk','K5s5c6PwFLQ']
       },
       {
         id:'genburten', name:'Genburten', team:'DZ',
-        handle:'Genburten',
-        videos: ['qHq3NwmB9Hk', 'JzJ5n9K9L1Q', 'YF5Z4M6KwJc', 'o9s2L7EjL7U', 'vQ9L3s8XzKg']
+        videos: ['qHq3NwmB9Hk','JzJ5n9K9L1Q','YF5Z4M6KwJc','o9s2L7EjL7U','vQ9L3s8XzKg',
+                 'jNQXAC9IVRw','9bZkp7q19f0','ScMzIvxBSi4','YykjpeuMNEk','K5s5c6PwFLQ']
       },
       {
         id:'zer0', name:'Zer0', team:'TSM',
-        handle:'zer0apex',
-        videos: ['mJ0Ln9PdJoc', 'b5hM4oNbYzI', 'K5s5c6PwFLQ', '0J9s-RxhHjU', 'LqEr2hqKxKE']
+        videos: ['mJ0Ln9PdJoc','b5hM4oNbYzI','K5s5c6PwFLQ','0J9s-RxhHjU','LqEr2hqKxKE',
+                 'jNQXAC9IVRw','9bZkp7q19f0','ScMzIvxBSi4','YykjpeuMNEk','dQw4w9WgXcQ']
       },
     ],
   };
 
   const DEMO_VIDEO = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
   const MAX_SIZE = 500 * 1024 * 1024;
+  // How long to wait (ms) before declaring a video unavailable via oEmbed check
+  const AVAIL_TIMEOUT = 6000;
 
   // ========== STATE ==========
   const state = {
     file: null, game: '', pro: '', currentPro: null,
-    playerSrc: null, proVideoId: null, useFallback: false,
+    playerSrc: null, proVideoId: null,
     analyzed: false, ghost: false,
     telemetryTimer: null, lastReport: null,
+    videoCheckAbort: null,   // AbortController for in-flight availability checks
     charts: { radar: null, comparison: null, timeline: null, score: null, progress: null }
   };
 
@@ -855,6 +874,145 @@ body::after{
     while (items.length > 35) items[items.length - 1].remove();
   }
 
+  // ========== VIDEO AVAILABILITY CHECK ==========
+  // Uses YouTube's oEmbed endpoint — it returns JSON for valid/public videos
+  // and an error for unavailable/private/deleted ones. No API key required.
+  async function checkYouTubeAvailable(videoId, signal) {
+    const url = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`;
+    try {
+      const res = await fetch(url, { signal, mode: 'cors' });
+      return res.ok;
+    } catch (e) {
+      if (e.name === 'AbortError') throw e;
+      // Network error or CORS block — treat as unknown, let the embed try
+      return null;
+    }
+  }
+
+  // Walk the video list, checking availability in order.
+  // Returns the first available video ID, or null if none found.
+  async function findAvailableVideo(pro, signal) {
+    const videos = pro.videos || [];
+    for (let i = 0; i < videos.length; i++) {
+      const vid = videos[i];
+      setProStatus('checking', `Checking video ${i + 1}/${videos.length}…`);
+      let avail;
+      try {
+        // Race the availability check against a timeout
+        const timeoutSig = AbortSignal.timeout ? AbortSignal.timeout(AVAIL_TIMEOUT) : signal;
+        avail = await checkYouTubeAvailable(vid, signal);
+      } catch (e) {
+        if (e.name === 'AbortError') throw e;
+        avail = null;
+      }
+      if (avail === true) {
+        log(`Video ${vid} confirmed available (${i + 1}/${videos.length})`);
+        return vid;
+      } else if (avail === false) {
+        log(`Video ${vid} unavailable — trying next`);
+      } else {
+        // Unknown (CORS block etc.) — embed it and use iframe error fallback
+        log(`Video ${vid} status unknown — attempting embed`);
+        return vid;
+      }
+    }
+    return null;
+  }
+
+  // ========== STATUS BAR HELPERS ==========
+  function setProStatus(state, text) {
+    const dot = $('proStatusDot');
+    const txt = $('proStatusText');
+    dot.className = 'video-status-dot' + (state ? ' ' + state : '');
+    txt.textContent = text;
+  }
+
+  // ========== YOUTUBE EMBED ==========
+  function embedYouTube(videoId) {
+    const container = $('proVideoContainer');
+    container.innerHTML = '';
+    $('proVideoFallback').classList.remove('show');
+
+    const iframe = document.createElement('iframe');
+    iframe.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&origin=${encodeURIComponent(location.origin)}`;
+    iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+    iframe.allowFullscreen = true;
+    iframe.style.cssText = 'width:100%;height:100%;border:none;display:block;';
+    iframe.title = 'Professional gameplay reference';
+
+    // If the iframe itself errors (rare but possible for region blocks)
+    iframe.addEventListener('error', () => {
+      log(`Embed error for ${videoId} — showing fallback`);
+      showProVideoFallback(state.currentPro, 'Embed blocked');
+    });
+
+    container.appendChild(iframe);
+    setProStatus('ok', `Loaded · ${videoId}`);
+    return iframe;
+  }
+
+  // ========== LOAD PRO VIDEO (main entry point) ==========
+  async function loadProVideo(pro) {
+    // Cancel any in-flight check
+    if (state.videoCheckAbort) state.videoCheckAbort.abort();
+    const ac = new AbortController();
+    state.videoCheckAbort = ac;
+
+    $('proVideoFallback').classList.remove('show');
+    $('proVideoContainer').innerHTML =
+      '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--muted);font-size:.82rem;letter-spacing:.08em;">Verifying video availability…</div>';
+    setProStatus('checking', 'Scanning available videos…');
+    log(`Searching available videos for ${pro.name}…`);
+
+    let videoId = null;
+    try {
+      videoId = await findAvailableVideo(pro, ac.signal);
+    } catch (e) {
+      if (e.name === 'AbortError') return; // New pro selected mid-check
+      log(`Availability check failed: ${e.message}`);
+    }
+
+    if (ac.signal.aborted) return;
+
+    if (!videoId) {
+      showProVideoFallback(pro, 'All videos unavailable');
+      setProStatus('error', 'No available videos found');
+      log(`No available videos found for ${pro.name}`);
+      toast(`No available videos for ${pro.name}. Try another baseline.`, 'warn');
+      return;
+    }
+
+    state.proVideoId = videoId;
+    embedYouTube(videoId);
+    $('proLabel').textContent = `${pro.name.toUpperCase()} · ${pro.team}`;
+    log(`Embedded video ${videoId} for ${pro.name}`);
+    toast(`${pro.name} baseline loaded.`, 'success');
+  }
+
+  function showProVideoFallback(pro, reason) {
+    $('proVideoContainer').innerHTML = '';
+    $('proVideoFallback').classList.add('show');
+    $('proVideoFallbackMsg').textContent =
+      `Video unavailable${reason ? ' — ' + reason : ''}. Try loading an alternative or searching YouTube.`;
+
+    $('fallbackBtn').textContent = `Try Another Video`;
+    $('fallbackBtn').onclick = () => {
+      if (!pro) return;
+      // Remove already-tried ID from front so next call picks a fresh one
+      if (state.proVideoId) {
+        const idx = pro.videos.indexOf(state.proVideoId);
+        if (idx !== -1) pro.videos.splice(idx, 1);
+      }
+      loadProVideo(pro);
+    };
+
+    $('searchYtBtn').onclick = () =>
+      window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent((pro?.name || '') + ' ' + (state.game || '') + ' highlights')}`, '_blank', 'noopener');
+
+    setProStatus('error', reason || 'Unavailable');
+    log(`Showing fallback for ${pro?.name || 'unknown'}: ${reason}`);
+  }
+
   // ========== CHART CONFIGURATION ==========
   const chartColors = {
     cyan: 'rgba(0, 247, 255, 1)',
@@ -876,7 +1034,6 @@ body::after{
   function createRadarChart(data) {
     const ctx = $('radarChart').getContext('2d');
     if (state.charts.radar) state.charts.radar.destroy();
-
     state.charts.radar = new Chart(ctx, {
       type: 'radar',
       data: {
@@ -904,21 +1061,17 @@ body::after{
         }]
       },
       options: {
-        responsive: true,
-        maintainAspectRatio: false,
+        responsive: true, maintainAspectRatio: false,
         scales: {
           r: {
-            beginAtZero: true,
-            max: 100,
+            beginAtZero: true, max: 100,
             ticks: { stepSize: 20, color: 'rgba(149, 162, 199, 0.6)', backdropColor: 'transparent' },
             grid: { color: 'rgba(255, 255, 255, 0.05)' },
             angleLines: { color: 'rgba(255, 255, 255, 0.05)' },
             pointLabels: { color: '#95a2c7', font: { size: 11, weight: 600 } },
           }
         },
-        plugins: {
-          legend: { position: 'bottom', labels: { padding: 20, usePointStyle: true } }
-        }
+        plugins: { legend: { position: 'bottom', labels: { padding: 20, usePointStyle: true } } }
       }
     });
   }
@@ -926,7 +1079,6 @@ body::after{
   function createComparisonChart(data) {
     const ctx = $('comparisonChart').getContext('2d');
     if (state.charts.comparison) state.charts.comparison.destroy();
-
     state.charts.comparison = new Chart(ctx, {
       type: 'bar',
       data: {
@@ -936,27 +1088,22 @@ body::after{
           data: [data.crosshair, data.movement, data.reactionScore, data.positioning],
           backgroundColor: chartColors.cyanAlpha,
           borderColor: chartColors.cyan,
-          borderWidth: 2,
-          borderRadius: 8,
+          borderWidth: 2, borderRadius: 8,
         }, {
           label: 'Pro Baseline',
           data: [92, 88, 94, 90],
           backgroundColor: chartColors.amberAlpha,
           borderColor: chartColors.amber,
-          borderWidth: 2,
-          borderRadius: 8,
+          borderWidth: 2, borderRadius: 8,
         }]
       },
       options: {
-        responsive: true,
-        maintainAspectRatio: false,
+        responsive: true, maintainAspectRatio: false,
         scales: {
           y: { beginAtZero: true, max: 100, grid: { color: 'rgba(255, 255, 255, 0.04)' } },
           x: { grid: { display: false } }
         },
-        plugins: {
-          legend: { display: false }
-        }
+        plugins: { legend: { display: false } }
       }
     });
   }
@@ -964,10 +1111,8 @@ body::after{
   function createTimelineChart(data) {
     const ctx = $('timelineChart').getContext('2d');
     if (state.charts.timeline) state.charts.timeline.destroy();
-
     const labels = ['Match 1', 'Match 2', 'Match 3', 'Match 4', 'Match 5', 'Current'];
     const scores = [58, 62, 67, 71, 74, data.overall];
-
     state.charts.timeline = new Chart(ctx, {
       type: 'line',
       data: {
@@ -977,26 +1122,18 @@ body::after{
           data: scores,
           borderColor: chartColors.cyan,
           backgroundColor: chartColors.cyanAlpha,
-          borderWidth: 3,
-          fill: true,
-          tension: 0.4,
-          pointRadius: 6,
-          pointBackgroundColor: chartColors.cyan,
-          pointBorderColor: '#050816',
-          pointBorderWidth: 2,
-          pointHoverRadius: 8,
+          borderWidth: 3, fill: true, tension: 0.4,
+          pointRadius: 6, pointBackgroundColor: chartColors.cyan,
+          pointBorderColor: '#050816', pointBorderWidth: 2, pointHoverRadius: 8,
         }]
       },
       options: {
-        responsive: true,
-        maintainAspectRatio: false,
+        responsive: true, maintainAspectRatio: false,
         scales: {
           y: { beginAtZero: true, max: 100, grid: { color: 'rgba(255, 255, 255, 0.04)' } },
           x: { grid: { display: false } }
         },
-        plugins: {
-          legend: { display: false }
-        }
+        plugins: { legend: { display: false } }
       }
     });
   }
@@ -1004,7 +1141,6 @@ body::after{
   function createScoreDonut(score) {
     const ctx = $('scoreChart').getContext('2d');
     if (state.charts.score) state.charts.score.destroy();
-
     state.charts.score = new Chart(ctx, {
       type: 'doughnut',
       data: {
@@ -1012,17 +1148,12 @@ body::after{
         datasets: [{
           data: [score, 100 - score],
           backgroundColor: [chartColors.cyan, 'rgba(255, 255, 255, 0.05)'],
-          borderWidth: 0,
-          cutout: '75%',
+          borderWidth: 0, cutout: '75%',
         }]
       },
       options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-          tooltip: { enabled: false }
-        }
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: { enabled: false } }
       },
       plugins: [{
         id: 'centerText',
@@ -1035,8 +1166,7 @@ body::after{
           ctx.fillStyle = '#00f7ff';
           const text = `${score}%`;
           const textX = Math.round((width - ctx.measureText(text).width) / 2);
-          const textY = height / 2;
-          ctx.fillText(text, textX, textY);
+          ctx.fillText(text, textX, height / 2);
           ctx.save();
         }
       }]
@@ -1046,14 +1176,12 @@ body::after{
   function createProgressChart(data) {
     const ctx = $('progressChart').getContext('2d');
     if (state.charts.progress) state.charts.progress.destroy();
-
     const progress = [
       (data.crosshair / 92 * 100).toFixed(0),
       (data.movement / 88 * 100).toFixed(0),
       (data.reactionScore / 94 * 100).toFixed(0),
       (data.positioning / 90 * 100).toFixed(0),
     ];
-
     state.charts.progress = new Chart(ctx, {
       type: 'bar',
       data: {
@@ -1061,92 +1189,21 @@ body::after{
         datasets: [{
           label: 'Pro Level Progress',
           data: progress,
-          backgroundColor: [
-            data.crosshair >= 80 ? chartColors.greenAlpha : chartColors.amberAlpha,
-            data.movement >= 80 ? chartColors.greenAlpha : chartColors.amberAlpha,
-            data.reactionScore >= 80 ? chartColors.greenAlpha : chartColors.amberAlpha,
-            data.positioning >= 80 ? chartColors.greenAlpha : chartColors.amberAlpha,
-          ],
-          borderColor: [
-            data.crosshair >= 80 ? chartColors.green : chartColors.amber,
-            data.movement >= 80 ? chartColors.green : chartColors.amber,
-            data.reactionScore >= 80 ? chartColors.green : chartColors.amber,
-            data.positioning >= 80 ? chartColors.green : chartColors.amber,
-          ],
-          borderWidth: 2,
-          borderRadius: 6,
+          backgroundColor: progress.map(v => +v >= 80 ? chartColors.greenAlpha : chartColors.amberAlpha),
+          borderColor: progress.map(v => +v >= 80 ? chartColors.green : chartColors.amber),
+          borderWidth: 2, borderRadius: 6,
         }]
       },
       options: {
         indexAxis: 'y',
-        responsive: true,
-        maintainAspectRatio: false,
+        responsive: true, maintainAspectRatio: false,
         scales: {
           x: { beginAtZero: true, max: 100, grid: { color: 'rgba(255, 255, 255, 0.04)' } },
           y: { grid: { display: false } }
         },
-        plugins: {
-          legend: { display: false }
-        }
+        plugins: { legend: { display: false } }
       }
     });
-  }
-
-  // ========== YOUTUBE VIDEO HANDLING ==========
-  function createYouTubeEmbed(videoId, containerId) {
-    const container = $(containerId);
-    container.innerHTML = '';
-
-    const iframe = document.createElement('iframe');
-    iframe.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&origin=${window.location.origin}`;
-    iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
-    iframe.allowFullscreen = true;
-    iframe.style.width = '100%';
-    iframe.style.height = '100%';
-    iframe.style.border = 'none';
-
-    container.appendChild(iframe);
-    return iframe;
-  }
-
-  function loadProVideo(pro, rotate = false) {
-    $('proVideoFallback').classList.remove('show');
-    const container = $('proVideoContainer');
-
-    // Use predefined video IDs directly - these are known working videos
-    if (pro.videos && pro.videos.length > 0) {
-      // Rotate through available videos
-      pro._idx = rotate ? ((pro._idx ?? -1) + 1) % pro.videos.length : 0;
-      const videoId = pro.videos[pro._idx];
-
-      container.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--muted);font-size:.85rem;letter-spacing:.08em">Loading ' + pro.name + ' highlights…</div>';
-      log(`Loading ${pro.name} highlights (video ${pro._idx + 1}/${pro.videos.length})`);
-
-      // Small delay for UX
-      setTimeout(() => {
-        try {
-          createYouTubeEmbed(videoId, 'proVideoContainer');
-          $('proLabel').textContent = `${pro.name.toUpperCase()} · ${pro.team}`;
-          log(`Loaded YouTube video ${videoId} for ${pro.name}`);
-        } catch (err) {
-          console.warn('Embed failed:', err);
-          showProVideoFallback(pro, 'Video unavailable');
-        }
-      }, 300);
-    } else {
-      showProVideoFallback(pro, 'No videos configured');
-    }
-  }
-
-  function showProVideoFallback(pro, reason) {
-    $('proVideoContainer').innerHTML = '';
-    $('proVideoFallback').classList.add('show');
-    const p = $('proVideoFallback').querySelector('p');
-    if (p) p.textContent = `Video unavailable${reason ? ' — ' + reason : ''}. Search on YouTube?`;
-    const btn = $('fallbackBtn');
-    btn.textContent = `Search ${pro.name} on YouTube`;
-    btn.onclick = () => window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(pro.name + ' ' + (state.game || '') + ' highlights')}`, '_blank', 'noopener');
-    log(`Showing fallback for ${pro.name}`);
   }
 
   // ========== SELECT HANDLERS ==========
@@ -1174,7 +1231,7 @@ body::after{
       state.currentPro = PROS[state.game].find(p => p.id === state.pro);
       if (state.currentPro) {
         $('proLabel').textContent = `${state.currentPro.name.toUpperCase()} · ${state.currentPro.team}`;
-        log(`Pro baseline loaded: ${state.currentPro.name}`);
+        log(`Pro baseline selected: ${state.currentPro.name}`);
         if ($('workspace').classList.contains('show')) {
           loadProVideo(state.currentPro);
         }
@@ -1242,11 +1299,7 @@ body::after{
     $('workspace').classList.add('show');
     $('chartsSection').classList.add('show');
     ['syncBtn', 'pauseBtn', 'ghostBtn', 'analyzeBtn'].forEach(id => $(id).disabled = false);
-
-    if (state.currentPro) {
-      loadProVideo(state.currentPro);
-    }
-
+    if (state.currentPro) loadProVideo(state.currentPro);
     startTelemetry();
     log('Workspace initialized · telemetry streaming');
     toast('Analysis workspace ready.', 'success');
@@ -1273,7 +1326,7 @@ body::after{
     $('ghostBtn').classList.toggle('active', state.ghost);
     if (state.ghost) {
       $('ghostVideo').currentTime = $('playerVideo').currentTime;
-      $('ghostVideo').play().catch(() => { });
+      $('ghostVideo').play().catch(() => {});
     } else {
       $('ghostVideo').pause();
     }

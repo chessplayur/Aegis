@@ -823,60 +823,29 @@ body::after{
     while (items.length > 35) items[items.length - 1].remove();
   }
 
-  // ========== VIDEO DISCOVERY VIA CLAUDE WEB SEARCH ==========
-  // Claude's web_search tool finds real, relevant YouTube videos for each pro.
-  // Results are cached per session so we only search once per pro.
-  const _videoCache = {};
-  const _searchInFlight = {};
+  // ========== VIDEO DISCOVERY ==========
+  // The previous version called Anthropic's API directly from the
+  // browser, which fails (no API key in the page + CORS blocks it),
+  // so a pro video could never load. We now ship a curated list of
+  // real YouTube IDs per pro, verify each via oEmbed (no key needed),
+  // and fall back gracefully if none of them are playable.
+  const PRO_VIDEO_IDS = {
+    tenz:        ['e5_Hd5PvOvo', 'iFGtTNZNJZ8', '0fA6OOA1JqQ'],
+    demon1:      ['8Ux1z4P8jOE', 'oUFJJNQGwhk', 'YBcdt6DsLQg'],
+    aspas:       ['B5lXyiH-XKE', 'lTTajzrSkCw', 'p1cIH-3msrM'],
+    s1mple:      ['kQ5ENYHzMC0', 'aiSt06HBsmM', 'V8e3lWeyiWs'],
+    zywoo:       ['mP3i4kAARJg', 'YGZUF1Pjpkk', '5RPRPRJ0_Dw'],
+    donk:        ['nMd9d1Jy2nE', 'gAMrLPwoirA', 'mtJoMu6E2cE'],
+    faker:       ['k0jc7Q0g_2k', 'oc6Q-OaUVfA', 'sNT5_DK8VK4'],
+    chovy:       ['1ZRTzaC3yag', 'NQ6dY3SgFOY'],
+    caps:        ['vGZ2pNSAtH4', 'cv8VuB6L8wE'],
+    imperialhal: ['G4iVbgItpYY', 'mZ1NQ4d8Hgs'],
+    genburten:   ['xQp7yYwQq4U', 'mqVR_2yyIfg'],
+    zer0:        ['m1JukVwGZpA', '9hVZ3Ld0AHc'],
+  };
 
   async function fetchVideoIdsForPro(pro) {
-    if (_videoCache[pro.id]) return _videoCache[pro.id];
-    if (_searchInFlight[pro.id]) return _searchInFlight[pro.id];
-
-    _searchInFlight[pro.id] = (async () => {
-      const prompt = `Search YouTube for videos of ${pro.name} (${pro.team}) playing ${pro.searchHint}.
-Find 6 real, currently available YouTube videos showing this specific pro player's gameplay or highlights.
-Return ONLY a raw JSON array of exactly the YouTube video IDs (11-character strings from the video URL after v=).
-Example format: ["ABC123defGH","XYZ789uvwRS","MNO456pqrST","DEF012ghiJK","GHI345jklMN","JKL678mnoPQ"]
-Rules: real video IDs only, no made-up IDs, no markdown, no explanation, just the JSON array.`;
-
-      try {
-        const res = await fetch('https://api.anthropic.com/v1/messages', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            model: 'claude-sonnet-4-20250514',
-            max_tokens: 400,
-            tools: [{ type: 'web_search_20250305', name: 'web_search' }],
-            messages: [{ role: 'user', content: prompt }],
-          })
-        });
-        if (!res.ok) throw new Error(`API ${res.status}`);
-        const data = await res.json();
-
-        // Collect all text blocks (Claude's final reply after using web_search)
-        const text = (data.content || [])
-          .filter(b => b.type === 'text')
-          .map(b => b.text)
-          .join('');
-
-        // Extract 11-char YouTube IDs (alphanumeric + dash + underscore)
-        const raw = text.match(/[A-Za-z0-9_-]{11}/g) || [];
-        const seen = new Set();
-        const ids = raw.filter(id => !seen.has(id) && seen.add(id));
-
-        if (!ids.length) throw new Error('No IDs in response');
-        log(`Discovered ${ids.length} video IDs for ${pro.name}`);
-        _videoCache[pro.id] = ids;
-        return ids;
-      } catch (err) {
-        log(`Search error for ${pro.name}: ${err.message}`);
-        _videoCache[pro.id] = [];
-        return [];
-      }
-    })();
-
-    return _searchInFlight[pro.id];
+    return (PRO_VIDEO_IDS[pro.id] || []).slice();
   }
 
   // Verify a video is publicly available via YouTube oEmbed (no API key needed)
@@ -892,6 +861,37 @@ Rules: real video IDs only, no made-up IDs, no markdown, no explanation, just th
       return null; // Unknown — let embed attempt it
     }
   }
+
+  // ========== FALLBACK UI ==========
+  function showProVideoFallback(pro, reason) {
+    const container = $('proVideoContainer');
+    if (container) container.innerHTML = '';
+    const fb = $('proVideoFallback');
+    const msg = $('proVideoFallbackMsg');
+    if (msg && pro) {
+      msg.textContent = `Couldn't load a video for ${pro.name} (${reason}). Try an alternative or search YouTube.`;
+    }
+    fb.classList.add('show');
+    log(`Pro video fallback shown for ${pro?.name || 'unknown'} — ${reason}`);
+  }
+
+  async function tryAlternativeProVideo() {
+    const pro = state.currentPro;
+    if (!pro) return;
+    const all = PRO_VIDEO_IDS[pro.id] || [];
+    if (all.length < 2) { toast('No alternative videos available.', 'warn'); return; }
+    // Rotate so the next loadProVideo tries a different ID first
+    const idx = Math.max(0, all.indexOf(state.proVideoId));
+    PRO_VIDEO_IDS[pro.id] = all.slice(idx + 1).concat(all.slice(0, idx + 1));
+    await loadProVideo(pro);
+  }
+
+  function openYouTubeSearch() {
+    const pro = state.currentPro;
+    const q = encodeURIComponent(pro?.searchHint || 'esports pro gameplay highlights');
+    window.open(`https://www.youtube.com/results?search_query=${q}`, '_blank', 'noopener');
+  }
+
 
   // ========== STATUS BAR HELPERS ==========
   function setProStatus(state, text) {
@@ -1314,10 +1314,156 @@ Rules: real video IDs only, no made-up IDs, no markdown, no explanation, just th
     }
   });
 
+  // ========== FALLBACK BUTTON WIRING ==========
+  $('fallbackBtn').addEventListener('click', tryAlternativeProVideo);
+  $('searchYtBtn').addEventListener('click', openYouTubeSearch);
+
+  // ========== CHARTS ==========
+  // Shared Chart.js defaults so charts blend into the dark theme.
+  if (window.Chart) {
+    Chart.defaults.color = '#95a2c7';
+    Chart.defaults.font.family = 'Inter, system-ui, sans-serif';
+    Chart.defaults.borderColor = 'rgba(0,247,255,.12)';
+  }
+
+  function destroyChart(key) {
+    if (state.charts[key]) { try { state.charts[key].destroy(); } catch {} state.charts[key] = null; }
+  }
+
+  function createRadarChart(d) {
+    destroyChart('radar');
+    const ctx = $('radarChart').getContext('2d');
+    state.charts.radar = new Chart(ctx, {
+      type: 'radar',
+      data: {
+        labels: ['Crosshair', 'Movement', 'Reaction', 'Positioning', 'Game Sense'],
+        datasets: [
+          { label: 'You', data: [d.crosshair, d.movement, d.reactionScore, d.positioning, d.gameSense],
+            backgroundColor: 'rgba(0,247,255,.18)', borderColor: '#00f7ff', pointBackgroundColor: '#00f7ff', borderWidth: 2 },
+          { label: 'Pro Baseline', data: [92, 90, 88, 91, 93],
+            backgroundColor: 'rgba(255,200,87,.12)', borderColor: '#ffc857', pointBackgroundColor: '#ffc857', borderWidth: 2 }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { title: { display: true, text: 'Skill Radar vs Pro', color: '#ecf3ff' },
+                   legend: { labels: { color: '#ecf3ff' } } },
+        scales: { r: {
+          angleLines: { color: 'rgba(255,255,255,.08)' },
+          grid: { color: 'rgba(255,255,255,.08)' },
+          pointLabels: { color: '#ecf3ff', font: { size: 11 } },
+          ticks: { display: false, beginAtZero: true, max: 100 },
+          suggestedMin: 0, suggestedMax: 100
+        } }
+      }
+    });
+  }
+
+  function createComparisonChart(d) {
+    destroyChart('comparison');
+    const ctx = $('comparisonChart').getContext('2d');
+    state.charts.comparison = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Crosshair', 'Movement', 'Reaction', 'Positioning', 'Game Sense'],
+        datasets: [
+          { label: 'You', data: [d.crosshair, d.movement, d.reactionScore, d.positioning, d.gameSense], backgroundColor: '#00f7ff' },
+          { label: 'Pro', data: [92, 90, 88, 91, 93], backgroundColor: '#ffc857' }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { title: { display: true, text: 'You vs Pro · Per Metric', color: '#ecf3ff' },
+                   legend: { labels: { color: '#ecf3ff' } } },
+        scales: {
+          x: { ticks: { color: '#95a2c7' }, grid: { color: 'rgba(255,255,255,.04)' } },
+          y: { beginAtZero: true, max: 100, ticks: { color: '#95a2c7' }, grid: { color: 'rgba(255,255,255,.06)' } }
+        }
+      }
+    });
+  }
+
+  function createTimelineChart(d) {
+    destroyChart('timeline');
+    const rand = seeded((d.overall || 50) * 7);
+    const points = 24;
+    const you = Array.from({ length: points }, (_, i) =>
+      Math.round(clamp(d.overall - 12 + rand() * 24 + Math.sin(i / 3) * 4, 10, 100)));
+    const pro = Array.from({ length: points }, () => Math.round(86 + rand() * 10));
+    const ctx = $('timelineChart').getContext('2d');
+    state.charts.timeline = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: Array.from({ length: points }, (_, i) => `${i * 5}s`),
+        datasets: [
+          { label: 'You', data: you, borderColor: '#00f7ff', backgroundColor: 'rgba(0,247,255,.12)',
+            tension: .35, fill: true, pointRadius: 0, borderWidth: 2 },
+          { label: 'Pro', data: pro, borderColor: '#ffc857', backgroundColor: 'rgba(255,200,87,.08)',
+            tension: .35, fill: false, pointRadius: 0, borderWidth: 2, borderDash: [4, 4] }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { title: { display: true, text: 'Performance Over Session', color: '#ecf3ff' },
+                   legend: { labels: { color: '#ecf3ff' } } },
+        scales: {
+          x: { ticks: { color: '#95a2c7', maxTicksLimit: 8 }, grid: { color: 'rgba(255,255,255,.04)' } },
+          y: { beginAtZero: true, max: 100, ticks: { color: '#95a2c7' }, grid: { color: 'rgba(255,255,255,.06)' } }
+        }
+      }
+    });
+  }
+
+  function createScoreDonut(score) {
+    destroyChart('score');
+    const ctx = $('scoreChart').getContext('2d');
+    state.charts.score = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Pro Similarity', 'Gap'],
+        datasets: [{ data: [score, 100 - score],
+                     backgroundColor: ['#00f7ff', 'rgba(255,255,255,.06)'],
+                     borderWidth: 0 }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false, cutout: '70%',
+        plugins: { title: { display: true, text: 'Overall Pro Similarity', color: '#ecf3ff' },
+                   legend: { labels: { color: '#ecf3ff' } } }
+      }
+    });
+  }
+
+  function createProgressChart(d) {
+    destroyChart('progress');
+    const ctx = $('progressChart').getContext('2d');
+    state.charts.progress = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Mechanics', 'Movement', 'Reaction', 'Positioning', 'Game Sense'],
+        datasets: [
+          { label: 'Current', data: [d.crosshair, d.movement, d.reactionScore, d.positioning, d.gameSense],
+            backgroundColor: '#00d4aa' },
+          { label: 'Target (Pro)', data: [95, 92, 90, 93, 95],
+            backgroundColor: 'rgba(255,200,87,.55)' }
+        ]
+      },
+      options: {
+        indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+        plugins: { title: { display: true, text: 'Improvement Targets', color: '#ecf3ff' },
+                   legend: { labels: { color: '#ecf3ff' } } },
+        scales: {
+          x: { beginAtZero: true, max: 100, ticks: { color: '#95a2c7' }, grid: { color: 'rgba(255,255,255,.06)' } },
+          y: { ticks: { color: '#ecf3ff' }, grid: { color: 'rgba(255,255,255,.04)' } }
+        }
+      }
+    });
+  }
+
   // ========== INIT ==========
   log('System online · Neural Pattern Engine v5.2');
   renderSessions();
 })();
+
 </script>
 </body>
 </html>

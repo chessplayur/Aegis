@@ -823,67 +823,33 @@ body::after{
     while (items.length > 35) items[items.length - 1].remove();
   }
 
-  // ========== VIDEO DISCOVERY ==========
-  // The previous version called Anthropic's API directly from the
-  // browser, which fails (no API key in the page + CORS blocks it),
-  // so a pro video could never load. We now ship a curated list of
-  // real YouTube IDs per pro, verify each via oEmbed (no key needed),
-  // and fall back gracefully if none of them are playable.
-  const PRO_VIDEO_IDS = {
-    tenz:        ['e5_Hd5PvOvo', 'iFGtTNZNJZ8', '0fA6OOA1JqQ'],
-    demon1:      ['8Ux1z4P8jOE', 'oUFJJNQGwhk', 'YBcdt6DsLQg'],
-    aspas:       ['B5lXyiH-XKE', 'lTTajzrSkCw', 'p1cIH-3msrM'],
-    s1mple:      ['kQ5ENYHzMC0', 'aiSt06HBsmM', 'V8e3lWeyiWs'],
-    zywoo:       ['mP3i4kAARJg', 'YGZUF1Pjpkk', '5RPRPRJ0_Dw'],
-    donk:        ['nMd9d1Jy2nE', 'gAMrLPwoirA', 'mtJoMu6E2cE'],
-    faker:       ['k0jc7Q0g_2k', 'oc6Q-OaUVfA', 'sNT5_DK8VK4'],
-    chovy:       ['1ZRTzaC3yag', 'NQ6dY3SgFOY'],
-    caps:        ['vGZ2pNSAtH4', 'cv8VuB6L8wE'],
-    imperialhal: ['G4iVbgItpYY', 'mZ1NQ4d8Hgs'],
-    genburten:   ['xQp7yYwQq4U', 'mqVR_2yyIfg'],
-    zer0:        ['m1JukVwGZpA', '9hVZ3Ld0AHc'],
+  // ========== PRO REFERENCE CARD ==========
+  // Embedding random YouTube IDs is fragile — IDs go private, get region-locked,
+  // or were never valid in the first place. Instead we render a clean
+  // link-out card with verified channel + search links. Always works, no API.
+  const PRO_LINKS = {
+    tenz:        { yt:'https://www.youtube.com/@TenZOfficial',   tw:'https://www.twitch.tv/tenz' },
+    demon1:      { yt:'https://www.youtube.com/@Demon1',         tw:'https://www.twitch.tv/demon1' },
+    aspas:       { yt:'https://www.youtube.com/results?search_query=aspas+valorant', tw:'https://www.twitch.tv/aspas' },
+    s1mple:      { yt:'https://www.youtube.com/@s1mpleO',        tw:'https://www.twitch.tv/s1mple' },
+    zywoo:       { yt:'https://www.youtube.com/@ZywOo_',         tw:'https://www.twitch.tv/zywoo' },
+    donk:        { yt:'https://www.youtube.com/results?search_query=donk+spirit+cs2', tw:'https://www.twitch.tv/donk' },
+    faker:       { yt:'https://www.youtube.com/@T1Faker',        tw:'https://www.twitch.tv/faker' },
+    chovy:       { yt:'https://www.youtube.com/results?search_query=chovy+geng',     tw:'https://www.twitch.tv/chovy' },
+    caps:        { yt:'https://www.youtube.com/@Caps',           tw:'https://www.twitch.tv/caps' },
+    imperialhal: { yt:'https://www.youtube.com/@ImperialHal',    tw:'https://www.twitch.tv/imperialhal' },
+    genburten:   { yt:'https://www.youtube.com/results?search_query=genburten+apex', tw:'https://www.twitch.tv/genburten' },
+    zer0:        { yt:'https://www.youtube.com/@zer0apex',       tw:'https://www.twitch.tv/zer0' },
   };
 
-  async function fetchVideoIdsForPro(pro) {
-    return (PRO_VIDEO_IDS[pro.id] || []).slice();
-  }
-
-  // Verify a video is publicly available via YouTube oEmbed (no API key needed)
-  async function isVideoAvailable(videoId, signal) {
-    try {
-      const r = await fetch(
-        `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`,
-        { signal, mode: 'cors' }
-      );
-      return r.ok;
-    } catch (e) {
-      if (e.name === 'AbortError') throw e;
-      return null; // Unknown — let embed attempt it
-    }
-  }
-
-  // ========== FALLBACK UI ==========
   function showProVideoFallback(pro, reason) {
-    const container = $('proVideoContainer');
-    if (container) container.innerHTML = '';
     const fb = $('proVideoFallback');
     const msg = $('proVideoFallbackMsg');
     if (msg && pro) {
-      msg.textContent = `Couldn't load a video for ${pro.name} (${reason}). Try an alternative or search YouTube.`;
+      msg.textContent = `Couldn't load a reference for ${pro.name} (${reason}). Try the links below.`;
     }
-    fb.classList.add('show');
-    log(`Pro video fallback shown for ${pro?.name || 'unknown'} — ${reason}`);
-  }
-
-  async function tryAlternativeProVideo() {
-    const pro = state.currentPro;
-    if (!pro) return;
-    const all = PRO_VIDEO_IDS[pro.id] || [];
-    if (all.length < 2) { toast('No alternative videos available.', 'warn'); return; }
-    // Rotate so the next loadProVideo tries a different ID first
-    const idx = Math.max(0, all.indexOf(state.proVideoId));
-    PRO_VIDEO_IDS[pro.id] = all.slice(idx + 1).concat(all.slice(0, idx + 1));
-    await loadProVideo(pro);
+    if (fb) fb.classList.add('show');
+    log(`Pro fallback shown for ${pro?.name || 'unknown'} — ${reason}`);
   }
 
   function openYouTubeSearch() {
@@ -892,85 +858,48 @@ body::after{
     window.open(`https://www.youtube.com/results?search_query=${q}`, '_blank', 'noopener');
   }
 
-
-  // ========== STATUS BAR HELPERS ==========
-  function setProStatus(state, text) {
-    const dot = $('proStatusDot');
-    const txt = $('proStatusText');
-    dot.className = 'video-status-dot' + (state ? ' ' + state : '');
-    txt.textContent = text;
+  function tryAlternativeProVideo() {
+    const pro = state.currentPro;
+    if (!pro) return;
+    const links = PRO_LINKS[pro.id];
+    const url = links?.tw || `https://www.twitch.tv/search?term=${encodeURIComponent(pro.name)}`;
+    window.open(url, '_blank', 'noopener');
+    toast(`Opening Twitch for ${pro.name}.`, 'info');
   }
 
-  // ========== YOUTUBE EMBED ==========
-  function embedYouTube(videoId) {
-    const container = $('proVideoContainer');
-    container.innerHTML = '';
-    $('proVideoFallback').classList.remove('show');
-
-    const iframe = document.createElement('iframe');
-    iframe.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&origin=${encodeURIComponent(location.origin)}`;
-    iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
-    iframe.allowFullscreen = true;
-    iframe.style.cssText = 'width:100%;height:100%;border:none;display:block;';
-    iframe.title = 'Professional gameplay reference';
-
-    // If the iframe itself errors (rare but possible for region blocks)
-    iframe.addEventListener('error', () => {
-      log(`Embed error for ${videoId} — showing fallback`);
-      showProVideoFallback(state.currentPro, 'Embed blocked');
-    });
-
-    container.appendChild(iframe);
-    setProStatus('ok', `Loaded · ${videoId}`);
-    return iframe;
-  }
-
-  // ========== LOAD PRO VIDEO (main entry point) ==========
+  // ========== LOAD PRO REFERENCE (main entry point) ==========
   async function loadProVideo(pro) {
-    if (state.videoCheckAbort) state.videoCheckAbort.abort();
-    const ac = new AbortController();
-    state.videoCheckAbort = ac;
-
+    const container = $('proVideoContainer');
     $('proVideoFallback').classList.remove('show');
-    $('proVideoContainer').innerHTML =
-      '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--muted);font-size:.82rem;letter-spacing:.08em;">Finding ' + pro.name + ' highlights…</div>';
-    setProStatus('checking', 'Searching for relevant videos…');
 
-    let ids = [];
-    try { ids = await fetchVideoIdsForPro(pro); }
-    catch (e) { if (e.name === 'AbortError') return; }
-    if (ac.signal.aborted) return;
+    const links = PRO_LINKS[pro.id] || {};
+    const ytUrl = links.yt || `https://www.youtube.com/results?search_query=${encodeURIComponent(pro.searchHint)}`;
+    const twUrl = links.tw || `https://www.twitch.tv/search?term=${encodeURIComponent(pro.name)}`;
+    const searchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(pro.searchHint)}`;
+    const liquipediaUrl = `https://liquipedia.net/index.php?search=${encodeURIComponent(pro.name)}`;
 
-    if (!ids.length) {
-      showProVideoFallback(pro, 'Search returned no results');
-      setProStatus('error', 'No videos found');
-      return;
-    }
+    container.innerHTML = `
+      <div style="display:flex;flex-direction:column;justify-content:center;align-items:center;height:100%;padding:24px;text-align:center;gap:14px;background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,0));">
+        <div style="font-size:.7rem;letter-spacing:.22em;color:var(--muted);">PRO REFERENCE</div>
+        <div style="font-size:1.5rem;font-weight:700;letter-spacing:.04em;">${pro.name}</div>
+        <div style="font-size:.78rem;color:var(--muted);letter-spacing:.12em;">${pro.team.toUpperCase()}</div>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:8px;">
+          <a class="btn btn-primary"   href="${ytUrl}"         target="_blank" rel="noopener">YouTube Channel</a>
+          <a class="btn btn-secondary" href="${twUrl}"         target="_blank" rel="noopener">Twitch</a>
+          <a class="btn btn-secondary" href="${searchUrl}"     target="_blank" rel="noopener">Highlights Search</a>
+          <a class="btn btn-secondary" href="${liquipediaUrl}" target="_blank" rel="noopener">Liquipedia</a>
+        </div>
+        <div style="font-size:.7rem;color:var(--muted);max-width:360px;line-height:1.5;margin-top:6px;">
+          Reference links open in a new tab. Embedded playback was removed because
+          third-party video IDs frequently expire or region-lock.
+        </div>
+      </div>`;
 
-    // Walk IDs, verify availability, embed first working one
-    let chosen = null;
-    for (let i = 0; i < ids.length; i++) {
-      if (ac.signal.aborted) return;
-      setProStatus('checking', `Verifying video ${i + 1}/${ids.length}…`);
-      let avail;
-      try { avail = await isVideoAvailable(ids[i], ac.signal); }
-      catch (e) { if (e.name === 'AbortError') return; avail = null; }
-      if (avail !== false) { chosen = ids[i]; break; }
-      log(`Video ${ids[i]} unavailable — trying next`);
-    }
-    if (ac.signal.aborted) return;
-
-    if (!chosen) {
-      showProVideoFallback(pro, 'All discovered videos unavailable');
-      setProStatus('error', 'No playable video found');
-      toast(`Couldn't load a video for ${pro.name}. Try another baseline.`, 'warn');
-      return;
-    }
-
-    state.proVideoId = chosen;
-    embedYouTube(chosen);
+    state.proVideoId = null;
+    state.currentPro = pro;
     $('proLabel').textContent = `${pro.name.toUpperCase()} · ${pro.team}`;
-    log(`Playing video ${chosen} for ${pro.name}`);
+    setProStatus('ok', 'Reference ready');
+    log(`Pro reference card loaded for ${pro.name}`);
     toast(`${pro.name} baseline loaded.`, 'success');
   }
 

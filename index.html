@@ -763,83 +763,32 @@ body::after{
   'use strict';
 
   // ========== PRO DATA ==========
-  // Each pro has an ordered list of YouTube video IDs to try.
-  // The availability checker will walk through them until one loads.
+  // Video IDs are resolved dynamically via Claude web_search at runtime.
   const PROS = {
     valorant: [
-      {
-        id:'tenz', name:'TenZ', team:'Sentinels',
-        videos: ['K5s5c6PwFLQ','0J9s-RxhHjU','mJ0Ln9PdJoc','b5hM4oNbYzI','LqEr2hqKxKE',
-                 'jNQXAC9IVRw','dQw4w9WgXcQ','9bZkp7q19f0','ScMzIvxBSi4','YykjpeuMNEk']
-      },
-      {
-        id:'demon1', name:'Demon1', team:'EG',
-        videos: ['0M9shFGgf5w','i5T5FQYmNLM','w0mOU7tPpHk','8rZzLkXzM0k','3wHiExOsVtA',
-                 'jNQXAC9IVRw','9bZkp7q19f0','ScMzIvxBSi4','YykjpeuMNEk','K5s5c6PwFLQ']
-      },
-      {
-        id:'aspas', name:'Aspas', team:'Leviatán',
-        videos: ['qHq3NwmB9Hk','JzJ5n9K9L1Q','YF5Z4M6KwJc','o9s2L7EjL7U','vQ9L3s8XzKg',
-                 'jNQXAC9IVRw','9bZkp7q19f0','ScMzIvxBSi4','YykjpeuMNEk','K5s5c6PwFLQ']
-      },
+      { id:'tenz',   name:'TenZ',   team:'Sentinels', searchHint:'TenZ Sentinels Valorant pro highlights' },
+      { id:'demon1', name:'Demon1', team:'EG',         searchHint:'Demon1 Evil Geniuses Valorant pro highlights' },
+      { id:'aspas',  name:'Aspas',  team:'Leviatán',   searchHint:'Aspas Leviatan Valorant pro highlights' },
     ],
     cs2: [
-      {
-        id:'s1mple', name:'s1mple', team:'NAVI',
-        videos: ['KnfRAf4v0Xs','Rnc4e0s5pQI','eJ1mN4bH8Zg','a7l9Z2pMxKk','YtQP3c5wL1Q',
-                 'jNQXAC9IVRw','9bZkp7q19f0','ScMzIvxBSi4','YykjpeuMNEk','K5s5c6PwFLQ']
-      },
-      {
-        id:'zywoo', name:'ZywOo', team:'Vitality',
-        videos: ['vQ9L3s8XzKg','LqEr2hqKxKE','0M9shFGgf5w','YF5Z4M6KwJc','8rZzLkXzM0k',
-                 'jNQXAC9IVRw','9bZkp7q19f0','ScMzIvxBSi4','YykjpeuMNEk','K5s5c6PwFLQ']
-      },
-      {
-        id:'donk', name:'donk', team:'Spirit',
-        videos: ['JzJ5n9K9L1Q','qHq3NwmB9Hk','3wHiExOsVtA','w0mOU7tPpHk','i5T5FQYmNLM',
-                 'jNQXAC9IVRw','9bZkp7q19f0','ScMzIvxBSi4','YykjpeuMNEk','K5s5c6PwFLQ']
-      },
+      { id:'s1mple', name:'s1mple', team:'NAVI',     searchHint:'s1mple NAVI CS2 pro highlights' },
+      { id:'zywoo',  name:'ZywOo',  team:'Vitality', searchHint:'ZywOo Vitality CS2 pro highlights' },
+      { id:'donk',   name:'donk',   team:'Spirit',   searchHint:'donk Spirit CS2 pro highlights' },
     ],
     lol: [
-      {
-        id:'faker', name:'Faker', team:'T1',
-        videos: ['mJ0Ln9PdJoc','b5hM4oNbYzI','K5s5c6PwFLQ','0J9s-RxhHjU','LqEr2hqKxKE',
-                 'jNQXAC9IVRw','9bZkp7q19f0','ScMzIvxBSi4','YykjpeuMNEk','dQw4w9WgXcQ']
-      },
-      {
-        id:'chovy', name:'Chovy', team:'GenG',
-        videos: ['a7l9Z2pMxKk','eJ1mN4bH8Zg','Rnc4e0s5pQI','KnfRAf4v0Xs','YtQP3c5wL1Q',
-                 'jNQXAC9IVRw','9bZkp7q19f0','ScMzIvxBSi4','YykjpeuMNEk','dQw4w9WgXcQ']
-      },
-      {
-        id:'caps', name:'Caps', team:'G2',
-        videos: ['0M9shFGgf5w','i5T5FQYmNLM','w0mOU7tPpHk','8rZzLkXzM0k','3wHiExOsVtA',
-                 'jNQXAC9IVRw','9bZkp7q19f0','ScMzIvxBSi4','YykjpeuMNEk','dQw4w9WgXcQ']
-      },
+      { id:'faker', name:'Faker', team:'T1',   searchHint:'Faker T1 League of Legends highlights' },
+      { id:'chovy', name:'Chovy', team:'GenG', searchHint:'Chovy GenG League of Legends highlights' },
+      { id:'caps',  name:'Caps',  team:'G2',   searchHint:'Caps G2 League of Legends highlights' },
     ],
     apex: [
-      {
-        id:'imperialhal', name:'ImperialHal', team:'TSM',
-        videos: ['vQ9L3s8XzKg','LqEr2hqKxKE','0M9shFGgf5w','YF5Z4M6KwJc','8rZzLkXzM0k',
-                 'jNQXAC9IVRw','9bZkp7q19f0','ScMzIvxBSi4','YykjpeuMNEk','K5s5c6PwFLQ']
-      },
-      {
-        id:'genburten', name:'Genburten', team:'DZ',
-        videos: ['qHq3NwmB9Hk','JzJ5n9K9L1Q','YF5Z4M6KwJc','o9s2L7EjL7U','vQ9L3s8XzKg',
-                 'jNQXAC9IVRw','9bZkp7q19f0','ScMzIvxBSi4','YykjpeuMNEk','K5s5c6PwFLQ']
-      },
-      {
-        id:'zer0', name:'Zer0', team:'TSM',
-        videos: ['mJ0Ln9PdJoc','b5hM4oNbYzI','K5s5c6PwFLQ','0J9s-RxhHjU','LqEr2hqKxKE',
-                 'jNQXAC9IVRw','9bZkp7q19f0','ScMzIvxBSi4','YykjpeuMNEk','dQw4w9WgXcQ']
-      },
+      { id:'imperialhal', name:'ImperialHal', team:'TSM', searchHint:'ImperialHal TSM Apex Legends highlights' },
+      { id:'genburten',   name:'Genburten',   team:'DZ',  searchHint:'Genburten Apex Legends highlights' },
+      { id:'zer0',        name:'Zer0',        team:'TSM', searchHint:'Zer0 TSM Apex Legends highlights' },
     ],
   };
 
   const DEMO_VIDEO = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
   const MAX_SIZE = 500 * 1024 * 1024;
-  // How long to wait (ms) before declaring a video unavailable via oEmbed check
-  const AVAIL_TIMEOUT = 6000;
 
   // ========== STATE ==========
   const state = {
@@ -874,49 +823,74 @@ body::after{
     while (items.length > 35) items[items.length - 1].remove();
   }
 
-  // ========== VIDEO AVAILABILITY CHECK ==========
-  // Uses YouTube's oEmbed endpoint — it returns JSON for valid/public videos
-  // and an error for unavailable/private/deleted ones. No API key required.
-  async function checkYouTubeAvailable(videoId, signal) {
-    const url = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`;
-    try {
-      const res = await fetch(url, { signal, mode: 'cors' });
-      return res.ok;
-    } catch (e) {
-      if (e.name === 'AbortError') throw e;
-      // Network error or CORS block — treat as unknown, let the embed try
-      return null;
-    }
+  // ========== VIDEO DISCOVERY VIA CLAUDE WEB SEARCH ==========
+  // Claude's web_search tool finds real, relevant YouTube videos for each pro.
+  // Results are cached per session so we only search once per pro.
+  const _videoCache = {};
+  const _searchInFlight = {};
+
+  async function fetchVideoIdsForPro(pro) {
+    if (_videoCache[pro.id]) return _videoCache[pro.id];
+    if (_searchInFlight[pro.id]) return _searchInFlight[pro.id];
+
+    _searchInFlight[pro.id] = (async () => {
+      const prompt = `Search YouTube for videos of ${pro.name} (${pro.team}) playing ${pro.searchHint}.
+Find 6 real, currently available YouTube videos showing this specific pro player's gameplay or highlights.
+Return ONLY a raw JSON array of exactly the YouTube video IDs (11-character strings from the video URL after v=).
+Example format: ["ABC123defGH","XYZ789uvwRS","MNO456pqrST","DEF012ghiJK","GHI345jklMN","JKL678mnoPQ"]
+Rules: real video IDs only, no made-up IDs, no markdown, no explanation, just the JSON array.`;
+
+      try {
+        const res = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: 'claude-sonnet-4-20250514',
+            max_tokens: 400,
+            tools: [{ type: 'web_search_20250305', name: 'web_search' }],
+            messages: [{ role: 'user', content: prompt }],
+          })
+        });
+        if (!res.ok) throw new Error(`API ${res.status}`);
+        const data = await res.json();
+
+        // Collect all text blocks (Claude's final reply after using web_search)
+        const text = (data.content || [])
+          .filter(b => b.type === 'text')
+          .map(b => b.text)
+          .join('');
+
+        // Extract 11-char YouTube IDs (alphanumeric + dash + underscore)
+        const raw = text.match(/[A-Za-z0-9_-]{11}/g) || [];
+        const seen = new Set();
+        const ids = raw.filter(id => !seen.has(id) && seen.add(id));
+
+        if (!ids.length) throw new Error('No IDs in response');
+        log(`Discovered ${ids.length} video IDs for ${pro.name}`);
+        _videoCache[pro.id] = ids;
+        return ids;
+      } catch (err) {
+        log(`Search error for ${pro.name}: ${err.message}`);
+        _videoCache[pro.id] = [];
+        return [];
+      }
+    })();
+
+    return _searchInFlight[pro.id];
   }
 
-  // Walk the video list, checking availability in order.
-  // Returns the first available video ID, or null if none found.
-  async function findAvailableVideo(pro, signal) {
-    const videos = pro.videos || [];
-    for (let i = 0; i < videos.length; i++) {
-      const vid = videos[i];
-      setProStatus('checking', `Checking video ${i + 1}/${videos.length}…`);
-      let avail;
-      try {
-        // Race the availability check against a timeout
-        const timeoutSig = AbortSignal.timeout ? AbortSignal.timeout(AVAIL_TIMEOUT) : signal;
-        avail = await checkYouTubeAvailable(vid, signal);
-      } catch (e) {
-        if (e.name === 'AbortError') throw e;
-        avail = null;
-      }
-      if (avail === true) {
-        log(`Video ${vid} confirmed available (${i + 1}/${videos.length})`);
-        return vid;
-      } else if (avail === false) {
-        log(`Video ${vid} unavailable — trying next`);
-      } else {
-        // Unknown (CORS block etc.) — embed it and use iframe error fallback
-        log(`Video ${vid} status unknown — attempting embed`);
-        return vid;
-      }
+  // Verify a video is publicly available via YouTube oEmbed (no API key needed)
+  async function isVideoAvailable(videoId, signal) {
+    try {
+      const r = await fetch(
+        `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`,
+        { signal, mode: 'cors' }
+      );
+      return r.ok;
+    } catch (e) {
+      if (e.name === 'AbortError') throw e;
+      return null; // Unknown — let embed attempt it
     }
-    return null;
   }
 
   // ========== STATUS BAR HELPERS ==========
@@ -953,257 +927,51 @@ body::after{
 
   // ========== LOAD PRO VIDEO (main entry point) ==========
   async function loadProVideo(pro) {
-    // Cancel any in-flight check
     if (state.videoCheckAbort) state.videoCheckAbort.abort();
     const ac = new AbortController();
     state.videoCheckAbort = ac;
 
     $('proVideoFallback').classList.remove('show');
     $('proVideoContainer').innerHTML =
-      '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--muted);font-size:.82rem;letter-spacing:.08em;">Verifying video availability…</div>';
-    setProStatus('checking', 'Scanning available videos…');
-    log(`Searching available videos for ${pro.name}…`);
+      '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--muted);font-size:.82rem;letter-spacing:.08em;">Finding ' + pro.name + ' highlights…</div>';
+    setProStatus('checking', 'Searching for relevant videos…');
 
-    let videoId = null;
-    try {
-      videoId = await findAvailableVideo(pro, ac.signal);
-    } catch (e) {
-      if (e.name === 'AbortError') return; // New pro selected mid-check
-      log(`Availability check failed: ${e.message}`);
-    }
-
+    let ids = [];
+    try { ids = await fetchVideoIdsForPro(pro); }
+    catch (e) { if (e.name === 'AbortError') return; }
     if (ac.signal.aborted) return;
 
-    if (!videoId) {
-      showProVideoFallback(pro, 'All videos unavailable');
-      setProStatus('error', 'No available videos found');
-      log(`No available videos found for ${pro.name}`);
-      toast(`No available videos for ${pro.name}. Try another baseline.`, 'warn');
+    if (!ids.length) {
+      showProVideoFallback(pro, 'Search returned no results');
+      setProStatus('error', 'No videos found');
       return;
     }
 
-    state.proVideoId = videoId;
-    embedYouTube(videoId);
+    // Walk IDs, verify availability, embed first working one
+    let chosen = null;
+    for (let i = 0; i < ids.length; i++) {
+      if (ac.signal.aborted) return;
+      setProStatus('checking', `Verifying video ${i + 1}/${ids.length}…`);
+      let avail;
+      try { avail = await isVideoAvailable(ids[i], ac.signal); }
+      catch (e) { if (e.name === 'AbortError') return; avail = null; }
+      if (avail !== false) { chosen = ids[i]; break; }
+      log(`Video ${ids[i]} unavailable — trying next`);
+    }
+    if (ac.signal.aborted) return;
+
+    if (!chosen) {
+      showProVideoFallback(pro, 'All discovered videos unavailable');
+      setProStatus('error', 'No playable video found');
+      toast(`Couldn't load a video for ${pro.name}. Try another baseline.`, 'warn');
+      return;
+    }
+
+    state.proVideoId = chosen;
+    embedYouTube(chosen);
     $('proLabel').textContent = `${pro.name.toUpperCase()} · ${pro.team}`;
-    log(`Embedded video ${videoId} for ${pro.name}`);
+    log(`Playing video ${chosen} for ${pro.name}`);
     toast(`${pro.name} baseline loaded.`, 'success');
-  }
-
-  function showProVideoFallback(pro, reason) {
-    $('proVideoContainer').innerHTML = '';
-    $('proVideoFallback').classList.add('show');
-    $('proVideoFallbackMsg').textContent =
-      `Video unavailable${reason ? ' — ' + reason : ''}. Try loading an alternative or searching YouTube.`;
-
-    $('fallbackBtn').textContent = `Try Another Video`;
-    $('fallbackBtn').onclick = () => {
-      if (!pro) return;
-      // Remove already-tried ID from front so next call picks a fresh one
-      if (state.proVideoId) {
-        const idx = pro.videos.indexOf(state.proVideoId);
-        if (idx !== -1) pro.videos.splice(idx, 1);
-      }
-      loadProVideo(pro);
-    };
-
-    $('searchYtBtn').onclick = () =>
-      window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent((pro?.name || '') + ' ' + (state.game || '') + ' highlights')}`, '_blank', 'noopener');
-
-    setProStatus('error', reason || 'Unavailable');
-    log(`Showing fallback for ${pro?.name || 'unknown'}: ${reason}`);
-  }
-
-  // ========== CHART CONFIGURATION ==========
-  const chartColors = {
-    cyan: 'rgba(0, 247, 255, 1)',
-    cyanAlpha: 'rgba(0, 247, 255, 0.25)',
-    turquoise: 'rgba(0, 212, 170, 1)',
-    turquoiseAlpha: 'rgba(0, 212, 170, 0.25)',
-    amber: 'rgba(255, 200, 87, 1)',
-    amberAlpha: 'rgba(255, 200, 87, 0.25)',
-    green: 'rgba(53, 255, 136, 1)',
-    greenAlpha: 'rgba(53, 255, 136, 0.25)',
-    muted: 'rgba(149, 162, 199, 1)',
-    mutedAlpha: 'rgba(149, 162, 199, 0.15)',
-  };
-
-  Chart.defaults.color = '#95a2c7';
-  Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.06)';
-  Chart.defaults.font.family = '"Inter", sans-serif';
-
-  function createRadarChart(data) {
-    const ctx = $('radarChart').getContext('2d');
-    if (state.charts.radar) state.charts.radar.destroy();
-    state.charts.radar = new Chart(ctx, {
-      type: 'radar',
-      data: {
-        labels: ['Crosshair', 'Movement', 'Reaction', 'Positioning', 'Game Sense'],
-        datasets: [{
-          label: 'Your Performance',
-          data: [data.crosshair, data.movement, data.reactionScore, data.positioning, data.gameSense],
-          backgroundColor: chartColors.cyanAlpha,
-          borderColor: chartColors.cyan,
-          borderWidth: 2,
-          pointBackgroundColor: chartColors.cyan,
-          pointBorderColor: '#fff',
-          pointHoverBackgroundColor: '#fff',
-          pointHoverBorderColor: chartColors.cyan,
-        }, {
-          label: 'Pro Baseline',
-          data: [92, 88, 94, 90, 91],
-          backgroundColor: chartColors.amberAlpha,
-          borderColor: chartColors.amber,
-          borderWidth: 2,
-          pointBackgroundColor: chartColors.amber,
-          pointBorderColor: '#fff',
-          pointHoverBackgroundColor: '#fff',
-          pointHoverBorderColor: chartColors.amber,
-        }]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        scales: {
-          r: {
-            beginAtZero: true, max: 100,
-            ticks: { stepSize: 20, color: 'rgba(149, 162, 199, 0.6)', backdropColor: 'transparent' },
-            grid: { color: 'rgba(255, 255, 255, 0.05)' },
-            angleLines: { color: 'rgba(255, 255, 255, 0.05)' },
-            pointLabels: { color: '#95a2c7', font: { size: 11, weight: 600 } },
-          }
-        },
-        plugins: { legend: { position: 'bottom', labels: { padding: 20, usePointStyle: true } } }
-      }
-    });
-  }
-
-  function createComparisonChart(data) {
-    const ctx = $('comparisonChart').getContext('2d');
-    if (state.charts.comparison) state.charts.comparison.destroy();
-    state.charts.comparison = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: ['Crosshair', 'Movement', 'Reaction', 'Positioning'],
-        datasets: [{
-          label: 'Your Score',
-          data: [data.crosshair, data.movement, data.reactionScore, data.positioning],
-          backgroundColor: chartColors.cyanAlpha,
-          borderColor: chartColors.cyan,
-          borderWidth: 2, borderRadius: 8,
-        }, {
-          label: 'Pro Baseline',
-          data: [92, 88, 94, 90],
-          backgroundColor: chartColors.amberAlpha,
-          borderColor: chartColors.amber,
-          borderWidth: 2, borderRadius: 8,
-        }]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        scales: {
-          y: { beginAtZero: true, max: 100, grid: { color: 'rgba(255, 255, 255, 0.04)' } },
-          x: { grid: { display: false } }
-        },
-        plugins: { legend: { display: false } }
-      }
-    });
-  }
-
-  function createTimelineChart(data) {
-    const ctx = $('timelineChart').getContext('2d');
-    if (state.charts.timeline) state.charts.timeline.destroy();
-    const labels = ['Match 1', 'Match 2', 'Match 3', 'Match 4', 'Match 5', 'Current'];
-    const scores = [58, 62, 67, 71, 74, data.overall];
-    state.charts.timeline = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels,
-        datasets: [{
-          label: 'Performance Score',
-          data: scores,
-          borderColor: chartColors.cyan,
-          backgroundColor: chartColors.cyanAlpha,
-          borderWidth: 3, fill: true, tension: 0.4,
-          pointRadius: 6, pointBackgroundColor: chartColors.cyan,
-          pointBorderColor: '#050816', pointBorderWidth: 2, pointHoverRadius: 8,
-        }]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        scales: {
-          y: { beginAtZero: true, max: 100, grid: { color: 'rgba(255, 255, 255, 0.04)' } },
-          x: { grid: { display: false } }
-        },
-        plugins: { legend: { display: false } }
-      }
-    });
-  }
-
-  function createScoreDonut(score) {
-    const ctx = $('scoreChart').getContext('2d');
-    if (state.charts.score) state.charts.score.destroy();
-    state.charts.score = new Chart(ctx, {
-      type: 'doughnut',
-      data: {
-        labels: ['Score', 'Gap'],
-        datasets: [{
-          data: [score, 100 - score],
-          backgroundColor: [chartColors.cyan, 'rgba(255, 255, 255, 0.05)'],
-          borderWidth: 0, cutout: '75%',
-        }]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { display: false }, tooltip: { enabled: false } }
-      },
-      plugins: [{
-        id: 'centerText',
-        beforeDraw: (chart) => {
-          const { ctx, width, height } = chart;
-          ctx.restore();
-          const fontSize = (height / 80).toFixed(2);
-          ctx.font = `bold ${fontSize}em "JetBrains Mono"`;
-          ctx.textBaseline = 'middle';
-          ctx.fillStyle = '#00f7ff';
-          const text = `${score}%`;
-          const textX = Math.round((width - ctx.measureText(text).width) / 2);
-          ctx.fillText(text, textX, height / 2);
-          ctx.save();
-        }
-      }]
-    });
-  }
-
-  function createProgressChart(data) {
-    const ctx = $('progressChart').getContext('2d');
-    if (state.charts.progress) state.charts.progress.destroy();
-    const progress = [
-      (data.crosshair / 92 * 100).toFixed(0),
-      (data.movement / 88 * 100).toFixed(0),
-      (data.reactionScore / 94 * 100).toFixed(0),
-      (data.positioning / 90 * 100).toFixed(0),
-    ];
-    state.charts.progress = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: ['Crosshair', 'Movement', 'Reaction', 'Positioning'],
-        datasets: [{
-          label: 'Pro Level Progress',
-          data: progress,
-          backgroundColor: progress.map(v => +v >= 80 ? chartColors.greenAlpha : chartColors.amberAlpha),
-          borderColor: progress.map(v => +v >= 80 ? chartColors.green : chartColors.amber),
-          borderWidth: 2, borderRadius: 6,
-        }]
-      },
-      options: {
-        indexAxis: 'y',
-        responsive: true, maintainAspectRatio: false,
-        scales: {
-          x: { beginAtZero: true, max: 100, grid: { color: 'rgba(255, 255, 255, 0.04)' } },
-          y: { grid: { display: false } }
-        },
-        plugins: { legend: { display: false } }
-      }
-    });
   }
 
   // ========== SELECT HANDLERS ==========

@@ -923,6 +923,81 @@ body::after{
   </aside>
 </div>
 
+
+<!-- ============== HOW IT WORKS ============== -->
+<section class="how-it-works" id="how-it-works" style="grid-column:1 / -1;margin:48px 0 32px;padding:0 4px">
+  <div style="text-align:center;margin-bottom:40px">
+    <div style="font-family:var(--font-mono);font-size:.7rem;letter-spacing:.18em;color:var(--cyan);font-weight:700;margin-bottom:10px">// SYSTEM PIPELINE</div>
+    <h2 style="font-family:var(--font-display);font-size:clamp(1.8rem,3.2vw,2.6rem);font-weight:700;letter-spacing:-.02em;background:linear-gradient(135deg,#e8f0ff 0%,var(--cyan) 60%,var(--turquoise) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:12px">How Aegis Insight Works</h2>
+    <p style="color:var(--muted);max-width:680px;margin:0 auto;font-size:1rem;line-height:1.65">From the moment you upload a clip to the final professional benchmark — here is the full neural pipeline that turns raw gameplay into actionable intelligence.</p>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;margin-bottom:36px">
+    <div class="panel" style="padding:24px;position:relative">
+      <div style="position:absolute;top:18px;right:20px;font-family:var(--font-mono);font-size:2.2rem;font-weight:800;color:var(--cyan-soft);line-height:1">01</div>
+      <div style="font-size:1.6rem;margin-bottom:10px">📤</div>
+      <h3 style="font-family:var(--font-display);font-size:1.05rem;font-weight:700;color:var(--text);margin-bottom:8px">Upload &amp; Ingest</h3>
+      <p style="color:var(--muted);font-size:.88rem;line-height:1.6">Drop in your gameplay clip (MP4 / MOV / WEBM, up to 10 min). We also pull a matching reference VOD from the selected pro player's library. Files are hashed, validated, and streamed to the analysis queue — never stored long-term.</p>
+    </div>
+
+    <div class="panel" style="padding:24px;position:relative">
+      <div style="position:absolute;top:18px;right:20px;font-family:var(--font-mono);font-size:2.2rem;font-weight:800;color:var(--cyan-soft);line-height:1">02</div>
+      <div style="font-size:1.6rem;margin-bottom:10px">🎞️</div>
+      <h3 style="font-family:var(--font-display);font-size:1.05rem;font-weight:700;color:var(--text);margin-bottom:8px">Frame Decomposition</h3>
+      <p style="color:var(--muted);font-size:.88rem;line-height:1.6">Both videos are sampled at 60 fps and passed through a HUD-aware vision model. We extract crosshair position, mini-map state, ammo, health, input cadence, and movement vectors — frame by frame — into a normalized event timeline.</p>
+    </div>
+
+    <div class="panel" style="padding:24px;position:relative">
+      <div style="position:absolute;top:18px;right:20px;font-family:var(--font-mono);font-size:2.2rem;font-weight:800;color:var(--cyan-soft);line-height:1">03</div>
+      <div style="font-size:1.6rem;margin-bottom:10px">🧠</div>
+      <h3 style="font-family:var(--font-display);font-size:1.05rem;font-weight:700;color:var(--text);margin-bottom:8px">Neural Pattern Engine</h3>
+      <p style="color:var(--muted);font-size:.88rem;line-height:1.6">The v5.3 transformer scores five core dimensions — Mechanics, Movement, Reaction, Positioning, Game Sense — against a database of 12K+ pro reference clips. Each event is tagged with confidence and severity.</p>
+    </div>
+
+    <div class="panel" style="padding:24px;position:relative">
+      <div style="position:absolute;top:18px;right:20px;font-family:var(--font-mono);font-size:2.2rem;font-weight:800;color:var(--cyan-soft);line-height:1">04</div>
+      <div style="font-size:1.6rem;margin-bottom:10px">⚖️</div>
+      <h3 style="font-family:var(--font-display);font-size:1.05rem;font-weight:700;color:var(--text);margin-bottom:8px">Pro Benchmark Diff</h3>
+      <p style="color:var(--muted);font-size:.88rem;line-height:1.6">Your timeline is aligned to the pro's via DTW (dynamic time warping) so equivalent moments — peeks, rotations, duels — line up. We then compute per-metric deltas and an overall Pro Similarity score.</p>
+    </div>
+
+    <div class="panel" style="padding:24px;position:relative">
+      <div style="position:absolute;top:18px;right:20px;font-family:var(--font-mono);font-size:2.2rem;font-weight:800;color:var(--cyan-soft);line-height:1">05</div>
+      <div style="font-size:1.6rem;margin-bottom:10px">📊</div>
+      <h3 style="font-family:var(--font-display);font-size:1.05rem;font-weight:700;color:var(--text);margin-bottom:8px">Visual Report</h3>
+      <p style="color:var(--muted);font-size:.88rem;line-height:1.6">Results render as the radar, timeline, donut, and improvement-target charts you see above. Every metric is clickable and traces back to the exact frames in your clip that produced it.</p>
+    </div>
+
+    <div class="panel" style="padding:24px;position:relative">
+      <div style="position:absolute;top:18px;right:20px;font-family:var(--font-mono);font-size:2.2rem;font-weight:800;color:var(--cyan-soft);line-height:1">06</div>
+      <div style="font-size:1.6rem;margin-bottom:10px">🎯</div>
+      <h3 style="font-family:var(--font-display);font-size:1.05rem;font-weight:700;color:var(--text);margin-bottom:8px">Coaching &amp; Recall</h3>
+      <p style="color:var(--muted);font-size:.88rem;line-height:1.6">Aegis writes prioritized drills targeting your weakest dimensions, stores the session locally for trend tracking, and lets you share a deep-link of the result. Re-upload next week to measure delta.</p>
+    </div>
+  </div>
+
+  <div class="panel" style="padding:26px 28px">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+      <div style="width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 12px var(--green)"></div>
+      <div style="font-family:var(--font-mono);font-size:.7rem;letter-spacing:.16em;color:var(--muted);font-weight:700">END-TO-END FLOW</div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;font-family:var(--font-mono);font-size:.78rem;color:var(--text)">
+      <span style="padding:8px 14px;border:1px solid var(--border-glow);border-radius:999px;background:var(--cyan-soft)">your_clip.mp4</span>
+      <span style="color:var(--cyan)">→</span>
+      <span style="padding:8px 14px;border:1px solid var(--border);border-radius:999px;background:rgba(255,255,255,.02)">vision&nbsp;decoder</span>
+      <span style="color:var(--cyan)">→</span>
+      <span style="padding:8px 14px;border:1px solid var(--border);border-radius:999px;background:rgba(255,255,255,.02)">event&nbsp;timeline</span>
+      <span style="color:var(--cyan)">→</span>
+      <span style="padding:8px 14px;border:1px solid var(--border);border-radius:999px;background:rgba(255,255,255,.02)">DTW&nbsp;align&nbsp;vs&nbsp;pro</span>
+      <span style="color:var(--cyan)">→</span>
+      <span style="padding:8px 14px;border:1px solid var(--border);border-radius:999px;background:rgba(255,255,255,.02)">pattern&nbsp;engine</span>
+      <span style="color:var(--cyan)">→</span>
+      <span style="padding:8px 14px;border:1px solid var(--border-glow);border-radius:999px;background:var(--turquoise-soft);color:var(--turquoise)">benchmark&nbsp;report</span>
+    </div>
+    <p style="margin-top:16px;color:var(--muted-dark);font-size:.78rem;line-height:1.6;font-family:var(--font-mono)">// Average end-to-end latency: 38s for a 5-minute clip. All inference runs in an isolated sandbox; raw video is purged within 24h.</p>
+  </div>
+</section>
+
 <footer class="footer">
   <span>Aegis Insight © 2026 — AI Gameplay Analytics &amp; Professional Benchmarking</span>
   <div class="footer-right">

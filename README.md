@@ -146,8 +146,3 @@ vercel --prod
 - Browser `localStorage` for session persistence
 - Browser `URL.createObjectURL` for local video playback
 
----
-
-## License
-
-MIT — free to use, modify, and distribute.
